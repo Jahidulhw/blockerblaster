@@ -76,6 +76,50 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 @keyframes sparkleOut{0%{transform:translate(0,0) scale(1.2);opacity:1;}100%{transform:translate(var(--tx,20px),var(--ty,-20px)) scale(0);opacity:0;}}
 .float-heart{position:fixed;pointer-events:none;z-index:5000;animation:floatHeart 2.5s ease-out forwards;}
 @keyframes floatHeart{0%{transform:translateY(0) scale(1);opacity:.85;}100%{transform:translateY(-120px) scale(.5);opacity:0;}}
+
+/* ── Chest shop banner ──────────────────────────────────── */
+.chest-banner{background:linear-gradient(135deg,rgba(100,0,160,.35),rgba(60,0,100,.35));border:2px solid #cc44ff;border-radius:14px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;cursor:pointer;box-shadow:0 0 18px rgba(180,0,255,.22);animation:chestPulse 2.2s ease-in-out infinite;transition:box-shadow .2s;}
+.chest-banner:hover{box-shadow:0 0 32px rgba(220,0,255,.5);}
+@keyframes chestPulse{0%,100%{border-color:#cc44ff;box-shadow:0 0 18px rgba(180,0,255,.22);}50%{border-color:#ff44cc;box-shadow:0 0 30px rgba(220,0,255,.4);}}
+.cb-left{display:flex;align-items:center;gap:10px;}
+.cb-icon{font-size:2.2em;filter:drop-shadow(0 0 6px #cc44ff);}
+.cb-title{font-size:1em;font-weight:800;color:#fff;letter-spacing:.5px;}
+.cb-sub{font-size:.68em;color:#bb88ff;margin-top:2px;}
+.cb-price{background:linear-gradient(135deg,#9900ff,#ff00cc);padding:8px 16px;border-radius:20px;font-weight:800;font-size:.9em;box-shadow:0 0 10px rgba(180,0,255,.5);white-space:nowrap;transition:all .2s;}
+.cb-price.cant-afford{background:rgba(100,50,150,.25);color:rgba(200,150,255,.45);box-shadow:none;}
+/* ── Chest modal ─────────────────────────────────────────── */
+#chest-modal{display:none;position:fixed;inset:0;background:rgba(4,0,14,.97);z-index:20000;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;padding:24px;}
+#chest-modal.show{display:flex;}
+.chest-modal-title{font-size:1.25em;font-weight:900;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px;}
+.chest-wrap{width:110px;height:90px;position:relative;cursor:pointer;filter:drop-shadow(0 0 14px #9900ff);}
+.chest-upper{position:absolute;top:0;left:0;right:0;height:46%;background:linear-gradient(150deg,#6a2299,#4a1870);border:2.5px solid #cc66ff;border-radius:8px 8px 0 0;}
+.chest-lower{position:absolute;bottom:0;left:0;right:0;height:58%;background:linear-gradient(150deg,#4a1870,#2a0848);border:2.5px solid #9944cc;border-radius:0 0 8px 8px;display:flex;align-items:center;justify-content:center;}
+.chest-lock{position:absolute;bottom:43%;left:50%;transform:translateX(-50%);width:17px;height:17px;background:linear-gradient(135deg,#ffcc44,#ff8800);border-radius:50%;border:2px solid #ffee88;box-shadow:0 0 8px #ffcc44;z-index:2;}
+.chest-wrap.shaking{animation:chestShake .55s ease-in-out;}
+.chest-wrap.popping{animation:chestPop .5s ease-out forwards;}
+@keyframes chestShake{0%,100%{transform:rotate(0) scale(1);}15%{transform:rotate(-8deg) scale(1.08);}30%{transform:rotate(8deg) scale(1.12);}45%{transform:rotate(-6deg) scale(1.15);}60%{transform:rotate(6deg) scale(1.12);}75%{transform:rotate(-3deg) scale(1.05);}}
+@keyframes chestPop{0%{transform:scale(1);filter:drop-shadow(0 0 14px #9900ff);}35%{transform:scale(1.45);filter:drop-shadow(0 0 40px #ff00ff) brightness(1.6);}65%{transform:scale(1.7) rotate(-5deg);filter:drop-shadow(0 0 60px #fff) brightness(2.5);}100%{transform:scale(0);opacity:0;}}
+.chest-hint{font-size:.95em;color:#bb88ff;letter-spacing:1px;animation:hintPulse 1.4s ease-in-out infinite;}
+@keyframes hintPulse{0%,100%{opacity:.65;}50%{opacity:1;color:#ee99ff;}}
+/* ── Reward reveal ───────────────────────────────────────── */
+.reward-reveal{flex-direction:column;align-items:center;gap:12px;}
+@keyframes rewardPop{from{transform:scale(.15) rotate(-10deg);opacity:0;}to{transform:scale(1) rotate(0deg);opacity:1;}}
+.reward-emoji{font-size:4.5em;filter:drop-shadow(0 0 22px #cc44ff) drop-shadow(0 0 8px #fff);animation:emojiFloat 2s ease-in-out infinite;}
+@keyframes emojiFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-8px);}}
+.reward-name{font-size:1.3em;font-weight:900;color:#fff;text-align:center;}
+.reward-dup{font-size:.88em;color:#ffdd88;font-style:italic;}
+.rarity-badge{padding:4px 16px;border-radius:20px;font-size:.75em;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;}
+.r-common{background:rgba(160,160,160,.2);color:#bbb;}
+.r-uncommon{background:rgba(60,200,80,.18);color:#55dd66;}
+.r-rare{background:rgba(60,140,255,.2);color:#66aaff;box-shadow:0 0 8px rgba(60,140,255,.3);}
+.r-legendary{background:linear-gradient(135deg,rgba(255,190,0,.22),rgba(255,90,0,.22));color:#ffcc44;box-shadow:0 0 12px #ffcc4444;}
+.collect-btn{background:linear-gradient(135deg,#9900ff,#ff00cc);border:none;color:#fff;font-size:1em;font-weight:700;padding:12px 40px;border-radius:50px;cursor:pointer;box-shadow:0 0 20px rgba(180,0,255,.5);letter-spacing:1px;transition:transform .15s;}
+.collect-btn:hover{transform:scale(1.06);}
+/* ── Exclusive shop label ────────────────────────────────── */
+.b-chest-only{background:rgba(80,30,130,.18);color:rgba(180,120,255,.5);border:1.5px dashed rgba(180,80,255,.3);cursor:default;}
+/* ── Chest burst particles ───────────────────────────────── */
+.chest-particle{position:fixed;pointer-events:none;z-index:20001;animation:particleBurst .9s ease-out forwards;}
+@keyframes particleBurst{0%{transform:translate(0,0) scale(1.3);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0;}}
 </style>
 </head>
 <body>
@@ -112,7 +156,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </div>
 <div id="rescue-toast" class="toast">
   <span style="font-size:1.3em">✨</span>
-  <span class="toast-msg">Tiny pieces to the rescue!</span>
+  <span class="toast-msg">Keep going</span>
 </div>
 
 <div id="shop">
@@ -121,6 +165,17 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
       <button class="back-btn" onclick="closeShop()">‹</button>
       <div class="shop-title">✨ SHOP</div>
       <div class="shop-wallet">💜 <span id="wallet-val">0</span></div>
+    </div>
+
+    <div class="chest-banner" onclick="tryOpenChest()">
+      <div class="cb-left">
+        <div class="cb-icon">📦</div>
+        <div>
+          <div class="cb-title">Mystery Chest</div>
+          <div class="cb-sub">Rare skins &amp; exclusive themes inside~</div>
+        </div>
+      </div>
+      <div class="cb-price" id="cb-price">💜 200</div>
     </div>
     <div class="shop-tabs">
       <button class="stab active" onclick="switchTab('themes')">🎨 Themes</button>
@@ -188,6 +243,7 @@ const THEMES = [
    boardBg:'linear-gradient(145deg,#2e0600,#180300)', boardBorder:'rgba(255,110,30,0.22)',
    boardGlow:'rgba(220,70,0,0.25)', cellGlow:'rgba(180,50,0,0.12)', cellEmpty:'rgba(255,110,30,0.06)',
    swatches:['#350800','#cc3300','#ff8800']},
+{id:'moonlight',name:'Moonlight',cost:0,exclusive:true,bodyBg:'radial-gradient(ellipse at top,#080318 0%,#04020e 55%,#020108 100%)',boardBg:'linear-gradient(145deg,#0c0428,#060218)',boardBorder:'rgba(120,80,255,0.25)',boardGlow:'rgba(80,40,200,0.3)',cellGlow:'rgba(60,20,160,0.15)',cellEmpty:'rgba(120,80,255,0.07)',swatches:['#080318','#4422aa','#9977ff']},
   {id:'ocean', name:'Ocean', cost:350,
    bodyBg:'radial-gradient(ellipse at top,#001525 0%,#000d18 55%,#00080f 100%)',
    boardBg:'linear-gradient(145deg,#001220,#000a14)', boardBorder:'rgba(0,200,180,0.22)',
@@ -201,6 +257,8 @@ const SKINS = [
   {id:'stars',   name:'Stars',    cost:350,  icon:'⭐',  emoji:'⭐'},
   {id:'diamonds',name:'Diamonds', cost:400,  icon:'💎',  emoji:'💎'},
   {id:'flowers', name:'Flowers',  cost:350,  icon:'🌸',  emoji:'🌸'},
+  {id:'butterflies',name:'Butterflies',cost:0,exclusive:true,icon:'🦋',emoji:'🦋'},
+  {id:'cosmic',    name:'Cosmic Glow',cost:0,exclusive:true,icon:'💫',emoji:'💫'},
 ];
 
 const FX = [
@@ -210,6 +268,24 @@ const FX = [
   {id:'fhearts', name:'Floating Hearts',cost:300,  desc:'Hearts float around',  emoji:'💕'},
 ];
 
+
+const CHEST_POOL = [
+  {id:'coins_50',    type:'coins',  name:'Coin Bonus',       emoji:'💰', rarity:'common',    weight:28, amount:50},
+  {id:'hearts',      type:'skin',   name:'Hearts',            emoji:'❤️', rarity:'common',    weight:12},
+  {id:'stars',       type:'skin',   name:'Stars',             emoji:'⭐', rarity:'common',    weight:12},
+  {id:'sparkle',     type:'effect', name:'Sparkles',          emoji:'✨', rarity:'common',    weight:8},
+  {id:'flowers',     type:'skin',   name:'Flowers',           emoji:'🌸', rarity:'uncommon',  weight:8},
+  {id:'pink',        type:'theme',  name:'Pink Dream',        emoji:'💗', rarity:'uncommon',  weight:7},
+  {id:'fhearts',     type:'effect', name:'Floating Hearts',   emoji:'💕', rarity:'uncommon',  weight:6},
+  {id:'sunset',      type:'theme',  name:'Sunset',            emoji:'🌅', rarity:'uncommon',  weight:4},
+  {id:'ocean',       type:'theme',  name:'Ocean',             emoji:'🌊', rarity:'rare',      weight:3},
+  {id:'butterflies', type:'skin',   name:'Butterflies',       emoji:'🦋', rarity:'rare',      weight:3},
+  {id:'moonlight',   type:'theme',  name:'Moonlight',         emoji:'🌙', rarity:'rare',      weight:3},
+  {id:'rainbow',     type:'effect', name:'Rainbow Clears',    emoji:'🌈', rarity:'rare',      weight:2},
+  {id:'galaxy',      type:'theme',  name:'Galaxy',            emoji:'🌌', rarity:'rare',      weight:1},
+  {id:'diamonds',    type:'skin',   name:'Diamonds',          emoji:'💎', rarity:'legendary', weight:2},
+  {id:'cosmic',      type:'skin',   name:'Cosmic Glow',       emoji:'💫', rarity:'legendary', weight:1},
+];
 // ── Persistent state ───────────────────────────────────────────────────────
 let best, coins, shopState;
 
@@ -236,6 +312,7 @@ function saveCoins() { localStorage.setItem('tonni_coins', coins); }
 // ── Game state ─────────────────────────────────────────────────────────────
 const N = 8;
 let board, score, tray, drag, ghostSet, isClearing;
+let pendingCoinPts = 0;
 let shownBestToast, gameStartBest;
 let currentTheme, currentSkin;
 let heartsInterval = null;
@@ -350,10 +427,11 @@ function doPlace(p, sr, sc) {
 let toastTimer = null;
 function bump(pts) {
   score += pts;
-  coins += pts;
-  saveCoins();
+  pendingCoinPts += pts;
+  const newCoins = Math.floor(pendingCoinPts / 500);
+  if (newCoins > 0) { coins += newCoins; pendingCoinPts -= newCoins * 500; saveCoins(); }
   document.getElementById('cur-score').textContent  = score;
-  document.getElementById('coins-disp').textContent  = coins;
+  document.getElementById('coins-disp').textContent = coins;
   if (score > best) {
     best = score;
     localStorage.setItem('tonni_best', best);
@@ -478,8 +556,10 @@ function spawnFloatingHeart() {
 
 // ── Shop ───────────────────────────────────────────────────────────────────
 function updateCoinsDisplay() {
-  document.getElementById('coins-disp').textContent  = coins;
-  document.getElementById('wallet-val').textContent  = coins;
+  document.getElementById('coins-disp').textContent = coins;
+  document.getElementById('wallet-val').textContent = coins;
+  const cb = document.getElementById('cb-price');
+  if (cb) cb.className = coins >= 200 ? 'cb-price' : 'cb-price cant-afford';
 }
 
 function openShop() {
@@ -529,6 +609,8 @@ function renderShop(tab) {
       btnHTML = `<button class="item-btn b-equipped" disabled>✓ Equipped</button>`;
     } else if (owned) {
       btnHTML = `<button class="item-btn b-equip" onclick="equipItem('${eqKey}','${item.id}')">Equip</button>`;
+    } else if (item.exclusive) {
+      btnHTML = `<button class="item-btn b-chest-only" disabled>📦 Chest Only</button>`;
     } else if (canAfford) {
       btnHTML = `<button class="item-btn b-buy" onclick="buyItem('${eqKey}','${item.id}',${item.cost})">💜 ${item.cost}</button>`;
     } else {
@@ -655,6 +737,102 @@ document.addEventListener('mouseup',   e => onEnd(e.clientX, e.clientY));
 document.addEventListener('touchmove', e => { if(!drag)return; e.preventDefault(); const t=e.touches[0]; onMove(t.clientX,t.clientY); }, {passive:false});
 document.addEventListener('touchend',  e => { if(!drag)return; const t=e.changedTouches[0]; onEnd(t.clientX,t.clientY); });
 
+
+// ── Mystery Chest ──────────────────────────────────────────────────────────
+let chestState = 'idle', pendingReward = null;
+
+function tryOpenChest() {
+  if (coins < 200) {
+    const cb = document.getElementById('cb-price');
+    if (cb) { cb.style.animation='none'; void cb.offsetWidth; cb.style.animation='chestShake .4s ease'; }
+    return;
+  }
+  coins -= 200; saveCoins(); updateCoinsDisplay();
+  closeShop(); showChestModal();
+}
+
+function showChestModal() {
+  chestState = 'idle'; pendingReward = rollChest();
+  const wrap = document.getElementById('chest-wrap');
+  wrap.className = 'chest-wrap'; wrap.style.display = '';
+  document.getElementById('chest-hint').style.display  = 'block';
+  document.getElementById('chest-reward').style.display = 'none';
+  document.getElementById('chest-modal').classList.add('show');
+}
+
+function tapChest() {
+  if (chestState !== 'idle') return;
+  chestState = 'shaking';
+  const wrap = document.getElementById('chest-wrap');
+  wrap.className = 'chest-wrap shaking';
+  setTimeout(() => {
+    wrap.className = 'chest-wrap popping';
+    spawnChestParticles();
+    document.getElementById('chest-hint').style.display = 'none';
+    setTimeout(() => { wrap.style.display = 'none'; revealChestReward(pendingReward); }, 480);
+  }, 560);
+}
+
+function rollChest() {
+  const total = CHEST_POOL.reduce((s, r) => s + r.weight, 0);
+  let rand = Math.random() * total;
+  for (const r of CHEST_POOL) { rand -= r.weight; if (rand <= 0) return r; }
+  return CHEST_POOL[0];
+}
+
+function revealChestReward(reward) {
+  chestState = 'revealed';
+  let isDup = false, dupMsg = '';
+  if (reward.type === 'coins') {
+    coins += reward.amount; saveCoins(); updateCoinsDisplay();
+  } else {
+    const eqKey = reward.type === 'theme' ? 'theme' : reward.type === 'skin' ? 'skin' : 'effect';
+    if (shopState.owned.has(reward.id)) {
+      isDup = true; coins += 25; saveCoins(); updateCoinsDisplay();
+      dupMsg = 'Already owned — +25 💜 instead!';
+    } else { shopState.owned.add(reward.id); saveShop(); }
+  }
+  document.getElementById('rev-emoji').textContent = reward.emoji;
+  document.getElementById('rev-name').textContent  = reward.type === 'coins'
+    ? `+${reward.amount} Coins!` : (isDup ? reward.name : reward.name + ' unlocked! 💜');
+  const rb = document.getElementById('rev-rarity');
+  rb.textContent = reward.rarity.charAt(0).toUpperCase() + reward.rarity.slice(1);
+  rb.className = 'rarity-badge r-' + reward.rarity;
+  const dupEl = document.getElementById('rev-dup');
+  dupEl.style.display = isDup ? 'block' : 'none';
+  dupEl.textContent = dupMsg;
+  const rev = document.getElementById('chest-reward');
+  rev.style.display = 'flex';
+  rev.style.animation = 'none'; void rev.offsetWidth;
+  rev.style.animation = 'rewardPop .65s cubic-bezier(.34,1.56,.64,1) both';
+}
+
+function spawnChestParticles() {
+  const wrap = document.getElementById('chest-wrap');
+  const rect = wrap.getBoundingClientRect();
+  const cx = rect.left + rect.width/2, cy = rect.top + rect.height/2;
+  const emojis = ['💜','✨','⭐','💫','🌟','✦','💥','💗','🌸'];
+  for (let i = 0; i < 20; i++) {
+    const el = document.createElement('div');
+    el.className = 'chest-particle';
+    el.textContent = emojis[i % emojis.length];
+    const angle = (i / 20) * Math.PI * 2 + (Math.random()-.5)*.5;
+    const dist  = 50 + Math.random() * 90;
+    el.style.left = cx + 'px'; el.style.top = cy + 'px';
+    el.style.setProperty('--tx', (Math.cos(angle)*dist) + 'px');
+    el.style.setProperty('--ty', (Math.sin(angle)*dist) + 'px');
+    el.style.animationDelay = (Math.random()*.12) + 's';
+    el.style.fontSize = (.8 + Math.random()*.8) + 'em';
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 1100);
+  }
+}
+
+function closeChestModal() {
+  document.getElementById('chest-modal').classList.remove('show');
+  chestState = 'idle';
+}
+
 // ── Init ───────────────────────────────────────────────────────────────────
 function initGame() {
   board = Array.from({length:N}, () => Array(N).fill(''));
@@ -670,5 +848,22 @@ function initGame() {
 loadStorage();
 initGame();
 </script>
+
+<div id="chest-modal">
+  <div class="chest-modal-title">✨ Mystery Chest ✨</div>
+  <div id="chest-wrap" class="chest-wrap" onclick="tapChest()">
+    <div class="chest-upper"></div>
+    <div class="chest-lock"></div>
+    <div class="chest-lower"><span style="font-size:1.4em;opacity:.3">💜</span></div>
+  </div>
+  <div id="chest-hint" class="chest-hint">Tap the chest to open!</div>
+  <div id="chest-reward" class="reward-reveal" style="display:none">
+    <div id="rev-emoji" class="reward-emoji"></div>
+    <div id="rev-rarity" class="rarity-badge r-common"></div>
+    <div id="rev-name" class="reward-name"></div>
+    <div id="rev-dup" class="reward-dup" style="display:none"></div>
+    <button class="collect-btn" onclick="closeChestModal()">Collect 💜</button>
+  </div>
+</div>
 </body>
 </html>
