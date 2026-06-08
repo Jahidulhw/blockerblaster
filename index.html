@@ -244,24 +244,77 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #gameover-screen.show .go-box{animation:goFadeIn .4s cubic-bezier(.34,1.4,.64,1) both;}
 /* ── Mobile responsive ──────────────────────────────────── */
 @media (max-width:520px) {
-  body{padding:max(8px,env(safe-area-inset-top,0px)) 8px max(6px,env(safe-area-inset-bottom,0px));height:100dvh;overflow:hidden;}
+  /* ── CSS-driven board sizing ───────────────────────────
+     38px = 2×8(body-pad) + 9×2(gap) + 2×2(border)
+     --cell fills content-width perfectly on every iPhone.
+     JS reads this, floors to integer, and re-applies.     */
+  :root{
+    --cell:calc((100vw - 38px) / 8);
+    --gap:2px;
+    --slot-size:calc(2.2 * var(--cell) + 22px);
+  }
+  body{
+    padding:max(8px,env(safe-area-inset-top,0px))
+            8px
+            max(8px,env(safe-area-inset-bottom,0px));
+    height:100dvh;
+    overflow:hidden;
+  }
+  /* Board fills content width; board-wrap (flex:1) fills remaining height */
+  #board{
+    width:calc(8 * var(--cell) + 22px);
+    height:calc(8 * var(--cell) + 22px);
+  }
+  /* Flex column pinning */
   .header,#user-bar,.scores,.tray,.btn-row,#spin-countdown{flex-shrink:0;}
   #board-wrap{flex:1;min-height:0;width:100%;}
-  .header{margin-bottom:2px;gap:8px;}
-  .avatar{width:28px;height:28px;}
-  h1{font-size:1.1em;letter-spacing:2px;}
-  .tagline{font-size:.50em;}
+  /* ── Responsive scaling with clamp() ──────────────────── */
+  .header{
+    margin-bottom:clamp(1px,0.3dvh,4px);
+    gap:clamp(6px,1.8vw,10px);
+  }
+  .avatar{
+    width:clamp(24px,6.4vw,34px);
+    height:clamp(24px,6.4vw,34px);
+  }
+  h1{font-size:clamp(1em,5vw,1.35em);letter-spacing:clamp(1px,0.5vw,3px);}
+  .tagline{font-size:clamp(0.42em,1.4vw,0.56em);}
   #user-bar{margin-bottom:0;gap:6px;}
-  .logout-btn{padding:3px 10px;font-size:.65em;}
-  .scores{gap:12px;margin-bottom:2px;}
-  .score-value{font-size:1.3em;}
-  .coins-val{font-size:1.1em;}
-  .score-label{font-size:.50em;}
-  .tray{margin-top:4px;gap:6px;}
-  .btn-row{display:flex;gap:8px;margin-top:4px;align-items:center;justify-content:center;}
-  .btn-shop{margin-top:0;padding:8px 18px;font-size:.85em;letter-spacing:1px;}
-  #spin-avail-btn{margin-top:0;padding:7px 14px;font-size:.80em;letter-spacing:1px;}
-  .spin-countdown{font-size:.58em;margin-top:2px;min-height:.75em;}
+  .logout-btn{padding:3px clamp(8px,2vw,12px);font-size:.65em;}
+  .scores{
+    gap:clamp(10px,2.8vw,20px);
+    margin-bottom:clamp(1px,0.3dvh,4px);
+  }
+  .score-value{font-size:clamp(1.1em,4.5vw,1.5em);}
+  .coins-val{font-size:clamp(1em,4vw,1.35em);}
+  .score-label{font-size:clamp(0.44em,1.2vw,0.54em);}
+  .tray{
+    margin-top:clamp(3px,0.5dvh,7px);
+    gap:clamp(4px,1.5vw,8px);
+  }
+  .btn-row{
+    display:flex;gap:clamp(6px,1.5vw,10px);
+    margin-top:clamp(3px,0.4dvh,6px);
+    align-items:center;justify-content:center;
+  }
+  .btn-shop{
+    margin-top:0;
+    padding:clamp(6px,1dvh,10px) clamp(14px,3.8vw,22px);
+    font-size:clamp(0.8em,3.2vw,0.95em);
+    letter-spacing:1px;
+  }
+  #spin-avail-btn{
+    margin-top:0;
+    padding:clamp(5px,0.9dvh,9px) clamp(11px,3.3vw,17px);
+    font-size:clamp(0.76em,3vw,0.9em);
+    letter-spacing:1px;
+  }
+  .spin-countdown{
+    font-size:clamp(0.5em,1.4vw,0.62em);
+    margin-top:clamp(1px,0.25dvh,3px);
+    min-height:0.8em;
+  }
+  /* Modals respect safe-area at bottom */
   .shop-panel{padding:10px 10px max(28px,env(safe-area-inset-bottom,0px));}
   .shop-hdr{gap:8px;}
   .shop-title{font-size:1.15em;}
@@ -359,22 +412,12 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 
 const VW = window.innerWidth;
 const _mob = VW <= 520;
-// On mobile, #board-wrap has flex:1 and fills exactly the remaining viewport height.
-// Measuring it directly avoids all guesswork about fixed-element heights and safe areas.
-const _bw  = document.getElementById('board-wrap');
-const _bwR = _mob ? _bw.getBoundingClientRect() : null;
-const _avW = _mob ? _bwR.width  : 9999;
-const _avH = _mob ? _bwR.height : 9999;
-// Width: board = 8*CELL + 9*GAP + 4px border ≤ avW
-const _cw2  = Math.floor((_avW - 22) / 8);                                       // GAP=2 path
-const CELL_W = _mob ? ((_cw2 >= 44) ? _cw2 : Math.floor((_avW - 13) / 8)) : 50; // GAP=1 fallback
-// Height: board = 8*CELL + 9*GAP + 4 ≤ avH
-const _ch2  = Math.floor((_avH - 22) / 8);
-const CELL_H = _mob ? ((_ch2 >= 44) ? _ch2 : Math.floor((_avH - 13) / 8)) : 9999;
-// Tray: TC=CELL*0.55; 3*(4*TC+22)+12gap+16bodyPad ≤ VW → CELL ≤ (VW-94)/6.6
-const CELL_TRAY = _mob ? Math.floor((VW - 94) / 6.6) : 9999;
-const CELL = Math.max(28, Math.min(54, CELL_W, CELL_H, CELL_TRAY));
-const GAP  = CELL >= 44 ? 2 : 1;
+// CSS sets --cell: calc((100vw - 38px) / 8) on mobile so the board fills content-width
+// exactly on every iPhone (SE through Pro Max). JS applies the same formula as an integer
+// for pixel-perfect grid cells and piece rendering.
+// 38 = 2×8(body-side-pad) + 9×2(gap) + 2×2(border)
+const CELL = _mob ? Math.max(28, Math.min(54, Math.floor((VW - 38) / 8))) : 50;
+const GAP  = 2;  // always 2px; --cell formula already accounts for this
 const TC   = Math.floor(CELL * (_mob ? 0.55 : 0.60));
 const TG   = 2;
 const SLOT_SIZE = 4 * TC + 3 * TG + 16;
