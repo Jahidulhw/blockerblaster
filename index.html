@@ -260,10 +260,12 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     padding:env(safe-area-inset-top,0px) 8px 0;
     display:flex;flex-direction:column;align-items:center;
   }
-  /* Board-wrap: JS sets exact width + height to fill remaining space */
+  /* Board-wrap: JS sets exact width + height; board sits at bottom so
+     any leftover space is above it, keeping board+controls together */
   #board-wrap{
     flex:unset;min-height:unset;
-    display:flex;align-items:center;justify-content:center;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:flex-end;
   }
   /* Bottom section: safe-area bottom handled via env() padding */
   #bottom-section{
@@ -410,12 +412,33 @@ function layoutGame() {
   const container = document.getElementById('game-container');
   container.style.height = IH + 'px';
 
-  // 2. Measure the sections that bracket the board.
-  //    Their heights include env(safe-area-inset-*) padding set in CSS.
-  const topH = document.getElementById('top-section').offsetHeight;
-  const botH = document.getElementById('bottom-section').offsetHeight;
+  // 2. Read safe-area insets via probe elements — reliable before CSS env() resolves
+  function readSAI(side) {
+    const d = document.createElement('div');
+    d.style.cssText = 'position:fixed;top:0;left:0;width:0;pointer-events:none;height:env(safe-area-inset-' + side + ',0px);';
+    document.documentElement.appendChild(d);
+    const h = parseFloat(getComputedStyle(d).height) || 0;
+    d.remove();
+    return h;
+  }
+  const saiT = readSAI('top');
+  const saiB = readSAI('bottom');
 
-  // 3. Board gets every pixel that remains between those two sections
+  // Apply padding in JS so offsetHeight measurement below is always accurate
+  const topSec = document.getElementById('top-section');
+  const botSec = document.getElementById('bottom-section');
+  topSec.style.paddingTop    = Math.max(8, saiT) + 'px';
+  topSec.style.paddingLeft   = '8px';
+  topSec.style.paddingRight  = '8px';
+  botSec.style.paddingBottom = Math.max(8, saiB) + 'px';
+  botSec.style.paddingLeft   = '8px';
+  botSec.style.paddingRight  = '8px';
+
+  // 3. Measure the sections that bracket the board (now with JS-set padding)
+  const topH = topSec.offsetHeight;
+  const botH = botSec.offsetHeight;
+
+  // 4. Board gets every pixel that remains between those two sections
   const boardAreaH = IH - topH - botH;
   const boardAreaW = IW - 16;   // 8 px side padding each side
 
