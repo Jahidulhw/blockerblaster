@@ -142,6 +142,16 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 /* ── Chest burst particles ───────────────────────────────── */
 .chest-particle{position:fixed;pointer-events:none;z-index:20001;animation:particleBurst .9s ease-out forwards;}
 @keyframes particleBurst{0%{transform:translate(0,0) scale(1.3);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0;}}
+/* ── Bounce & board shake ────────────────────────────────── */
+@keyframes cellBounce{0%{transform:scale(1);}22%{transform:scale(1.28);}55%{transform:scale(0.88);}78%{transform:scale(1.08);}100%{transform:scale(1);}}
+.cell.bounce{animation:cellBounce .38s cubic-bezier(.36,.07,.19,.97);}
+@keyframes boardShake{0%{transform:translateX(0);}12%{transform:translateX(-7px) rotate(-.6deg);}25%{transform:translateX(7px) rotate(.6deg);}38%{transform:translateX(-5px);}52%{transform:translateX(5px);}66%{transform:translateX(-3px);}80%{transform:translateX(3px);}100%{transform:translateX(0);}}
+#board.board-shake{animation:boardShake .52s ease-out;}
+/* ── Coin animations ─────────────────────────────────────── */
+@keyframes coinPop{0%{transform:scale(1);}32%{transform:scale(1.5);text-shadow:0 0 22px #ffee44,0 0 44px #ffcc0077;}68%{transform:scale(0.88);}100%{transform:scale(1);}}
+.coins-val.coin-pop{animation:coinPop .42s ease-out;}
+.coin-float{position:fixed;pointer-events:none;z-index:9997;font-size:1.25em;animation:coinFloatUp .72s ease-out forwards;}
+@keyframes coinFloatUp{0%{transform:translateY(0) scale(1.1);opacity:1;}100%{transform:translateY(-72px) scale(.5);opacity:0;}}
 /* ── Game over screen ────────────────────────────────────── */
 #gameover-screen{display:none;position:fixed;inset:0;background:rgba(6,0,18,.97);z-index:60000;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;}
 #gameover-screen.show{display:flex;}
@@ -332,6 +342,100 @@ const CHEST_POOL = [
   {id:'diamonds',    type:'skin',   name:'Queen Mode',          emoji:'💎', rarity:'legendary', weight:2},
   {id:'cosmic',      type:'skin',   name:'Cosmic Tonni',        emoji:'💫', rarity:'legendary', weight:1},
 ];
+// ── Sound engine (Web Audio API — no external files) ─────────────────────
+const _AC = window.AudioContext || window.webkitAudioContext || null;
+let _actx = null;
+function _ctx() {
+  if (!_AC) return null;
+  if (!_actx) _actx = new _AC();
+  if (_actx.state === 'suspended') _actx.resume();
+  return _actx;
+}
+function _tone(type, freq, vol, tStart, dur, freqEnd) {
+  const ctx = _ctx(); if (!ctx) return;
+  try {
+    const t = ctx.currentTime;
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = type;
+    o.frequency.setValueAtTime(freq, t + tStart);
+    if (freqEnd) o.frequency.exponentialRampToValueAtTime(freqEnd, t + tStart + dur * 0.85);
+    g.gain.setValueAtTime(0, t + tStart);
+    g.gain.linearRampToValueAtTime(vol, t + tStart + 0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t + tStart + dur);
+    o.start(t + tStart); o.stop(t + tStart + dur + 0.02);
+  } catch(_) {}
+}
+
+function snd_place() {
+  _tone('sine',    170, 0.40, 0,    0.13, 52);
+  _tone('sine',    85,  0.20, 0.02, 0.11);
+}
+function snd_chime(lines) {
+  const freqs = [523, 659, 784, 1047, 1319];
+  const n = Math.min(2 + lines, 5);
+  for (let i = 0; i < n; i++) {
+    _tone('sine', freqs[i],       0.28, i * 0.07, 0.48 + i * 0.04);
+    if (lines >= 2) _tone('sine', freqs[i] * 2, 0.09, i * 0.07, 0.28);
+  }
+}
+function snd_coin() {
+  _tone('sine', 880,  0.22, 0,    0.11, 1760);
+  _tone('sine', 1320, 0.13, 0.06, 0.14, 2640);
+}
+function snd_shop() {
+  _tone('sine', 440, 0.26, 0,    0.06, 880);
+  _tone('sine', 660, 0.20, 0.07, 0.11, 880);
+  _tone('sine', 880, 0.14, 0.15, 0.18);
+}
+function snd_gameover() {
+  _tone('sawtooth', 330, 0.18, 0,   0.38, 220);
+  _tone('sawtooth', 277, 0.15, 0.12, 0.38, 185);
+  _tone('sawtooth', 196, 0.18, 0.24, 0.52, 130);
+  _tone('sine',     110, 0.28, 0.32, 0.9);
+}
+
+// ── Animation helpers ─────────────────────────────────────────────────────
+function shakeBoard() {
+  boardEl.classList.remove('board-shake');
+  void boardEl.offsetWidth;
+  boardEl.classList.add('board-shake');
+  setTimeout(() => boardEl.classList.remove('board-shake'), 540);
+}
+
+function popCoins() {
+  const el = document.getElementById('coins-disp');
+  el.classList.remove('coin-pop'); void el.offsetWidth; el.classList.add('coin-pop');
+  const rect = el.getBoundingClientRect();
+  for (let i = 0; i < 2; i++) {
+    const d = document.createElement('div');
+    d.className = 'coin-float';
+    d.textContent = '💜';
+    d.style.left = (rect.left + rect.width * (0.25 + i * 0.5)) + 'px';
+    d.style.top  = rect.top + 'px';
+    d.style.animationDelay = (i * 0.11) + 's';
+    document.body.appendChild(d);
+    setTimeout(() => d.remove(), 850);
+  }
+}
+
+function spawnClearHearts(total) {
+  const count = Math.min(total * 4, 14);
+  for (let i = 0; i < count; i++) {
+    setTimeout(() => {
+      const el = document.createElement('div');
+      el.className = 'float-heart';
+      el.textContent = ['💜','💕','💗','✨','💖'][i % 5];
+      el.style.left   = (4 + Math.random() * 92) + '%';
+      el.style.top    = (12 + Math.random() * 68) + '%';
+      el.style.fontSize = (0.8 + Math.random() * 1.0) + 'em';
+      el.style.animationDuration = (1.3 + Math.random() * 1.3) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 3200);
+    }, i * 55);
+  }
+}
+
 // ── Account system (backend) ──────────────────────────────────────────────
 let best, coins, shopState;
 let currentUser = null;
@@ -565,15 +669,18 @@ function doPlace(p, sr, sc) {
   for (const [dr, dc] of p.s) {
     const r = sr+dr, c = sc+dc;
     const key = r * N + c;
-    // if this cell was animating a clear, cancel it immediately
     if (clearingCells.has(key)) {
       clearingCells.delete(key);
       cells[r][c].classList.remove('clearing', 'rainbow-clear');
     }
     board[r][c] = p.c;
     paintCell(r, c);
+    cells[r][c].classList.remove('bounce'); void cells[r][c].offsetWidth;
+    cells[r][c].classList.add('bounce');
+    setTimeout(() => cells[r][c].classList.remove('bounce'), 390);
     if (shopState.equipped.effect === 'sparkle') spawnSparkles(r, c);
   }
+  snd_place();
   bump(p.s.length * 10);
 }
 
@@ -582,7 +689,10 @@ function bump(pts) {
   score += pts;
   pendingCoinPts += pts;
   const newCoins = Math.floor(pendingCoinPts / 500);
-  if (newCoins > 0) { coins += newCoins; pendingCoinPts -= newCoins * 500; saveCoins(); }
+  if (newCoins > 0) {
+    coins += newCoins; pendingCoinPts -= newCoins * 500; saveCoins();
+    snd_coin(); popCoins();
+  }
   document.getElementById('cur-score').textContent  = score;
   document.getElementById('coins-disp').textContent = coins;
   if (score > best) {
@@ -591,6 +701,7 @@ function bump(pts) {
     document.getElementById('best-score').textContent = best;
     if (!shownBestToast && gameStartBest > 0) {
       shownBestToast = true;
+      shakeBoard();
       const t = document.getElementById('best-toast');
       t.classList.add('show');
       if (toastTimer) clearTimeout(toastTimer);
@@ -606,6 +717,9 @@ function clearLines() {
   const total = fullRows.length + fullCols.length;
   if (!total) return;
 
+  snd_chime(total);
+  if (total >= 2) spawnClearHearts(total);
+
   const cls = shopState.equipped.effect === 'rainbow' ? 'rainbow-clear' : 'clearing';
   const toFlash = new Set();
   for (const r of fullRows) for (let c = 0; c < N; c++) toFlash.add(r * N + c);
@@ -617,7 +731,7 @@ function clearLines() {
 
   // Track which cells are animating so paintCell skips them
   for (const k of toFlash) clearingCells.add(k);
-  for (const k of toFlash) { const r=(k/N)|0, c=k%N; cells[r][c].classList.add(cls); }
+  for (const k of toFlash) { const r=(k/N)|0, c=k%N; cells[r][c].classList.remove('bounce'); cells[r][c].classList.add(cls); }
 
   const pts = total * 100 * total;
   bump(pts);
@@ -644,6 +758,7 @@ function isGameOver() {
 function showGameOver() {
   clearTimeout(_saveTimer);
   _doSave();
+  snd_gameover();
   document.querySelector('.go-photo').src = document.querySelector('.avatar').src;
   document.getElementById('go-score').textContent = score;
   document.getElementById('go-best').textContent  = best;
@@ -709,6 +824,7 @@ function updateCoinsDisplay() {
 }
 
 function openShop() {
+  snd_shop();
   updateCoinsDisplay();
   switchTab('themes');
   document.getElementById('shop').classList.add('show');
