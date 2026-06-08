@@ -142,6 +142,21 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 /* ── Chest burst particles ───────────────────────────────── */
 .chest-particle{position:fixed;pointer-events:none;z-index:20001;animation:particleBurst .9s ease-out forwards;}
 @keyframes particleBurst{0%{transform:translate(0,0) scale(1.3);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0;}}
+/* ── Game over screen ────────────────────────────────────── */
+#gameover-screen{display:none;position:fixed;inset:0;background:rgba(6,0,18,.97);z-index:60000;flex-direction:column;align-items:center;justify-content:center;padding:24px;text-align:center;}
+#gameover-screen.show{display:flex;}
+.go-box{display:flex;flex-direction:column;align-items:center;gap:18px;max-width:340px;width:100%;}
+.go-photo{width:112px;height:112px;border-radius:50%;object-fit:cover;border:3px solid #cc44ff;box-shadow:0 0 30px #cc44ff88,0 0 64px #9900ff44;}
+.go-msg{font-size:1.8em;font-weight:900;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:3px;margin-top:2px;}
+.go-scores{display:flex;gap:36px;margin:2px 0 6px;}
+.go-score-box{text-align:center;}
+.go-score-lbl{font-size:.58em;color:rgba(200,140,255,.55);letter-spacing:2px;text-transform:uppercase;}
+.go-score-num{font-size:2.3em;font-weight:900;color:#cc44ff;text-shadow:0 0 18px #cc44ff55;line-height:1.15;}
+.go-score-num.go-best-val{color:#ff88ff;}
+.go-play-btn{background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:800;padding:13px 44px;border-radius:50px;cursor:pointer;box-shadow:0 0 24px rgba(150,0,200,.5);letter-spacing:2px;transition:transform .15s,box-shadow .15s;}
+.go-play-btn:hover{transform:scale(1.05);box-shadow:0 0 36px rgba(180,0,255,.7);}
+@keyframes goFadeIn{from{opacity:0;transform:scale(.93);}to{opacity:1;transform:scale(1);}}
+#gameover-screen.show .go-box{animation:goFadeIn .4s cubic-bezier(.34,1.4,.64,1) both;}
 </style>
 </head>
 <body>
@@ -622,29 +637,13 @@ function isGameOver() {
   return tray.every(p => !p || !pieceCanFitSomewhere(p));
 }
 
-function rescueGame() {
-  const t = document.getElementById('rescue-toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2400);
-
-  for (let i = 0; i < 3; i++) {
-    if (!tray[i]) continue;
-    if (pieceCanFitSomewhere(tray[i])) continue;
-    const shuffled = [...RESCUE_PIECES].sort(() => Math.random() - 0.5);
-    tray[i] = shuffled.find(p => pieceCanFitSomewhere(p)) || {s:[[0,0]], c:C[3]};
-  }
-
-  // Emergency: if board is near full, clear most-filled rows
-  const emptyCount = board.flat().filter(v => !v).length;
-  if (emptyCount < 3) {
-    const rowFills = Array.from({length:N}, (_,r) => ({r, n:board[r].filter(v=>v).length}))
-      .sort((a,b) => b.n - a.n);
-    for (let i = 0; i < 3; i++) for (let c = 0; c < N; c++) board[rowFills[i].r][c] = '';
-    renderBoard();
-    for (let i = 0; i < 3; i++) if (tray[i] && !pieceCanFitSomewhere(tray[i])) tray[i] = {s:[[0,0]], c:C[3]};
-  }
-
-  renderTray();
+function showGameOver() {
+  clearTimeout(_saveTimer);
+  _doSave();
+  document.querySelector('.go-photo').src = document.querySelector('.avatar').src;
+  document.getElementById('go-score').textContent = score;
+  document.getElementById('go-best').textContent  = best;
+  document.getElementById('gameover-screen').classList.add('show');
 }
 
 // ── Effects ────────────────────────────────────────────────────────────────
@@ -866,7 +865,7 @@ function onEnd(cx, cy) {
     renderTray();
     clearLines();
     if (tray.every(x => !x)) { spawnTray(); renderTray(); }
-    if (isGameOver()) rescueGame();
+    if (isGameOver()) showGameOver();
   }
 }
 
@@ -978,6 +977,7 @@ function closeChestModal() {
 
 // ── Init ───────────────────────────────────────────────────────────────────
 function initGame() {
+  document.getElementById('gameover-screen').classList.remove('show');
   board = Array.from({length:N}, () => Array(N).fill(''));
   score = 0; drag = null; ghostSet.clear(); clearingCells.clear();
   shownBestToast = false; gameStartBest = best;
@@ -1013,6 +1013,23 @@ function initGame() {
     <div id="rev-name" class="reward-name"></div>
     <div id="rev-dup" class="reward-dup" style="display:none"></div>
     <button class="collect-btn" onclick="closeChestModal()">Collect 💜</button>
+  </div>
+</div>
+<div id="gameover-screen">
+  <div class="go-box">
+    <img class="go-photo" src="" alt="">
+    <div class="go-msg">HA HA 💜</div>
+    <div class="go-scores">
+      <div class="go-score-box">
+        <div class="go-score-lbl">Score</div>
+        <div class="go-score-num" id="go-score">0</div>
+      </div>
+      <div class="go-score-box">
+        <div class="go-score-lbl">Best</div>
+        <div class="go-score-num go-best-val" id="go-best">0</div>
+      </div>
+    </div>
+    <button class="go-play-btn" onclick="initGame()">Play Again 💜</button>
   </div>
 </div>
 <div id="auth-screen">
