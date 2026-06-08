@@ -33,6 +33,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .cell.rainbow-clear{animation:rainbowClear .42s ease-out forwards;}
 @keyframes flashClear{0%{transform:scale(1);opacity:1;filter:brightness(1);}35%{transform:scale(1.12);opacity:1;filter:brightness(3.2);}100%{transform:scale(.05);opacity:0;filter:brightness(3);}}
 @keyframes rainbowClear{0%{transform:scale(1);opacity:1;filter:hue-rotate(0deg) brightness(1);}25%{transform:scale(1.1);opacity:1;filter:hue-rotate(90deg) brightness(2.5);}60%{transform:scale(1.1);opacity:1;filter:hue-rotate(220deg) brightness(3);}100%{transform:scale(.05);opacity:0;filter:hue-rotate(360deg) brightness(3);}}
+#board-wrap{display:flex;align-items:center;justify-content:center;}
 .tray{margin-top:16px;display:flex;gap:10px;align-items:center;justify-content:center;}
 .piece-slot{width:var(--slot-size,114px);height:var(--slot-size,114px);background:rgba(140,60,220,0.08);border:2px solid rgba(180,80,255,0.18);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:grab;position:relative;touch-action:none;transition:border-color .2s,transform .15s;}
 .piece-slot:not(.used):hover{border-color:rgba(210,110,255,0.45);transform:scale(1.04);}
@@ -243,32 +244,34 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #gameover-screen.show .go-box{animation:goFadeIn .4s cubic-bezier(.34,1.4,.64,1) both;}
 /* ── Mobile responsive ──────────────────────────────────── */
 @media (max-width:520px) {
-  body{padding:max(8px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom));height:100dvh;justify-content:center;overflow-y:hidden;}
+  body{padding:max(8px,env(safe-area-inset-top,0px)) 8px max(6px,env(safe-area-inset-bottom,0px));height:100dvh;overflow:hidden;}
+  .header,#user-bar,.scores,.tray,.btn-row,#spin-countdown{flex-shrink:0;}
+  #board-wrap{flex:1;min-height:0;width:100%;}
   .header{margin-bottom:2px;gap:8px;}
   .avatar{width:28px;height:28px;}
   h1{font-size:1.1em;letter-spacing:2px;}
   .tagline{font-size:.50em;}
   #user-bar{margin-bottom:0;gap:6px;}
   .logout-btn{padding:3px 10px;font-size:.65em;}
-  .scores{gap:12px;margin-bottom:4px;}
+  .scores{gap:12px;margin-bottom:2px;}
   .score-value{font-size:1.3em;}
   .coins-val{font-size:1.1em;}
   .score-label{font-size:.50em;}
   .tray{margin-top:4px;gap:6px;}
   .btn-row{display:flex;gap:8px;margin-top:4px;align-items:center;justify-content:center;}
-  .btn-shop{margin-top:0;padding:9px 20px;font-size:.88em;letter-spacing:1px;}
-  #spin-avail-btn{margin-top:0;padding:8px 16px;font-size:.82em;letter-spacing:1px;}
-  .spin-countdown{font-size:.58em;margin-top:3px;min-height:.80em;}
-  .shop-panel{padding:10px 10px max(28px,env(safe-area-inset-bottom));}
+  .btn-shop{margin-top:0;padding:8px 18px;font-size:.85em;letter-spacing:1px;}
+  #spin-avail-btn{margin-top:0;padding:7px 14px;font-size:.80em;letter-spacing:1px;}
+  .spin-countdown{font-size:.58em;margin-top:2px;min-height:.75em;}
+  .shop-panel{padding:10px 10px max(28px,env(safe-area-inset-bottom,0px));}
   .shop-hdr{gap:8px;}
   .shop-title{font-size:1.15em;}
   .item-btn{padding:8px 4px;font-size:.82em;min-height:36px;}
   .stab{font-size:.68em;padding:7px 2px;}
-  #spin-modal{padding:12px 10px max(24px,env(safe-area-inset-bottom));}
+  #spin-modal{padding:12px 10px max(24px,env(safe-area-inset-bottom,0px));}
   .spin-do-btn{padding:12px 36px;font-size:1em;}
   .spin-inner{gap:12px;}
   #shop{overscroll-behavior:contain;}
-  #auth-screen{padding-bottom:max(24px,env(safe-area-inset-bottom));}
+  #auth-screen{padding-bottom:max(24px,env(safe-area-inset-bottom,0px));}
 }
 @media (max-width:360px) {
   .shop-grid{grid-template-columns:1fr;}
@@ -298,7 +301,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   <div class="score-box"><div class="score-label">💜 Coins</div><div class="score-value coins-val" id="coins-disp">0</div></div>
 </div>
 
-<div id="board"></div>
+<div id="board-wrap"><div id="board"></div></div>
 
 <div class="tray">
   <div class="piece-slot" id="slot-0"></div>
@@ -355,28 +358,22 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 'use strict';
 
 const VW = window.innerWidth;
-const VH = window.innerHeight;
 const _mob = VW <= 520;
-function _readSAI(p) {
-  const d = document.createElement('div');
-  d.style.cssText = `position:fixed;top:0;left:0;width:0;pointer-events:none;height:${p};`;
-  document.documentElement.appendChild(d);
-  const h = d.getBoundingClientRect().height;
-  d.remove();
-  return isFinite(h) ? h : 0;
-}
-const _saiT = _mob ? _readSAI('env(safe-area-inset-top,0px)') : 0;
-const _saiB = _mob ? _readSAI('env(safe-area-inset-bottom,0px)') : 0;
-const _padT = Math.max(8, _saiT);
-const _padB = Math.max(6, _saiB);
-// Width: board = 8*CELL + 9*GAP + 4px border; body-padding = 8px each side
-const _cw2 = Math.floor((VW - 38) / 8);  // GAP=2: 8*CELL ≤ VW-16-22
-const CELL_W = (_cw2 >= 44) ? _cw2 : Math.floor((VW - 29) / 8);  // GAP=1: 8*CELL ≤ VW-16-13
-// Tray (TC=0.55): 3*(4*TC+22) + 12gap + 16bodyPad ≤ VW → CELL ≤ (VW-94)/6.6
+// On mobile, #board-wrap has flex:1 and fills exactly the remaining viewport height.
+// Measuring it directly avoids all guesswork about fixed-element heights and safe areas.
+const _bw  = document.getElementById('board-wrap');
+const _bwR = _mob ? _bw.getBoundingClientRect() : null;
+const _avW = _mob ? _bwR.width  : 9999;
+const _avH = _mob ? _bwR.height : 9999;
+// Width: board = 8*CELL + 9*GAP + 4px border ≤ avW
+const _cw2  = Math.floor((_avW - 22) / 8);                                       // GAP=2 path
+const CELL_W = _mob ? ((_cw2 >= 44) ? _cw2 : Math.floor((_avW - 13) / 8)) : 50; // GAP=1 fallback
+// Height: board = 8*CELL + 9*GAP + 4 ≤ avH
+const _ch2  = Math.floor((_avH - 22) / 8);
+const CELL_H = _mob ? ((_ch2 >= 44) ? _ch2 : Math.floor((_avH - 13) / 8)) : 9999;
+// Tray: TC=CELL*0.55; 3*(4*TC+22)+12gap+16bodyPad ≤ VW → CELL ≤ (VW-94)/6.6
 const CELL_TRAY = _mob ? Math.floor((VW - 94) / 6.6) : 9999;
-// Height: 10.2*CELL + 185px fixed overhead (header+scores+userbar+tray+btns+safe-areas)
-const CELL_H = _mob ? Math.floor((VH - _padT - _padB - 185) / 10.2) : 9999;
-const CELL = Math.max(28, Math.min(54, CELL_W, CELL_TRAY, CELL_H));
+const CELL = Math.max(28, Math.min(54, CELL_W, CELL_H, CELL_TRAY));
 const GAP  = CELL >= 44 ? 2 : 1;
 const TC   = Math.floor(CELL * (_mob ? 0.55 : 0.60));
 const TG   = 2;
