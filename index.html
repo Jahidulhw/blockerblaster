@@ -217,7 +217,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
           <div class="cb-sub">Rare skins &amp; exclusive themes inside~</div>
         </div>
       </div>
-      <div class="cb-price" id="cb-price">💜 200</div>
+      <div class="cb-price" id="cb-price">💜 50</div>
     </div>
     <div class="shop-tabs">
       <button class="stab active" onclick="switchTab('themes')">🎨 Themes</button>
@@ -265,28 +265,32 @@ const RESCUE_PIECES = PIECES.filter(p => p.s.length <= 2);
 
 // ── Shop data ──────────────────────────────────────────────────────────────
 const THEMES = [
-  {id:'default', name:'Deep Purple', cost:0,
+  {id:'default', name:"Tonni's World", cost:0,   desc:"her home base 💜",
    bodyBg:'radial-gradient(ellipse at top,#1e0040 0%,#0d0020 55%,#08001a 100%)',
    boardBg:'linear-gradient(145deg,#1c0038,#0e001e)', boardBorder:'rgba(180,80,255,0.22)',
    boardGlow:'rgba(130,0,220,0.25)', cellGlow:'rgba(100,0,180,0.12)', cellEmpty:'rgba(160,80,255,0.06)',
    swatches:['#1e0040','#7700cc','#cc44ff']},
-  {id:'pink', name:'Pink Dream', cost:300,
+  {id:'pink', name:'Purple Queen', cost:75,   desc:"born to rule 💜",
    bodyBg:'radial-gradient(ellipse at top,#3a0030 0%,#1e0018 55%,#120010 100%)',
    boardBg:'linear-gradient(145deg,#340026,#1c0014)', boardBorder:'rgba(255,80,180,0.22)',
    boardGlow:'rgba(220,0,130,0.25)', cellGlow:'rgba(180,0,100,0.12)', cellEmpty:'rgba(255,80,160,0.06)',
    swatches:['#3a0030','#cc0066','#ff44aa']},
-  {id:'galaxy', name:'Galaxy', cost:500,
+  {id:'galaxy', name:"Tonni's Vibe", cost:100,  desc:"out of this world 💜",
    bodyBg:'radial-gradient(ellipse at top,#000b25 0%,#000618 55%,#000410 100%)',
    boardBg:'linear-gradient(145deg,#000d28,#000618)', boardBorder:'rgba(80,160,255,0.22)',
    boardGlow:'rgba(0,100,220,0.25)', cellGlow:'rgba(0,80,180,0.12)', cellEmpty:'rgba(80,140,255,0.06)',
    swatches:['#000b25','#0044cc','#00ccff']},
-  {id:'sunset', name:'Sunset', cost:400,
+  {id:'sunset', name:'Lover Girl', cost:80,   desc:"all love all day 💜",
    bodyBg:'radial-gradient(ellipse at top,#350800 0%,#1c0400 55%,#0f0200 100%)',
    boardBg:'linear-gradient(145deg,#2e0600,#180300)', boardBorder:'rgba(255,110,30,0.22)',
    boardGlow:'rgba(220,70,0,0.25)', cellGlow:'rgba(180,50,0,0.12)', cellEmpty:'rgba(255,110,30,0.06)',
    swatches:['#350800','#cc3300','#ff8800']},
-{id:'moonlight',name:'Moonlight',cost:0,exclusive:true,bodyBg:'radial-gradient(ellipse at top,#080318 0%,#04020e 55%,#020108 100%)',boardBg:'linear-gradient(145deg,#0c0428,#060218)',boardBorder:'rgba(120,80,255,0.25)',boardGlow:'rgba(80,40,200,0.3)',cellGlow:'rgba(60,20,160,0.15)',cellEmpty:'rgba(120,80,255,0.07)',swatches:['#080318','#4422aa','#9977ff']},
-  {id:'ocean', name:'Ocean', cost:350,
+  {id:'moonlight', name:"Tonni's Dream", cost:0, exclusive:true, desc:"chest only 💜",
+   bodyBg:'radial-gradient(ellipse at top,#080318 0%,#04020e 55%,#020108 100%)',
+   boardBg:'linear-gradient(145deg,#0c0428,#060218)', boardBorder:'rgba(120,80,255,0.25)',
+   boardGlow:'rgba(80,40,200,0.3)', cellGlow:'rgba(60,20,160,0.15)', cellEmpty:'rgba(120,80,255,0.07)',
+   swatches:['#080318','#4422aa','#9977ff']},
+  {id:'ocean', name:'Chill Wave', cost:65,   desc:"Tonni's chill side 💜",
    bodyBg:'radial-gradient(ellipse at top,#001525 0%,#000d18 55%,#00080f 100%)',
    boardBg:'linear-gradient(145deg,#001220,#000a14)', boardBorder:'rgba(0,200,180,0.22)',
    boardGlow:'rgba(0,160,140,0.25)', cellGlow:'rgba(0,120,110,0.12)', cellEmpty:'rgba(0,200,180,0.06)',
@@ -294,39 +298,39 @@ const THEMES = [
 ];
 
 const SKINS = [
-  {id:'default', name:'Glow',     cost:0,   icon:null,  emoji:'✦'},
-  {id:'hearts',  name:'Hearts',   cost:300,  icon:'❤️',  emoji:'❤️'},
-  {id:'stars',   name:'Stars',    cost:350,  icon:'⭐',  emoji:'⭐'},
-  {id:'diamonds',name:'Diamonds', cost:400,  icon:'💎',  emoji:'💎'},
-  {id:'flowers', name:'Flowers',  cost:350,  icon:'🌸',  emoji:'🌸'},
-  {id:'butterflies',name:'Butterflies',cost:0,exclusive:true,icon:'🦋',emoji:'🦋'},
-  {id:'cosmic',    name:'Cosmic Glow',cost:0,exclusive:true,icon:'💫',emoji:'💫'},
+  {id:'default',      name:"Tonni's Glow",    cost:0,  icon:null,  emoji:'✦',  desc:"her natural shine 💜"},
+  {id:'hearts',       name:"Tonni's Hearts",  cost:50, icon:'❤️',  emoji:'❤️', desc:"made just for her 💜"},
+  {id:'stars',        name:"Tonni's Stars",   cost:60, icon:'⭐',  emoji:'⭐', desc:"she's a star 💜"},
+  {id:'diamonds',     name:'Queen Mode',      cost:75, icon:'💎',  emoji:'💎', desc:"Tonni's signature style 💜"},
+  {id:'flowers',      name:'T for Tonni',     cost:55, icon:'🌸',  emoji:'🌸', desc:"T is for Tonni 💜"},
+  {id:'butterflies',  name:'Butterfly Tonni', cost:0,  exclusive:true, icon:'🦋', emoji:'🦋', desc:"chest exclusive 💜"},
+  {id:'cosmic',       name:'Cosmic Tonni',    cost:0,  exclusive:true, icon:'💫', emoji:'💫', desc:"legendary find 💜"},
 ];
 
 const FX = [
-  {id:'none',    name:'None',           cost:0,   desc:'Classic style',        emoji:'✦'},
-  {id:'rainbow', name:'Rainbow Clears', cost:500,  desc:'Rainbow line explosions!',emoji:'🌈'},
-  {id:'sparkle', name:'Sparkles',       cost:400,  desc:'Sparkle on placement', emoji:'✨'},
-  {id:'fhearts', name:'Floating Hearts',cost:300,  desc:'Hearts float around',  emoji:'💕'},
+  {id:'none',    name:'Heart Explosion',   cost:0,  desc:"Tonni's classic 💜",            emoji:'💜'},
+  {id:'rainbow', name:"Tonni's Rainbow",   cost:80, desc:"Tonni's signature rainbow 💜",  emoji:'🌈'},
+  {id:'sparkle', name:"Tonni's Sparkles",  cost:50, desc:"made just for her 💜",          emoji:'✨'},
+  {id:'fhearts', name:'Love Burst',        cost:60, desc:"hearts everywhere 💜",          emoji:'💕'},
 ];
 
 
 const CHEST_POOL = [
-  {id:'coins_50',    type:'coins',  name:'Coin Bonus',       emoji:'💰', rarity:'common',    weight:28, amount:50},
-  {id:'hearts',      type:'skin',   name:'Hearts',            emoji:'❤️', rarity:'common',    weight:12},
-  {id:'stars',       type:'skin',   name:'Stars',             emoji:'⭐', rarity:'common',    weight:12},
-  {id:'sparkle',     type:'effect', name:'Sparkles',          emoji:'✨', rarity:'common',    weight:8},
-  {id:'flowers',     type:'skin',   name:'Flowers',           emoji:'🌸', rarity:'uncommon',  weight:8},
-  {id:'pink',        type:'theme',  name:'Pink Dream',        emoji:'💗', rarity:'uncommon',  weight:7},
-  {id:'fhearts',     type:'effect', name:'Floating Hearts',   emoji:'💕', rarity:'uncommon',  weight:6},
-  {id:'sunset',      type:'theme',  name:'Sunset',            emoji:'🌅', rarity:'uncommon',  weight:4},
-  {id:'ocean',       type:'theme',  name:'Ocean',             emoji:'🌊', rarity:'rare',      weight:3},
-  {id:'butterflies', type:'skin',   name:'Butterflies',       emoji:'🦋', rarity:'rare',      weight:3},
-  {id:'moonlight',   type:'theme',  name:'Moonlight',         emoji:'🌙', rarity:'rare',      weight:3},
-  {id:'rainbow',     type:'effect', name:'Rainbow Clears',    emoji:'🌈', rarity:'rare',      weight:2},
-  {id:'galaxy',      type:'theme',  name:'Galaxy',            emoji:'🌌', rarity:'rare',      weight:1},
-  {id:'diamonds',    type:'skin',   name:'Diamonds',          emoji:'💎', rarity:'legendary', weight:2},
-  {id:'cosmic',      type:'skin',   name:'Cosmic Glow',       emoji:'💫', rarity:'legendary', weight:1},
+  {id:'coins_50',    type:'coins',  name:'Coin Bonus',          emoji:'💰', rarity:'common',    weight:28, amount:50},
+  {id:'hearts',      type:'skin',   name:"Tonni's Hearts",      emoji:'❤️', rarity:'common',    weight:12},
+  {id:'stars',       type:'skin',   name:"Tonni's Stars",       emoji:'⭐', rarity:'common',    weight:12},
+  {id:'sparkle',     type:'effect', name:"Tonni's Sparkles",    emoji:'✨', rarity:'common',    weight:8},
+  {id:'flowers',     type:'skin',   name:'T for Tonni',         emoji:'🌸', rarity:'uncommon',  weight:8},
+  {id:'pink',        type:'theme',  name:'Purple Queen',        emoji:'💗', rarity:'uncommon',  weight:7},
+  {id:'fhearts',     type:'effect', name:'Love Burst',          emoji:'💕', rarity:'uncommon',  weight:6},
+  {id:'sunset',      type:'theme',  name:'Lover Girl',          emoji:'🌅', rarity:'uncommon',  weight:4},
+  {id:'ocean',       type:'theme',  name:'Chill Wave',          emoji:'🌊', rarity:'rare',      weight:3},
+  {id:'butterflies', type:'skin',   name:'Butterfly Tonni',     emoji:'🦋', rarity:'rare',      weight:3},
+  {id:'moonlight',   type:'theme',  name:"Tonni's Dream",       emoji:'🌙', rarity:'rare',      weight:3},
+  {id:'rainbow',     type:'effect', name:"Tonni's Rainbow",     emoji:'🌈', rarity:'rare',      weight:2},
+  {id:'galaxy',      type:'theme',  name:"Tonni's Vibe",        emoji:'🌌', rarity:'rare',      weight:1},
+  {id:'diamonds',    type:'skin',   name:'Queen Mode',          emoji:'💎', rarity:'legendary', weight:2},
+  {id:'cosmic',      type:'skin',   name:'Cosmic Tonni',        emoji:'💫', rarity:'legendary', weight:1},
 ];
 // ── Account system (backend) ──────────────────────────────────────────────
 let best, coins, shopState;
@@ -701,7 +705,7 @@ function updateCoinsDisplay() {
   document.getElementById('coins-disp').textContent = coins;
   document.getElementById('wallet-val').textContent = coins;
   const cb = document.getElementById('cb-price');
-  if (cb) cb.className = coins >= 200 ? 'cb-price' : 'cb-price cant-afford';
+  if (cb) cb.className = coins >= 50 ? 'cb-price' : 'cb-price cant-afford';
 }
 
 function openShop() {
@@ -759,7 +763,7 @@ function renderShop(tab) {
       btnHTML = `<button class="item-btn b-locked" disabled>💜 ${item.cost}</button>`;
     }
 
-    const descHTML = tab === 'effects' ? `<div class="item-desc">${item.desc}</div>` : '';
+    const descHTML = item.desc ? `<div class="item-desc">${item.desc}</div>` : '';
     card.innerHTML = `${previewHTML}<div class="item-name">${item.name}</div>${descHTML}${btnHTML}`;
     grid.appendChild(card);
   }
@@ -884,12 +888,12 @@ document.addEventListener('touchend',  e => { if(!drag)return; const t=e.changed
 let chestState = 'idle', pendingReward = null;
 
 function tryOpenChest() {
-  if (coins < 200) {
+  if (coins < 50) {
     const cb = document.getElementById('cb-price');
     if (cb) { cb.style.animation='none'; void cb.offsetWidth; cb.style.animation='chestShake .4s ease'; }
     return;
   }
-  coins -= 200; saveCoins(); updateCoinsDisplay();
+  coins -= 50; saveCoins(); updateCoinsDisplay();
   closeShop(); showChestModal();
 }
 
