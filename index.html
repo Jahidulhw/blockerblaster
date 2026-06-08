@@ -34,7 +34,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .piece-cell{position:absolute;border-radius:5px;}
 .btn-shop{margin-top:14px;background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:800;padding:11px 36px;border-radius:50px;cursor:pointer;box-shadow:0 0 20px rgba(150,0,200,0.45);letter-spacing:2px;transition:transform .15s,box-shadow .15s;}
 .btn-shop:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(180,0,255,0.6);}
-#drag-ghost{position:fixed;pointer-events:none;z-index:9999;display:none;}
+#drag-ghost{position:fixed;pointer-events:none;z-index:9999;display:none;left:0;top:0;will-change:transform;}
 .dg-cell{position:absolute;border-radius:5px;}
 .toast{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);border-radius:50px;padding:9px 20px 9px 10px;align-items:center;gap:10px;z-index:9990;animation:toastIn .35s ease-out;white-space:nowrap;}
 .toast.show{display:flex;}
@@ -787,6 +787,7 @@ function equipItem(eqKey, id) {
 }
 
 // ── Drag ───────────────────────────────────────────────────────────────────
+const DRAG_SPEED = 1.15; // piece races ahead of the cursor as you pull it
 const ghostEl = document.getElementById('drag-ghost');
 
 function pBounds(p) {
@@ -811,16 +812,22 @@ function buildDragGhost(p) {
 function moveGhostEl(cx, cy) {
   const {maxR, maxC} = pBounds(drag.piece);
   const pw = (maxC+1)*(CELL+GAP)-GAP, ph = (maxR+1)*(CELL+GAP)-GAP;
-  ghostEl.style.left = (cx - pw/2)+'px';
-  ghostEl.style.top  = (cy - ph/2 - CELL*0.6)+'px';
+  ghostEl.style.transform = `translate3d(${cx - pw/2}px,${cy - ph/2 - CELL*1.1}px,0)`;
 }
 
 function cursorToRC(cx, cy) {
   const {maxR, maxC} = pBounds(drag.piece);
   const pw = (maxC+1)*(CELL+GAP)-GAP, ph = (maxR+1)*(CELL+GAP)-GAP;
-  const pLeft = cx - pw/2, pTop = cy - ph/2 - CELL*0.6;
+  const pLeft = cx - pw/2, pTop = cy - ph/2 - CELL*1.1;
   const ref = cells[0][0].getBoundingClientRect();
   return {row: Math.round((pTop-ref.top)/(CELL+GAP)), col: Math.round((pLeft-ref.left)/(CELL+GAP))};
+}
+
+function effectivePos(rawX, rawY) {
+  return {
+    ex: drag.grabX + (rawX - drag.grabX) * DRAG_SPEED,
+    ey: drag.grabY + (rawY - drag.grabY) * DRAG_SPEED,
+  };
 }
 
 function showBoardGhost(row, col) {
@@ -848,21 +855,23 @@ function clearBoardGhost() {
 
 function onStart(idx, cx, cy) {
   if (!tray[idx] || document.getElementById('shop').classList.contains('show')) return;
-  drag = {idx, piece:tray[idx]};
+  drag = {idx, piece:tray[idx], grabX:cx, grabY:cy};
   buildDragGhost(drag.piece); moveGhostEl(cx, cy);
   showBoardGhost(...Object.values(cursorToRC(cx, cy)));
 }
 
 function onMove(cx, cy) {
   if (!drag) return;
-  moveGhostEl(cx, cy);
-  const {row, col} = cursorToRC(cx, cy); showBoardGhost(row, col);
+  const {ex, ey} = effectivePos(cx, cy);
+  moveGhostEl(ex, ey);
+  const {row, col} = cursorToRC(ex, ey); showBoardGhost(row, col);
 }
 
 function onEnd(cx, cy) {
   if (!drag) return;
   clearBoardGhost(); ghostEl.style.display = 'none';
-  const {row, col} = cursorToRC(cx, cy);
+  const {ex, ey} = effectivePos(cx, cy);
+  const {row, col} = cursorToRC(ex, ey);
   const p = drag.piece, idx = drag.idx; drag = null;
   if (canPlace(p, row, col)) {
     doPlace(p, row, col); tray[idx] = null;
