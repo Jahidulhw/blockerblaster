@@ -19,7 +19,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #best-score{color:#ff88ff;}
 .coins-val{color:#ffdd88;text-shadow:0 0 14px #ffcc0055;font-size:1.5em;}
 #board{display:grid;grid-template-columns:repeat(8,var(--cell,50px));grid-template-rows:repeat(8,var(--cell,50px));gap:var(--gap,2px);background:linear-gradient(145deg,#1c0038,#0e001e);border:2px solid rgba(180,80,255,0.22);border-radius:12px;padding:var(--gap,2px);box-shadow:0 0 40px rgba(130,0,220,0.25),inset 0 0 24px rgba(100,0,180,0.12);}
-.cell{width:var(--cell,50px);height:var(--cell,50px);background:rgba(160,80,255,0.06);border-radius:4px;transition:background .06s,box-shadow .06s;display:flex;align-items:center;justify-content:center;}
+.cell{width:var(--cell,50px);height:var(--cell,50px);background:rgba(160,80,255,0.06);border-radius:4px;display:flex;align-items:center;justify-content:center;}
 .cell.ghost{border-radius:5px;transition:none;}
 .cell.clearing{animation:flashClear .38s ease-out forwards;}
 .cell.rainbow-clear{animation:rainbowClear .42s ease-out forwards;}
@@ -117,6 +117,28 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .collect-btn:hover{transform:scale(1.06);}
 /* ── Exclusive shop label ────────────────────────────────── */
 .b-chest-only{background:rgba(80,30,130,.18);color:rgba(180,120,255,.5);border:1.5px dashed rgba(180,80,255,.3);cursor:default;}
+/* ── Auth screen ─────────────────────────────────────────── */
+#auth-screen{position:fixed;inset:0;background:radial-gradient(ellipse at top,#1e0040 0%,#0d0020 55%,#08001a 100%);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
+#auth-screen.hidden{display:none;}
+.auth-box{width:100%;max-width:360px;background:rgba(40,0,80,0.72);border:2px solid rgba(180,80,255,0.35);border-radius:20px;padding:32px 24px 28px;box-shadow:0 0 40px rgba(150,0,220,0.35);}
+.auth-logo{text-align:center;margin-bottom:24px;}
+.auth-game-title{font-size:2em;font-weight:900;background:linear-gradient(135deg,#dd66ff 0%,#ff44cc 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:4px;}
+.auth-game-sub{font-size:0.72em;color:#bb77ff;letter-spacing:1.5px;margin-top:4px;}
+.auth-tabs{display:flex;gap:0;margin-bottom:24px;border-radius:10px;overflow:hidden;border:2px solid rgba(180,80,255,0.25);}
+.auth-tab{flex:1;padding:10px;background:rgba(100,40,180,0.1);color:rgba(200,140,255,0.55);font-size:.88em;font-weight:700;cursor:pointer;border:none;letter-spacing:1px;transition:all .2s;}
+.auth-tab.active{background:rgba(160,60,255,0.28);color:#ee88ff;}
+.auth-field{margin-bottom:14px;}
+.auth-field label{display:block;font-size:.72em;color:rgba(200,140,255,0.7);letter-spacing:1.5px;margin-bottom:6px;text-transform:uppercase;}
+.auth-field input{width:100%;padding:11px 14px;background:rgba(100,40,180,0.15);border:1.5px solid rgba(180,80,255,0.25);border-radius:10px;color:#fff;font-size:.95em;outline:none;transition:border-color .2s;-webkit-text-fill-color:#fff;}
+.auth-field input:focus{border-color:rgba(200,100,255,0.6);}
+.auth-field input::placeholder{color:rgba(180,120,255,0.35);}
+.auth-btn{width:100%;padding:13px;background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:800;border-radius:50px;cursor:pointer;box-shadow:0 0 20px rgba(150,0,200,0.45);letter-spacing:2px;margin-top:6px;transition:transform .15s,box-shadow .15s;}
+.auth-btn:hover{transform:scale(1.03);box-shadow:0 0 30px rgba(180,0,255,0.6);}
+.auth-err{font-size:.8em;color:#ff88aa;text-align:center;margin-top:10px;min-height:1.2em;}
+#user-bar{display:none;align-items:center;gap:10px;margin-bottom:4px;}
+.user-label{font-size:.72em;color:#bb77ff;letter-spacing:1px;}
+.logout-btn{background:rgba(200,100,255,.1);border:1.5px solid rgba(200,100,255,.25);color:rgba(200,140,255,.7);font-size:.7em;font-weight:700;padding:4px 12px;border-radius:20px;cursor:pointer;letter-spacing:1px;transition:all .2s;}
+.logout-btn:hover{background:rgba(200,100,255,.22);color:#ee88ff;}
 /* ── Chest burst particles ───────────────────────────────── */
 .chest-particle{position:fixed;pointer-events:none;z-index:20001;animation:particleBurst .9s ease-out forwards;}
 @keyframes particleBurst{0%{transform:translate(0,0) scale(1.3);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0;}}
@@ -130,6 +152,11 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     <h1>TONNI BLAST</h1>
     <div class="tagline">💜 made just for you 💜</div>
   </div>
+</div>
+
+<div id="user-bar">
+  <span class="user-label" id="auth-username-disp"></span>
+  <button class="logout-btn" onclick="logout()">LOG OUT</button>
 </div>
 
 <div class="scores">
@@ -286,32 +313,129 @@ const CHEST_POOL = [
   {id:'diamonds',    type:'skin',   name:'Diamonds',          emoji:'💎', rarity:'legendary', weight:2},
   {id:'cosmic',      type:'skin',   name:'Cosmic Glow',       emoji:'💫', rarity:'legendary', weight:1},
 ];
-// ── Persistent state ───────────────────────────────────────────────────────
+// ── Account system (backend) ──────────────────────────────────────────────
 let best, coins, shopState;
+let currentUser = null;
+let currentAuthTab = 'login';
+let _saveTimer = null;
 
-function loadStorage() {
-  best  = parseInt(localStorage.getItem('tonni_best')  || '0');
-  coins = parseInt(localStorage.getItem('tonni_coins') || '0');
+function getToken()      { return localStorage.getItem('tonni_jwt'); }
+function setToken(t)     { localStorage.setItem('tonni_jwt', t); }
+function clearToken()    { localStorage.removeItem('tonni_jwt'); }
+
+async function apiPost(path, body, token) {
   try {
-    const raw = JSON.parse(localStorage.getItem('tonni_shop_v2') || 'null');
-    shopState = {
-      owned:    new Set(raw ? raw.owned : []),
-      equipped: raw ? raw.equipped : {theme:'default', skin:'default', effect:'none'},
-    };
-  } catch(_) {
-    shopState = { owned: new Set(), equipped: {theme:'default', skin:'default', effect:'none'} };
-  }
+    const headers = {'Content-Type':'application/json'};
+    if (token) headers['Authorization'] = 'Bearer ' + token;
+    const r = await fetch(path, {method:'POST', headers, body: JSON.stringify(body)});
+    return r.json();
+  } catch(_) { return {error:'Network error — try again'}; }
+}
+
+async function apiGet(path, token) {
+  try {
+    const headers = token ? {'Authorization':'Bearer ' + token} : {};
+    const r = await fetch(path, {headers});
+    return r.json();
+  } catch(_) { return {error:'Network error — try again'}; }
+}
+
+function _doSave() {
+  if (!currentUser) return;
+  apiPost('/api/save', {
+    coins,
+    highScore: best,
+    ownedItems: [...shopState.owned],
+    equippedItems: shopState.equipped,
+  }, getToken());
+}
+
+function saveUser() {
+  if (!currentUser) return;
+  clearTimeout(_saveTimer);
+  _saveTimer = setTimeout(_doSave, 800);
+}
+
+function loadUserData(data) {
+  best  = data.highScore || 0;
+  coins = data.coins     || 0;
+  const owned = data.ownedItems || [];
+  const eq    = data.equippedItems || {};
+  shopState = {
+    owned:    new Set(owned),
+    equipped: {theme:'default', skin:'default', effect:'none', ...eq},
+  };
   shopState.owned.add('default');
 }
 
-function saveShop() {
-  localStorage.setItem('tonni_shop_v2', JSON.stringify({owned:[...shopState.owned], equipped:shopState.equipped}));
+function saveShop()  { saveUser(); }
+function saveCoins() { saveUser(); }
+
+function switchAuthTab(tab) {
+  currentAuthTab = tab;
+  document.getElementById('auth-err').textContent = '';
+  document.getElementById('auth-submit-btn').textContent = tab === 'login' ? 'LOG IN' : 'SIGN UP';
+  const tabs = document.querySelectorAll('.auth-tab');
+  tabs[0].classList.toggle('active', tab === 'login');
+  tabs[1].classList.toggle('active', tab === 'signup');
 }
-function saveCoins() { localStorage.setItem('tonni_coins', coins); }
+
+async function submitAuth() {
+  const username = document.getElementById('auth-username').value.trim();
+  const password = document.getElementById('auth-password').value;
+  const errEl    = document.getElementById('auth-err');
+  const btn      = document.getElementById('auth-submit-btn');
+  errEl.textContent = '';
+  if (!username) { errEl.textContent = 'Enter a username'; return; }
+  if (!password) { errEl.textContent = 'Enter a password'; return; }
+
+  btn.disabled = true;
+  btn.textContent = '...';
+
+  const endpoint = currentAuthTab === 'signup' ? '/api/signup' : '/api/login';
+  const data = await apiPost(endpoint, {username, password});
+
+  btn.disabled = false;
+  btn.textContent = currentAuthTab === 'login' ? 'LOG IN' : 'SIGN UP';
+
+  if (data.error) { errEl.textContent = data.error; return; }
+
+  setToken(data.token);
+  loginAs(data.username, data);
+}
+
+function loginAs(username, data) {
+  currentUser = username;
+  loadUserData(data);
+  pendingCoinPts = 0;
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('auth-username-disp').textContent = '👤 ' + username;
+  document.getElementById('user-bar').style.display = 'flex';
+  initGame();
+}
+
+function logout() {
+  clearTimeout(_saveTimer);
+  _doSave();
+  currentUser = null;
+  clearToken();
+  const sc = document.getElementById('auth-screen');
+  sc.classList.remove('hidden');
+  document.getElementById('auth-username').value = '';
+  document.getElementById('auth-password').value = '';
+  document.getElementById('auth-err').textContent = '';
+  document.getElementById('user-bar').style.display = 'none';
+  switchAuthTab('login');
+}
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') { clearTimeout(_saveTimer); _doSave(); }
+});
 
 // ── Game state ─────────────────────────────────────────────────────────────
 const N = 8;
-let board, score, tray, drag, ghostSet, isClearing;
+let board, score, tray, drag, ghostSet;
+let clearingCells = new Set();
 let pendingCoinPts = 0;
 let shownBestToast, gameStartBest;
 let currentTheme, currentSkin;
@@ -337,6 +461,8 @@ function buildBoardDOM() {
 }
 
 function paintCell(r, c) {
+  const key = r * N + c;
+  if (clearingCells.has(key)) return; // let the CSS animation finish
   const d = cells[r][c], v = board[r][c];
   if (v) {
     d.style.background = v;
@@ -418,8 +544,16 @@ function pieceCanFitSomewhere(p) {
 
 function doPlace(p, sr, sc) {
   for (const [dr, dc] of p.s) {
-    board[sr+dr][sc+dc] = p.c;
-    if (shopState.equipped.effect === 'sparkle') spawnSparkles(sr+dr, sc+dc);
+    const r = sr+dr, c = sc+dc;
+    const key = r * N + c;
+    // if this cell was animating a clear, cancel it immediately
+    if (clearingCells.has(key)) {
+      clearingCells.delete(key);
+      cells[r][c].classList.remove('clearing', 'rainbow-clear');
+    }
+    board[r][c] = p.c;
+    paintCell(r, c);
+    if (shopState.equipped.effect === 'sparkle') spawnSparkles(r, c);
   }
   bump(p.s.length * 10);
 }
@@ -434,7 +568,7 @@ function bump(pts) {
   document.getElementById('coins-disp').textContent = coins;
   if (score > best) {
     best = score;
-    localStorage.setItem('tonni_best', best);
+    saveUser();
     document.getElementById('best-score').textContent = best;
     if (!shownBestToast && gameStartBest > 0) {
       shownBestToast = true;
@@ -447,32 +581,41 @@ function bump(pts) {
 }
 
 function clearLines() {
-  return new Promise(resolve => {
-    const fullRows = [], fullCols = [];
-    for (let r = 0; r < N; r++) if (board[r].every(v => v)) fullRows.push(r);
-    for (let c = 0; c < N; c++) if (board.every(row => row[c])) fullCols.push(c);
-    const total = fullRows.length + fullCols.length;
-    if (!total) { resolve(); return; }
-    isClearing = true;
-    const isRainbow = shopState.equipped.effect === 'rainbow';
-    const cls = isRainbow ? 'rainbow-clear' : 'clearing';
-    const toFlash = new Set();
-    for (const r of fullRows) for (let c = 0; c < N; c++) toFlash.add(r * N + c);
-    for (const c of fullCols) for (let r = 0; r < N; r++) toFlash.add(r * N + c);
-    for (const k of toFlash) { const r = (k/N)|0, c = k%N; cells[r][c].classList.add(cls); }
-    const pts = total * 100 * total;
-    bump(pts);
-    const br = boardEl.getBoundingClientRect();
-    spawnFloat('+' + pts,
-      br.left + (fullCols[0] ?? 0) * (CELL+GAP) + CELL/2,
-      br.top  + (fullRows[0] ?? 0) * (CELL+GAP) + CELL/4);
-    setTimeout(() => {
-      for (const r of fullRows) for (let c = 0; c < N; c++) board[r][c] = '';
-      for (const c of fullCols) for (let r = 0; r < N; r++) board[r][c] = '';
-      for (const k of toFlash) { const r=(k/N)|0, c=k%N; cells[r][c].classList.remove(cls); }
-      renderBoard(); isClearing = false; resolve();
-    }, 420);
-  });
+  const fullRows = [], fullCols = [];
+  for (let r = 0; r < N; r++) if (board[r].every(v => v)) fullRows.push(r);
+  for (let c = 0; c < N; c++) if (board.every(row => row[c])) fullCols.push(c);
+  const total = fullRows.length + fullCols.length;
+  if (!total) return;
+
+  const cls = shopState.equipped.effect === 'rainbow' ? 'rainbow-clear' : 'clearing';
+  const toFlash = new Set();
+  for (const r of fullRows) for (let c = 0; c < N; c++) toFlash.add(r * N + c);
+  for (const c of fullCols) for (let r = 0; r < N; r++) toFlash.add(r * N + c);
+
+  // Clear board data immediately so next drag can start right away
+  for (const r of fullRows) for (let c = 0; c < N; c++) board[r][c] = '';
+  for (const c of fullCols) for (let r = 0; r < N; r++) board[r][c] = '';
+
+  // Track which cells are animating so paintCell skips them
+  for (const k of toFlash) clearingCells.add(k);
+  for (const k of toFlash) { const r=(k/N)|0, c=k%N; cells[r][c].classList.add(cls); }
+
+  const pts = total * 100 * total;
+  bump(pts);
+  const br = boardEl.getBoundingClientRect();
+  spawnFloat('+' + pts,
+    br.left + (fullCols[0] ?? 0) * (CELL+GAP) + CELL/2,
+    br.top  + (fullRows[0] ?? 0) * (CELL+GAP) + CELL/4);
+
+  // After animation, clean up DOM (board data is already cleared)
+  setTimeout(() => {
+    for (const k of toFlash) {
+      clearingCells.delete(k);
+      const r=(k/N)|0, c=k%N;
+      cells[r][c].classList.remove(cls);
+      paintCell(r, c); // now shows empty
+    }
+  }, 420);
 }
 
 function isGameOver() {
@@ -701,7 +844,7 @@ function clearBoardGhost() {
 }
 
 function onStart(idx, cx, cy) {
-  if (isClearing || !tray[idx] || document.getElementById('shop').classList.contains('show')) return;
+  if (!tray[idx] || document.getElementById('shop').classList.contains('show')) return;
   drag = {idx, piece:tray[idx]};
   buildDragGhost(drag.piece); moveGhostEl(cx, cy);
   showBoardGhost(...Object.values(cursorToRC(cx, cy)));
@@ -713,15 +856,15 @@ function onMove(cx, cy) {
   const {row, col} = cursorToRC(cx, cy); showBoardGhost(row, col);
 }
 
-async function onEnd(cx, cy) {
+function onEnd(cx, cy) {
   if (!drag) return;
   clearBoardGhost(); ghostEl.style.display = 'none';
   const {row, col} = cursorToRC(cx, cy);
   const p = drag.piece, idx = drag.idx; drag = null;
-  if (!isClearing && canPlace(p, row, col)) {
+  if (canPlace(p, row, col)) {
     doPlace(p, row, col); tray[idx] = null;
-    renderBoard(); renderTray();
-    await clearLines();
+    renderTray();
+    clearLines();
     if (tray.every(x => !x)) { spawnTray(); renderTray(); }
     if (isGameOver()) rescueGame();
   }
@@ -836,7 +979,7 @@ function closeChestModal() {
 // ── Init ───────────────────────────────────────────────────────────────────
 function initGame() {
   board = Array.from({length:N}, () => Array(N).fill(''));
-  score = 0; drag = null; ghostSet.clear(); isClearing = false;
+  score = 0; drag = null; ghostSet.clear(); clearingCells.clear();
   shownBestToast = false; gameStartBest = best;
   ghostEl.style.display = 'none';
   document.getElementById('cur-score').textContent  = '0';
@@ -845,8 +988,15 @@ function initGame() {
   buildBoardDOM(); applyEquipped(); spawnTray(); renderTray();
 }
 
-loadStorage();
-initGame();
+(async function() {
+  const token = getToken();
+  if (token) {
+    const data = await apiGet('/api/load', token);
+    if (!data.error && data.username) { loginAs(data.username, data); return; }
+    clearToken(); // expired or invalid
+  }
+  // No valid session — auth screen visible by default
+})();
 </script>
 
 <div id="chest-modal">
@@ -863,6 +1013,28 @@ initGame();
     <div id="rev-name" class="reward-name"></div>
     <div id="rev-dup" class="reward-dup" style="display:none"></div>
     <button class="collect-btn" onclick="closeChestModal()">Collect 💜</button>
+  </div>
+</div>
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">
+      <div class="auth-game-title">TONNI BLAST</div>
+      <div class="auth-game-sub">💜 made just for you 💜</div>
+    </div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">LOG IN</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">SIGN UP</button>
+    </div>
+    <div class="auth-field">
+      <label>Username</label>
+      <input id="auth-username" type="text" placeholder="your name" autocomplete="off" spellcheck="false" onkeydown="if(event.key==='Enter')submitAuth()">
+    </div>
+    <div class="auth-field">
+      <label>Password</label>
+      <input id="auth-password" type="password" placeholder="••••••••" autocomplete="off" onkeydown="if(event.key==='Enter')submitAuth()">
+    </div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="submitAuth()">LOG IN</button>
+    <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
 </body>
