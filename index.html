@@ -626,6 +626,27 @@ const CHEST_POOL = [
 // ── Sound engine (Web Audio API — no external files) ─────────────────────
 const _AC = window.AudioContext || window.webkitAudioContext || null;
 let _actx = null;
+
+// iOS keeps AudioContext suspended until a real user gesture.
+// This unlock handler must run inside touchstart/mousedown to satisfy Safari.
+function _unlockAudio() {
+  if (!_AC) return;
+  if (!_actx) _actx = new _AC();
+  if (_actx.state === 'suspended') {
+    _actx.resume();
+    // Play a silent one-sample buffer — required to fully ungate iOS audio
+    try {
+      const buf = _actx.createBuffer(1, 1, 22050);
+      const src = _actx.createBufferSource();
+      src.buffer = buf;
+      src.connect(_actx.destination);
+      src.start(0);
+    } catch(_) {}
+  }
+}
+document.addEventListener('touchstart', _unlockAudio, { passive: true });
+document.addEventListener('mousedown',  _unlockAudio, { passive: true });
+
 function _ctx() {
   if (!_AC) return null;
   if (!_actx) _actx = new _AC();
