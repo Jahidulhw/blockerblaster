@@ -30,8 +30,9 @@ const userSchema = new mongoose.Schema({
       theme:  { type: String, default: 'default' },
       skin:   { type: String, default: 'default' },
       effect: { type: String, default: 'none' },
+      bg:     { type: String, default: 'none' },
     },
-    default: () => ({ theme: 'default', skin: 'default', effect: 'none' }),
+    default: () => ({ theme: 'default', skin: 'default', effect: 'none', bg: 'none' }),
   },
 }, { timestamps: true });
 
@@ -135,6 +136,7 @@ app.post('/api/save', requireAuth, async (req, res) => {
     if (equippedItems.theme  !== undefined) $set['equipped.theme']  = equippedItems.theme;
     if (equippedItems.skin   !== undefined) $set['equipped.skin']   = equippedItems.skin;
     if (equippedItems.effect !== undefined) $set['equipped.effect'] = equippedItems.effect;
+    if (equippedItems.bg     !== undefined) $set['equipped.bg']     = equippedItems.bg;
   }
   try {
     await User.findByIdAndUpdate(req.user.id, { $set });

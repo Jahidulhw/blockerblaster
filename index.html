@@ -18,8 +18,8 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .score-value{font-size:1.8em;font-weight:800;color:#cc44ff;line-height:1.15;text-shadow:0 0 14px #cc44ff55;}
 #best-score{color:#ff88ff;}
 .coins-val{color:#ffdd88;text-shadow:0 0 14px #ffcc0055;font-size:1.5em;}
-#board{display:grid;grid-template-columns:repeat(8,var(--cell,50px));grid-template-rows:repeat(8,var(--cell,50px));gap:var(--gap,2px);background:linear-gradient(145deg,#1c0038,#0e001e);border:2px solid rgba(180,80,255,0.22);border-radius:12px;padding:var(--gap,2px);box-shadow:0 0 40px rgba(130,0,220,0.25),inset 0 0 24px rgba(100,0,180,0.12);}
-.cell{width:var(--cell,50px);height:var(--cell,50px);background:rgba(160,80,255,0.06);border-radius:4px;display:flex;align-items:center;justify-content:center;}
+#board{display:grid;grid-template-columns:repeat(8,var(--cell,50px));grid-template-rows:repeat(8,var(--cell,50px));gap:var(--gap,2px);background:linear-gradient(145deg,#1c0038,#0e001e);border:2px solid rgba(180,80,255,0.22);border-radius:12px;padding:var(--gap,2px);box-shadow:0 0 40px rgba(130,0,220,0.25),inset 0 0 24px rgba(100,0,180,0.12);position:relative;overflow:hidden;}
+.cell{width:var(--cell,50px);height:var(--cell,50px);background:rgba(160,80,255,0.06);border-radius:4px;display:flex;align-items:center;justify-content:center;position:relative;z-index:1;}
 .cell.ghost{border-radius:5px;transition:none;}
 .cell.clearing{animation:flashClear .38s ease-out forwards;}
 .cell.rainbow-clear{animation:rainbowClear .42s ease-out forwards;}
@@ -137,6 +137,19 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 @keyframes goldenShimmer{0%,100%{opacity:1;}50%{opacity:.65;filter:brightness(1.4);}}
 #bg-layer.bg_universe{opacity:1;background:radial-gradient(ellipse at 50% 50%,rgba(200,0,255,.1) 0%,transparent 70%),radial-gradient(ellipse at 20% 20%,rgba(0,200,255,.08) 0%,transparent 50%),radial-gradient(ellipse at 80% 80%,rgba(255,0,128,.08) 0%,transparent 50%);animation:universeSpin 7s linear infinite;}
 @keyframes universeSpin{0%{filter:hue-rotate(0deg) brightness(1);}50%{filter:hue-rotate(180deg) brightness(1.2);}100%{filter:hue-rotate(360deg) brightness(1);}}
+/* ── Board-level background overlays (visible inside board) ── */
+#board::before,#board::after{content:'';position:absolute;inset:0;pointer-events:none;border-radius:10px;z-index:0;opacity:0;}
+#board.board-bg_garden::before{opacity:1;background:repeating-linear-gradient(60deg,transparent 0,transparent 18px,rgba(50,160,50,.07) 18px,rgba(50,160,50,.07) 19px),repeating-linear-gradient(-60deg,transparent 0,transparent 18px,rgba(50,160,50,.07) 18px,rgba(50,160,50,.07) 19px),radial-gradient(circle at 18% 18%,rgba(220,100,160,.22) 0%,transparent 22%),radial-gradient(circle at 82% 76%,rgba(255,200,60,.20) 0%,transparent 20%),radial-gradient(circle at 55% 48%,rgba(100,200,60,.18) 0%,transparent 24%),radial-gradient(circle at 30% 72%,rgba(220,100,160,.16) 0%,transparent 18%),radial-gradient(circle at 72% 22%,rgba(255,200,60,.16) 0%,transparent 18%),radial-gradient(ellipse at 50% 50%,rgba(30,130,30,.18) 0%,transparent 70%);}
+#board.board-bg_clouds::before{opacity:1;background:radial-gradient(ellipse at 22% 25%,rgba(255,200,230,.28) 0%,rgba(255,200,230,.14) 20%,transparent 42%),radial-gradient(ellipse at 75% 20%,rgba(230,185,255,.25) 0%,rgba(230,185,255,.12) 18%,transparent 38%),radial-gradient(ellipse at 50% 55%,rgba(255,225,240,.20) 0%,rgba(255,225,240,.10) 22%,transparent 44%),radial-gradient(ellipse at 18% 75%,rgba(240,200,255,.22) 0%,rgba(240,200,255,.10) 18%,transparent 36%),radial-gradient(ellipse at 80% 72%,rgba(255,210,240,.20) 0%,rgba(255,210,240,.09) 16%,transparent 33%),radial-gradient(ellipse at 58% 88%,rgba(230,190,255,.18) 0%,rgba(230,190,255,.08) 14%,transparent 30%);animation:boardCloudDrift 8s ease-in-out infinite alternate;}
+@keyframes boardCloudDrift{from{opacity:.85;}to{opacity:1;filter:brightness(1.12);}}
+#board.board-bg_galaxy::before{opacity:1;background:radial-gradient(circle at 12% 22%,rgba(255,255,255,.85) 1px,transparent 2px),radial-gradient(circle at 35% 68%,rgba(255,255,255,.70) 1px,transparent 2px),radial-gradient(circle at 54% 14%,rgba(255,255,255,.75) 1px,transparent 2px),radial-gradient(circle at 78% 42%,rgba(255,255,255,.85) 1px,transparent 2px),radial-gradient(circle at 88% 80%,rgba(255,255,255,.60) 1px,transparent 2px),radial-gradient(circle at 22% 90%,rgba(255,255,255,.70) 1px,transparent 2px),radial-gradient(circle at 66% 72%,rgba(255,255,255,.55) 1px,transparent 2px),radial-gradient(circle at 44% 44%,rgba(255,255,255,.65) 1px,transparent 2px),radial-gradient(circle at 91% 15%,rgba(200,150,255,.72) 1px,transparent 2px),radial-gradient(circle at 5% 55%,rgba(150,200,255,.62) 1px,transparent 2px),radial-gradient(circle at 60% 5%,rgba(255,255,255,.50) 1px,transparent 2px),radial-gradient(circle at 18% 48%,rgba(200,180,255,.60) 1px,transparent 2px),radial-gradient(circle at 30% 30%,rgba(255,255,255,.50) 1px,transparent 2px),radial-gradient(circle at 72% 58%,rgba(180,200,255,.55) 1px,transparent 2px),radial-gradient(ellipse at 35% 45%,rgba(100,0,200,.26) 0%,transparent 52%),radial-gradient(ellipse at 68% 60%,rgba(0,50,200,.22) 0%,transparent 46%),radial-gradient(ellipse at 50% 50%,rgba(80,0,160,.20) 0%,transparent 68%);animation:boardGalaxyPulse 5s ease-in-out infinite;}
+@keyframes boardGalaxyPulse{0%,100%{filter:brightness(1);}50%{filter:brightness(1.35);}}
+#board.board-bg_golden::before{opacity:1;background:repeating-linear-gradient(0deg,transparent 0px,transparent 21px,rgba(200,155,20,.08) 21px,rgba(200,155,20,.08) 22px),repeating-linear-gradient(90deg,transparent 0px,transparent 21px,rgba(200,155,20,.08) 21px,rgba(200,155,20,.08) 22px),repeating-linear-gradient(45deg,transparent 0px,transparent 10px,rgba(255,190,30,.05) 10px,rgba(255,190,30,.05) 11px),radial-gradient(ellipse at 50% 0%,rgba(255,200,50,.28) 0%,transparent 62%),radial-gradient(ellipse at 0% 50%,rgba(220,155,20,.18) 0%,transparent 52%),radial-gradient(ellipse at 100% 50%,rgba(220,155,20,.18) 0%,transparent 52%),radial-gradient(ellipse at 50% 100%,rgba(180,110,0,.20) 0%,transparent 56%);animation:boardGoldenShimmer 3.5s ease-in-out infinite;}
+@keyframes boardGoldenShimmer{0%,100%{opacity:1;}50%{opacity:.72;filter:brightness(1.45);}}
+#board.board-bg_universe::before{opacity:1;background:radial-gradient(ellipse at 30% 30%,rgba(200,0,255,.26) 0%,transparent 55%),radial-gradient(ellipse at 70% 70%,rgba(0,100,255,.24) 0%,transparent 50%),radial-gradient(ellipse at 50% 50%,rgba(255,0,128,.20) 0%,transparent 62%);animation:univBoardAnim 5s linear infinite;}
+@keyframes univBoardAnim{from{filter:hue-rotate(0deg);}to{filter:hue-rotate(360deg);}}
+#board.board-bg_universe::after{opacity:1;background:radial-gradient(circle at 15% 20%,rgba(255,255,255,.90) 1px,transparent 2px),radial-gradient(circle at 40% 55%,rgba(255,255,255,.75) 1px,transparent 2px),radial-gradient(circle at 65% 15%,rgba(255,255,255,.82) 1px,transparent 2px),radial-gradient(circle at 82% 40%,rgba(255,255,255,.92) 1px,transparent 2px),radial-gradient(circle at 92% 75%,rgba(255,255,255,.68) 1px,transparent 2px),radial-gradient(circle at 25% 85%,rgba(255,255,255,.78) 1px,transparent 2px),radial-gradient(circle at 55% 72%,rgba(255,255,255,.65) 1px,transparent 2px),radial-gradient(circle at 8% 48%,rgba(255,255,255,.72) 1px,transparent 2px),radial-gradient(circle at 72% 88%,rgba(255,200,255,.80) 1px,transparent 2px),radial-gradient(circle at 48% 35%,rgba(200,200,255,.70) 1px,transparent 2px),radial-gradient(circle at 18% 62%,rgba(255,255,255,.65) 1px,transparent 2px),radial-gradient(circle at 90% 30%,rgba(220,200,255,.75) 1px,transparent 2px);animation:univStarTwinkle 2.5s ease-in-out infinite alternate;}
+@keyframes univStarTwinkle{from{opacity:.32;}to{opacity:.92;}}
 /* ── Auth screen ─────────────────────────────────────────── */
 #auth-screen{position:fixed;inset:0;background:radial-gradient(ellipse at top,#1e0040 0%,#0d0020 55%,#08001a 100%);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;}
 #auth-screen.hidden{display:none;}
@@ -450,11 +463,11 @@ const FX = [
 
 const BACKGROUNDS = [
   {id:'none',       name:'No Background',      cost:0,   rarity:'common',    emoji:'⬛', desc:"clean and simple 💜",         previewGrad:'rgba(30,0,60,.4)'},
-  {id:'bg_garden',  name:"Tonni's Garden",     cost:50,  rarity:'common',    emoji:'🌸', desc:"flowers bloom for Tonni 💜",  previewGrad:'linear-gradient(135deg,#001500,#200010)'},
+  {id:'bg_garden',  name:"Fatema's Garden",    cost:50,  rarity:'common',    emoji:'🌸', desc:"flowers bloom for Fatema 💜", previewGrad:'linear-gradient(135deg,#001500,#200010)'},
   {id:'bg_clouds',  name:'Pink Clouds',        cost:80,  rarity:'rare',      emoji:'☁️', desc:"floating on pink dreams 💜",  previewGrad:'linear-gradient(135deg,#200018,#0a000a)'},
   {id:'bg_galaxy',  name:'Purple Galaxy',      cost:150, rarity:'epic',      emoji:'🌌', desc:"lost in space with Tonni 💜", previewGrad:'linear-gradient(135deg,#060018,#000418)'},
   {id:'bg_golden',  name:'Golden Palace',      cost:0,   rarity:'legendary', exclusive:true, emoji:'🏰', desc:"chest only 💜", previewGrad:'linear-gradient(135deg,#1a1000,#0a0800)'},
-  {id:'bg_universe',name:"Tonni's Universe",   cost:0,   rarity:'mythic',    exclusive:true, emoji:'🌌', desc:"mythic — chest only 💜", previewGrad:'linear-gradient(135deg,#0a0018,#000418)'},
+  {id:'bg_universe',name:"Fatema's Universe",  cost:0,   rarity:'mythic',    exclusive:true, emoji:'🌌', desc:"mythic — chest only 💜", previewGrad:'linear-gradient(135deg,#0a0018,#000418)'},
 ];
 
 const CHEST_POOL = [
@@ -1025,6 +1038,12 @@ function applyEquipped() {
     const b = shopState.equipped.bg || 'none';
     bgEl.className = (b && b !== 'none') ? b : '';
   }
+
+  // Apply visible background overlay directly on the board element
+  const bgId = shopState.equipped.bg || 'none';
+  const prevBg = [...boardEl.classList].find(c => c.startsWith('board-bg_'));
+  if (prevBg) boardEl.classList.remove(prevBg);
+  if (bgId !== 'none') boardEl.classList.add('board-' + bgId);
 }
 
 // ── Game logic ─────────────────────────────────────────────────────────────
