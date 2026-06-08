@@ -346,8 +346,8 @@ const SKINS = [
   {id:'stars',        name:"Tonni's Stars",   cost:60, icon:'⭐',  emoji:'⭐', desc:"she's a star 💜"},
   {id:'diamonds',     name:'Queen Mode',      cost:75, icon:'💎',  emoji:'💎', desc:"Tonni's signature style 💜"},
   {id:'flowers',      name:'T for Tonni',     cost:55, icon:'🌸',  emoji:'🌸', desc:"T is for Tonni 💜"},
-  {id:'butterflies',  name:'Butterfly Tonni', cost:0,  exclusive:true, icon:'🦋', emoji:'🦋', desc:"chest exclusive 💜"},
-  {id:'cosmic',       name:'Cosmic Tonni',    cost:0,  exclusive:true, icon:'💫', emoji:'💫', desc:"legendary find 💜"},
+  {id:'butterflies',  name:'Butterfly Tonni', cost:120, icon:'🦋', emoji:'🦋', desc:"flutter into her world 💜"},
+  {id:'cosmic',       name:'Cosmic Tonni',    cost:200, icon:'💫', emoji:'💫', desc:"legendary cosmic energy 💜"},
 ];
 
 const FX = [
@@ -1107,7 +1107,7 @@ function renderShop(tab) {
   const items = tab === 'themes' ? THEMES : tab === 'skins' ? SKINS : FX;
 
   for (const item of items) {
-    const owned    = item.cost === 0 || shopState.owned.has(item.id);
+    const owned    = (item.cost === 0 && !item.exclusive) || shopState.owned.has(item.id);
     const eqKey    = tab === 'themes' ? 'theme' : tab === 'skins' ? 'skin' : 'effect';
     const equipped = shopState.equipped[eqKey] === item.id;
     const canAfford = coins >= item.cost;
