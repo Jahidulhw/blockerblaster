@@ -448,14 +448,14 @@ function layoutGame() {
   rh.style.paddingTop = saiT + 'px';   // push content below notch
   rs.style.height     = R2 + 'px';
   bw.style.height     = R3 + 'px';
-  bw.style.width      = IW + 'px';
+  bw.style.width      = IW + 'px';   // full width — board centers itself inside
   rt.style.height     = R4 + 'px';
   rb.style.height     = R5 + 'px';
   rb.style.paddingBottom = saiB + 'px'; // push content above home bar
 
   // ── Board cell size ───────────────────────────────────────────────────────
-  // Board is always square; constrained by the smaller of width and R3.
-  const boardSize = Math.max(60, Math.min(R3, IW));
+  // Leave 8px breathing room on each side so the board doesn't touch edges.
+  const boardSize = Math.max(60, Math.min(R3, IW - 16));
   const newCELL   = Math.max(24, Math.min(54, Math.floor((boardSize - 22) / 8)));
   const newTC     = Math.floor(newCELL * 0.58);
   const newSLOT   = 4 * newTC + 16;
