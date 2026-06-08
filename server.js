@@ -11,7 +11,7 @@ require('dotenv').config();
 const app        = express();
 const PORT       = process.env.PORT || 3000;
 const JWT_SECRET = process.env.JWT_SECRET || 'tonni-blast-dev-secret';
-const MONGO_URI  = process.env.MONGO_URI  || 'mongodb://localhost:27017/tonniblast';
+const MONGO_URI  = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://localhost:27017/tonniblast';
 
 app.use(cors());
 app.use(express.json());
