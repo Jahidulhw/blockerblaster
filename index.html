@@ -243,41 +243,36 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #gameover-screen.show .go-box{animation:goFadeIn .4s cubic-bezier(.34,1.4,.64,1) both;}
 /* ── Mobile responsive ──────────────────────────────────── */
 @media (max-width:520px) {
-  body{padding:6px 8px 8px;}
-  .header{margin-bottom:6px;}
-  .avatar{width:38px;height:38px;}
-  h1{font-size:1.2em;letter-spacing:2px;}
-  .tagline{font-size:.53em;}
-  #user-bar{margin-bottom:2px;gap:8px;}
+  body{padding:max(8px,env(safe-area-inset-top)) 8px max(6px,env(safe-area-inset-bottom));height:100dvh;justify-content:center;overflow-y:hidden;}
+  .header{margin-bottom:2px;gap:8px;}
+  .avatar{width:28px;height:28px;}
+  h1{font-size:1.1em;letter-spacing:2px;}
+  .tagline{font-size:.50em;}
+  #user-bar{margin-bottom:0;gap:6px;}
   .logout-btn{padding:3px 10px;font-size:.65em;}
-  .scores{gap:14px;margin-bottom:8px;}
-  .score-value{font-size:1.4em;}
-  .coins-val{font-size:1.15em;}
-  .score-label{font-size:.52em;}
-  .tray{margin-top:10px;gap:6px;}
-  .btn-shop{margin-top:8px;padding:9px 24px;font-size:.9em;letter-spacing:1.5px;}
-  #spin-avail-btn{margin-top:6px;padding:8px 20px;font-size:.85em;letter-spacing:1.5px;}
-  .spin-countdown{font-size:.61em;margin-top:4px;min-height:.85em;}
-  .shop-panel{padding:10px 10px 28px;}
+  .scores{gap:12px;margin-bottom:4px;}
+  .score-value{font-size:1.3em;}
+  .coins-val{font-size:1.1em;}
+  .score-label{font-size:.50em;}
+  .tray{margin-top:4px;gap:6px;}
+  .btn-row{display:flex;gap:8px;margin-top:4px;align-items:center;justify-content:center;}
+  .btn-shop{margin-top:0;padding:9px 20px;font-size:.88em;letter-spacing:1px;}
+  #spin-avail-btn{margin-top:0;padding:8px 16px;font-size:.82em;letter-spacing:1px;}
+  .spin-countdown{font-size:.58em;margin-top:3px;min-height:.80em;}
+  .shop-panel{padding:10px 10px max(28px,env(safe-area-inset-bottom));}
   .shop-hdr{gap:8px;}
   .shop-title{font-size:1.15em;}
   .item-btn{padding:8px 4px;font-size:.82em;min-height:36px;}
   .stab{font-size:.68em;padding:7px 2px;}
-  #spin-modal{padding:12px 10px 24px;}
+  #spin-modal{padding:12px 10px max(24px,env(safe-area-inset-bottom));}
   .spin-do-btn{padding:12px 36px;font-size:1em;}
   .spin-inner{gap:12px;}
   #shop{overscroll-behavior:contain;}
+  #auth-screen{padding-bottom:max(24px,env(safe-area-inset-bottom));}
 }
 @media (max-width:360px) {
   .shop-grid{grid-template-columns:1fr;}
   .item-preview{width:60px;}
-}
-@supports (padding-bottom:env(safe-area-inset-bottom)){
-  @media (max-width:520px){
-    body{padding-bottom:max(8px,env(safe-area-inset-bottom));}
-    .shop-panel{padding-bottom:max(28px,env(safe-area-inset-bottom));}
-    #auth-screen{padding-bottom:max(24px,env(safe-area-inset-bottom));}
-  }
 }
 </style>
 </head>
@@ -311,8 +306,10 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   <div class="piece-slot" id="slot-2"></div>
 </div>
 
+<div class="btn-row">
 <button class="btn-shop" onclick="openShop()">💜 SHOP</button>
 <button id="spin-avail-btn" onclick="openSpinModal()">🎡 SPIN NOW!</button>
+</div>
 <div id="spin-countdown" class="spin-countdown"></div>
 
 <div id="drag-ghost"></div>
@@ -360,16 +357,28 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 const VW = window.innerWidth;
 const VH = window.innerHeight;
 const _mob = VW <= 520;
-// Width: board + 24px for border/padding/body-margin
-const CELL_W = Math.floor((Math.min(VW, 520) - 24) / 8);
-// Tray: 3*SLOT_SIZE + 2*6px gap + 16px body-padding ≤ VW
-// SLOT_SIZE = 4*floor(CELL*0.6)+22 → CELL ≤ ((VW-32)/3-22)/2.4
-const CELL_TRAY = _mob ? Math.floor(((VW - 32) / 3 - 22) / 2.4) : 9999;
-// Height: fixed overhead ≈269px (compact mobile CSS), variable ≈10.4*CELL
-const CELL_H = _mob ? Math.floor((VH - 269) / 10.4) : 9999;
+function _readSAI(p) {
+  const d = document.createElement('div');
+  d.style.cssText = `position:fixed;top:0;left:0;width:0;pointer-events:none;height:${p};`;
+  document.documentElement.appendChild(d);
+  const h = d.getBoundingClientRect().height;
+  d.remove();
+  return isFinite(h) ? h : 0;
+}
+const _saiT = _mob ? _readSAI('env(safe-area-inset-top,0px)') : 0;
+const _saiB = _mob ? _readSAI('env(safe-area-inset-bottom,0px)') : 0;
+const _padT = Math.max(8, _saiT);
+const _padB = Math.max(6, _saiB);
+// Width: board = 8*CELL + 9*GAP + 4px border; body-padding = 8px each side
+const _cw2 = Math.floor((VW - 38) / 8);  // GAP=2: 8*CELL ≤ VW-16-22
+const CELL_W = (_cw2 >= 44) ? _cw2 : Math.floor((VW - 29) / 8);  // GAP=1: 8*CELL ≤ VW-16-13
+// Tray (TC=0.55): 3*(4*TC+22) + 12gap + 16bodyPad ≤ VW → CELL ≤ (VW-94)/6.6
+const CELL_TRAY = _mob ? Math.floor((VW - 94) / 6.6) : 9999;
+// Height: 10.2*CELL + 185px fixed overhead (header+scores+userbar+tray+btns+safe-areas)
+const CELL_H = _mob ? Math.floor((VH - _padT - _padB - 185) / 10.2) : 9999;
 const CELL = Math.max(28, Math.min(54, CELL_W, CELL_TRAY, CELL_H));
 const GAP  = CELL >= 44 ? 2 : 1;
-const TC   = Math.floor(CELL * 0.60);
+const TC   = Math.floor(CELL * (_mob ? 0.55 : 0.60));
 const TG   = 2;
 const SLOT_SIZE = 4 * TC + 3 * TG + 16;
 document.documentElement.style.setProperty('--cell', CELL + 'px');
