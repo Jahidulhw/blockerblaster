@@ -45,7 +45,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .toast-msg{font-size:.88em;font-weight:700;letter-spacing:.3px;}
 #best-toast .toast-msg{color:#ee99ff;}
 #rescue-toast .toast-msg{color:#88ffee;}
-#shop{display:none;position:fixed;inset:0;background:rgba(6,0,18,.96);z-index:10000;overflow-y:auto;-webkit-overflow-scrolling:touch;}
+#shop{display:none;position:fixed;inset:0;background:rgba(6,0,18,.96);z-index:10000;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 #shop.show{display:block;}
 .shop-panel{max-width:480px;margin:0 auto;padding:16px 12px 36px;display:flex;flex-direction:column;gap:12px;}
 .shop-hdr{display:flex;align-items:center;gap:10px;}
@@ -198,6 +198,43 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .go-play-btn:hover{transform:scale(1.05);box-shadow:0 0 36px rgba(180,0,255,.7);}
 @keyframes goFadeIn{from{opacity:0;transform:scale(.93);}to{opacity:1;transform:scale(1);}}
 #gameover-screen.show .go-box{animation:goFadeIn .4s cubic-bezier(.34,1.4,.64,1) both;}
+/* ── Mobile responsive ──────────────────────────────────── */
+@media (max-width:520px) {
+  body{padding:6px 8px 8px;}
+  .header{margin-bottom:6px;}
+  .avatar{width:38px;height:38px;}
+  h1{font-size:1.2em;letter-spacing:2px;}
+  .tagline{font-size:.53em;}
+  #user-bar{margin-bottom:2px;gap:8px;}
+  .logout-btn{padding:3px 10px;font-size:.65em;}
+  .scores{gap:14px;margin-bottom:8px;}
+  .score-value{font-size:1.4em;}
+  .coins-val{font-size:1.15em;}
+  .score-label{font-size:.52em;}
+  .tray{margin-top:10px;gap:6px;}
+  .btn-shop{margin-top:8px;padding:9px 24px;font-size:.9em;letter-spacing:1.5px;}
+  #spin-avail-btn{margin-top:6px;padding:8px 20px;font-size:.85em;letter-spacing:1.5px;}
+  .spin-countdown{font-size:.61em;margin-top:4px;min-height:.85em;}
+  .shop-panel{padding:10px 10px 28px;}
+  .shop-hdr{gap:8px;}
+  .shop-title{font-size:1.15em;}
+  .item-btn{padding:8px 4px;font-size:.82em;min-height:36px;}
+  #spin-modal{padding:12px 10px 24px;}
+  .spin-do-btn{padding:12px 36px;font-size:1em;}
+  .spin-inner{gap:12px;}
+  #shop{overscroll-behavior:contain;}
+}
+@media (max-width:360px) {
+  .shop-grid{grid-template-columns:1fr;}
+  .item-preview{width:60px;}
+}
+@supports (padding-bottom:env(safe-area-inset-bottom)){
+  @media (max-width:520px){
+    body{padding-bottom:max(8px,env(safe-area-inset-bottom));}
+    .shop-panel{padding-bottom:max(28px,env(safe-area-inset-bottom));}
+    #auth-screen{padding-bottom:max(24px,env(safe-area-inset-bottom));}
+  }
+}
 </style>
 </head>
 <body>
@@ -274,8 +311,17 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 <script>
 'use strict';
 
-const VW   = Math.min(window.innerWidth, 520);
-const CELL = Math.max(30, Math.min(54, Math.floor((VW - 32) / 8)));
+const VW = window.innerWidth;
+const VH = window.innerHeight;
+const _mob = VW <= 520;
+// Width: board + 24px for border/padding/body-margin
+const CELL_W = Math.floor((Math.min(VW, 520) - 24) / 8);
+// Tray: 3*SLOT_SIZE + 2*6px gap + 16px body-padding ≤ VW
+// SLOT_SIZE = 4*floor(CELL*0.6)+22 → CELL ≤ ((VW-32)/3-22)/2.4
+const CELL_TRAY = _mob ? Math.floor(((VW - 32) / 3 - 22) / 2.4) : 9999;
+// Height: fixed overhead ≈269px (compact mobile CSS), variable ≈10.4*CELL
+const CELL_H = _mob ? Math.floor((VH - 269) / 10.4) : 9999;
+const CELL = Math.max(28, Math.min(54, CELL_W, CELL_TRAY, CELL_H));
 const GAP  = CELL >= 44 ? 2 : 1;
 const TC   = Math.floor(CELL * 0.60);
 const TG   = 2;
@@ -544,7 +590,9 @@ let _wheelAngle = 0, _spinning = false, _spinPrizeIdx = -1;
 function _drawWheel() {
   const cv = document.getElementById('wheel-cv');
   if (!cv) return;
-  const S=cv.width, cx=S/2, cy=S/2, R=cx-8;
+  const S = Math.min(280, window.innerWidth - 80);
+  cv.width = S; cv.height = S;
+  const cx=S/2, cy=S/2, R=cx-8;
   const ctx = cv.getContext('2d');
   ctx.clearRect(0,0,S,S);
   const n = WHEEL_PRIZES.length, SEG = (Math.PI*2)/n;
@@ -1187,21 +1235,23 @@ function buildDragGhost(p) {
 function moveGhostEl(cx, cy) {
   const {maxR, maxC} = pBounds(drag.piece);
   const pw = (maxC+1)*(CELL+GAP)-GAP, ph = (maxR+1)*(CELL+GAP)-GAP;
-  ghostEl.style.transform = `translate3d(${cx - pw/2}px,${cy - ph/2 - CELL*1.1}px,0)`;
+  // position ghost so its bottom edge is CELL*0.6 px above the finger — works for any piece height
+  ghostEl.style.transform = `translate3d(${cx - pw/2}px,${cy - ph - CELL * 0.6}px,0)`;
 }
 
 function cursorToRC(cx, cy) {
   const {maxR, maxC} = pBounds(drag.piece);
   const pw = (maxC+1)*(CELL+GAP)-GAP, ph = (maxR+1)*(CELL+GAP)-GAP;
-  const pLeft = cx - pw/2, pTop = cy - ph/2 - CELL*1.1;
+  const pLeft = cx - pw/2, pTop = cy - ph - CELL * 0.6;
   const ref = cells[0][0].getBoundingClientRect();
   return {row: Math.round((pTop-ref.top)/(CELL+GAP)), col: Math.round((pLeft-ref.left)/(CELL+GAP))};
 }
 
 function effectivePos(rawX, rawY) {
+  const speed = drag.isTouch ? 1.0 : DRAG_SPEED;
   return {
-    ex: drag.grabX + (rawX - drag.grabX) * DRAG_SPEED,
-    ey: drag.grabY + (rawY - drag.grabY) * DRAG_SPEED,
+    ex: drag.grabX + (rawX - drag.grabX) * speed,
+    ey: drag.grabY + (rawY - drag.grabY) * speed,
   };
 }
 
@@ -1228,9 +1278,9 @@ function clearBoardGhost() {
   ghostSet.clear();
 }
 
-function onStart(idx, cx, cy) {
+function onStart(idx, cx, cy, isTouch) {
   if (!tray[idx] || document.getElementById('shop').classList.contains('show')) return;
-  drag = {idx, piece:tray[idx], grabX:cx, grabY:cy};
+  drag = {idx, piece:tray[idx], grabX:cx, grabY:cy, isTouch:!!isTouch};
   buildDragGhost(drag.piece); moveGhostEl(cx, cy);
   showBoardGhost(...Object.values(cursorToRC(cx, cy)));
 }
@@ -1260,7 +1310,7 @@ function onEnd(cx, cy) {
 for (let i = 0; i < 3; i++) {
   const slot = document.getElementById('slot-'+i), ii = i;
   slot.addEventListener('mousedown', e => { if(!tray[ii])return; e.preventDefault(); onStart(ii,e.clientX,e.clientY); });
-  slot.addEventListener('touchstart', e => { if(!tray[ii])return; e.preventDefault(); const t=e.touches[0]; onStart(ii,t.clientX,t.clientY); }, {passive:false});
+  slot.addEventListener('touchstart', e => { if(!tray[ii])return; e.preventDefault(); const t=e.touches[0]; onStart(ii,t.clientX,t.clientY,true); }, {passive:false});
 }
 document.addEventListener('mousemove', e => onMove(e.clientX, e.clientY));
 document.addEventListener('mouseup',   e => onEnd(e.clientX, e.clientY));
