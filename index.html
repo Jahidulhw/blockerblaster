@@ -193,6 +193,8 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 /* ── Chest burst particles ───────────────────────────────── */
 .chest-particle{position:fixed;pointer-events:none;z-index:20001;animation:particleBurst .9s ease-out forwards;}
 @keyframes particleBurst{0%{transform:translate(0,0) scale(1.3);opacity:1;}100%{transform:translate(var(--tx),var(--ty)) scale(0);opacity:0;}}
+/* ── Block placement particles ───────────────────────────── */
+.block-particle{position:fixed;pointer-events:none;z-index:5001;border-radius:50%;animation:particleBurst var(--dur,.38s) ease-out forwards;}
 /* ── Bounce & board shake ────────────────────────────────── */
 @keyframes cellBounce{0%{transform:scale(1);}22%{transform:scale(1.28);}55%{transform:scale(0.88);}78%{transform:scale(1.08);}100%{transform:scale(1);}}
 .cell.bounce{animation:cellBounce .38s cubic-bezier(.36,.07,.19,.97);}
@@ -1275,6 +1277,7 @@ function doPlace(p, sr, sc) {
     cells[r][c].classList.add('bounce');
     setTimeout(() => cells[r][c].classList.remove('bounce'), 390);
     if (shopState.equipped.effect === 'sparkle') spawnSparkles(r, c);
+    emitBlockParticles(r, c, p.c);
   }
   snd_place();
   bump(p.s.length * 10);
@@ -1316,6 +1319,9 @@ function clearLines() {
 
   snd_chime(total);
   if (total >= 2) spawnClearHearts(total);
+  const _cpts = [0, Math.floor(N/2), N-1];
+  for (const row of fullRows) for (const cp of _cpts) emitBlockParticles(row, cp, '#ffffff', 6, 1.5);
+  for (const col of fullCols) for (const cp of _cpts) emitBlockParticles(cp, col, '#eeddff', 6, 1.5);
 
   const cls = shopState.equipped.effect === 'rainbow' ? 'rainbow-clear' : 'clearing';
   const toFlash = new Set();
@@ -1386,6 +1392,30 @@ function spawnSparkles(r, c) {
     el.style.setProperty('--ty', (dy * d) + 'px');
     document.body.appendChild(el);
     setTimeout(() => el.remove(), 600);
+  }
+}
+
+let _bpCount = 0;
+function emitBlockParticles(r, c, color, count, distScale) {
+  if (_bpCount > 80) return;
+  count = count || 5; distScale = distScale || 1;
+  const rect = cells[r][c].getBoundingClientRect();
+  const cx = rect.left + rect.width * .5;
+  const cy = rect.top  + rect.height * .5;
+  for (let i = 0; i < count; i++) {
+    _bpCount++;
+    const angle = (i / count) * Math.PI * 2 + (Math.random() - .5) * .9;
+    const dist  = (10 + Math.random() * 22) * distScale;
+    const size  = 2.5 + Math.random() * 3;
+    const dur   = .24 + Math.random() * .16;
+    const tx = (Math.cos(angle) * dist).toFixed(1);
+    const ty = (Math.sin(angle) * dist).toFixed(1);
+    const half = (size / 2).toFixed(1);
+    const el = document.createElement('div');
+    el.className = 'block-particle';
+    el.style.cssText = 'left:'+cx+'px;top:'+cy+'px;width:'+size.toFixed(1)+'px;height:'+size.toFixed(1)+'px;background:'+color+';--tx:'+tx+'px;--ty:'+ty+'px;--dur:'+dur.toFixed(2)+'s;margin-left:-'+half+'px;margin-top:-'+half+'px;';
+    document.body.appendChild(el);
+    setTimeout(() => { el.remove(); _bpCount--; }, (dur + .06) * 1000);
   }
 }
 
