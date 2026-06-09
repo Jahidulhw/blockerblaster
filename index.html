@@ -1810,5 +1810,86 @@ function initGame() {
     <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
+<script>
+(function() {
+  var _actx = null, _analyser = null, _source = null;
+  var _buf = new Uint8Array(256);
+  var _hue = 280;
+  var _running = false;
+
+  function initBeatVisuals() {
+    if (_actx) { _actx.resume(); return; }
+    var AC = window.AudioContext || window.webkitAudioContext;
+    if (!AC) return;
+    try {
+      _actx = new AC();
+      var m = document.getElementById('bgMusic');
+      _source   = _actx.createMediaElementSource(m);
+      _analyser = _actx.createAnalyser();
+      _analyser.fftSize = 512;
+      _analyser.smoothingTimeConstant = 0.82;
+      _source.connect(_analyser);
+      _analyser.connect(_actx.destination);
+      if (!_running) { _running = true; beatLoop(); }
+    } catch(e) {}
+  }
+
+  function resetEffects() {
+    var board = document.getElementById('board');
+    if (board) { board.style.borderColor = ''; board.style.boxShadow = ''; }
+    var ov = document.getElementById('beat-overlay');
+    if (ov)    { ov.style.opacity = '0'; ov.style.background = ''; }
+    var bw = document.getElementById('board-wrap');
+    if (bw)    { bw.style.filter = ''; }
+  }
+
+  function beatLoop() {
+    requestAnimationFrame(beatLoop);
+    var m = document.getElementById('bgMusic');
+    if (!_analyser || !m || m.paused) { resetEffects(); return; }
+
+    _analyser.getByteFrequencyData(_buf);
+
+    var bass = 0;
+    for (var i = 0; i < 8; i++) bass += _buf[i];
+    bass = Math.min(1, (bass / 8) / 170);
+
+    var mid = 0;
+    for (var i = 8; i < 28; i++) mid += _buf[i];
+    mid = Math.min(1, (mid / 20) / 140);
+
+    _hue = (_hue + bass * 1.4) % 360;
+    var h = _hue;
+
+    var board = document.getElementById('board');
+    if (board) {
+      var glow = 18 + bass * 72;
+      board.style.borderColor = 'hsla('+h+',100%,'+(52+bass*28)+'%,'+(0.22+bass*0.78)+')';
+      board.style.boxShadow = [
+        '0 0 '+glow+'px hsla('+h+',100%,62%,'+(0.3+bass*0.7)+')',
+        '0 0 '+(glow*1.9)+'px hsla('+((h+30)%360)+',100%,60%,'+(0.12+bass*0.38)+')',
+        'inset 0 0 '+(8+bass*38)+'px hsla('+h+',100%,42%,'+(0.06+bass*0.38)+')'
+      ].join(',');
+    }
+
+    var ov = document.getElementById('beat-overlay');
+    if (ov) {
+      ov.style.opacity = (bass * 0.3).toFixed(3);
+      ov.style.background = 'radial-gradient(ellipse at 50% 50%,hsla('+h+',100%,32%,'+(bass*0.6).toFixed(3)+'),transparent 68%)';
+    }
+
+    var bw = document.getElementById('board-wrap');
+    if (bw) {
+      bw.style.filter = bass > 0.12
+        ? 'brightness('+(1+bass*0.55).toFixed(3)+') saturate('+(1+bass*0.9).toFixed(2)+') hue-rotate('+(mid*38).toFixed(1)+'deg)'
+        : '';
+    }
+  }
+
+  // Hook into the music button click (capture phase fires before onclick)
+  var btn = document.getElementById('music-btn');
+  if (btn) btn.addEventListener('click', initBeatVisuals, true);
+})();
+</script>
 </body>
 </html>
