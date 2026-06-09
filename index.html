@@ -327,7 +327,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </head>
 <body>
 <audio id="bgMusic" src="Naal%20Nachna%20%28Lyrics%29%20-%20Dhurandhar%20%20Shashwat%20S%2C%20Afsana%20K%2C%20Rebel%2C%20Irshad%20K%20%20Ranveer%20S%2C%20Akshay%20K.mp3" loop preload="auto"></audio>
-<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();" style="position:fixed;top:15px;right:15px;z-index:99999;background:#8800ff;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;">🎵</button>
+<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();if(!window._beatInited){window._beatInited=true;var ac=new(window.AudioContext||window.webkitAudioContext)();var src=ac.createMediaElementSource(m);var an=ac.createAnalyser();an.fftSize=256;src.connect(an);an.connect(ac.destination);var arr=new Uint8Array(an.frequencyBinCount);(function loop(){requestAnimationFrame(loop);an.getByteFrequencyData(arr);var bass=(arr[0]+arr[1]+arr[2]+arr[3])/4;var board=document.getElementById('board');if(board)board.style.boxShadow=bass>150?'0 0 40px #ff00ff':'';}());}" style="position:fixed;top:15px;right:15px;z-index:99999;background:#8800ff;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;">🎵</button>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
 
@@ -1810,86 +1810,5 @@ function initGame() {
     <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
-<script>
-(function() {
-  var _actx = null, _analyser = null, _source = null;
-  var _buf = new Uint8Array(256);
-  var _hue = 280;
-  var _running = false;
-
-  function initBeatVisuals() {
-    if (_actx) { _actx.resume(); return; }
-    var AC = window.AudioContext || window.webkitAudioContext;
-    if (!AC) return;
-    try {
-      _actx = new AC();
-      var m = document.getElementById('bgMusic');
-      _source   = _actx.createMediaElementSource(m);
-      _analyser = _actx.createAnalyser();
-      _analyser.fftSize = 512;
-      _analyser.smoothingTimeConstant = 0.82;
-      _source.connect(_analyser);
-      _analyser.connect(_actx.destination);
-      if (!_running) { _running = true; beatLoop(); }
-    } catch(e) {}
-  }
-
-  function resetEffects() {
-    var board = document.getElementById('board');
-    if (board) { board.style.borderColor = ''; board.style.boxShadow = ''; }
-    var ov = document.getElementById('beat-overlay');
-    if (ov)    { ov.style.opacity = '0'; ov.style.background = ''; }
-    var bw = document.getElementById('board-wrap');
-    if (bw)    { bw.style.filter = ''; }
-  }
-
-  function beatLoop() {
-    requestAnimationFrame(beatLoop);
-    var m = document.getElementById('bgMusic');
-    if (!_analyser || !m || m.paused) { resetEffects(); return; }
-
-    _analyser.getByteFrequencyData(_buf);
-
-    var bass = 0;
-    for (var i = 0; i < 8; i++) bass += _buf[i];
-    bass = Math.min(1, (bass / 8) / 170);
-
-    var mid = 0;
-    for (var i = 8; i < 28; i++) mid += _buf[i];
-    mid = Math.min(1, (mid / 20) / 140);
-
-    _hue = (_hue + bass * 1.4) % 360;
-    var h = _hue;
-
-    var board = document.getElementById('board');
-    if (board) {
-      var glow = 18 + bass * 72;
-      board.style.borderColor = 'hsla('+h+',100%,'+(52+bass*28)+'%,'+(0.22+bass*0.78)+')';
-      board.style.boxShadow = [
-        '0 0 '+glow+'px hsla('+h+',100%,62%,'+(0.3+bass*0.7)+')',
-        '0 0 '+(glow*1.9)+'px hsla('+((h+30)%360)+',100%,60%,'+(0.12+bass*0.38)+')',
-        'inset 0 0 '+(8+bass*38)+'px hsla('+h+',100%,42%,'+(0.06+bass*0.38)+')'
-      ].join(',');
-    }
-
-    var ov = document.getElementById('beat-overlay');
-    if (ov) {
-      ov.style.opacity = (bass * 0.3).toFixed(3);
-      ov.style.background = 'radial-gradient(ellipse at 50% 50%,hsla('+h+',100%,32%,'+(bass*0.6).toFixed(3)+'),transparent 68%)';
-    }
-
-    var bw = document.getElementById('board-wrap');
-    if (bw) {
-      bw.style.filter = bass > 0.12
-        ? 'brightness('+(1+bass*0.55).toFixed(3)+') saturate('+(1+bass*0.9).toFixed(2)+') hue-rotate('+(mid*38).toFixed(1)+'deg)'
-        : '';
-    }
-  }
-
-  // Hook into the music button click (capture phase fires before onclick)
-  var btn = document.getElementById('music-btn');
-  if (btn) btn.addEventListener('click', initBeatVisuals, true);
-})();
-</script>
 </body>
 </html>
