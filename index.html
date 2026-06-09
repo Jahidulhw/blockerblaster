@@ -1545,7 +1545,8 @@ function equipItem(eqKey, id) {
 }
 
 // ── Drag ───────────────────────────────────────────────────────────────────
-const DRAG_SPEED = 1.15; // piece races ahead of the cursor as you pull it
+const DRAG_SPEED       = 1.6;  // piece races ahead of the cursor (mouse)
+const DRAG_SPEED_TOUCH = 1.4;  // piece races ahead of the finger (touch)
 const ghostEl = document.getElementById('drag-ghost');
 
 function pBounds(p) {
@@ -1583,7 +1584,7 @@ function cursorToRC(cx, cy) {
 }
 
 function effectivePos(rawX, rawY) {
-  const speed = drag.isTouch ? 1.0 : DRAG_SPEED;
+  const speed = drag.isTouch ? DRAG_SPEED_TOUCH : DRAG_SPEED;
   return {
     ex: drag.grabX + (rawX - drag.grabX) * speed,
     ey: drag.grabY + (rawY - drag.grabY) * speed,
