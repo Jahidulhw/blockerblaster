@@ -302,14 +302,14 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #beat-overlay{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;}
 #music-btn{
   position:fixed;
-  bottom:max(92px,calc(78px + env(safe-area-inset-bottom,0px)));
+  top:max(14px,env(safe-area-inset-top,14px));
   right:14px;
   z-index:9010;
-  width:40px;height:40px;
+  width:38px;height:38px;
   border-radius:50%;
   background:rgba(100,40,180,.28);
   border:2px solid rgba(180,80,255,.35);
-  color:#fff;font-size:1.15em;
+  color:#fff;font-size:1.05em;
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:background .2s,box-shadow .2s,border-color .2s;
@@ -667,6 +667,7 @@ function _unlockAudio() {
       src.start(0);
     } catch(_) {}
   }
+  _restoreMusicPref();
 }
 document.addEventListener('touchstart', _unlockAudio, { passive: true });
 document.addEventListener('mousedown',  _unlockAudio, { passive: true });
@@ -722,105 +723,32 @@ function snd_gameover() {
 }
 
 // ── Music & beat-synced light show ────────────────────────────────────────
-// Procedural drum machine + AnalyserNode driving real-time visuals.
-// No external files — everything generated with Web Audio API.
+// HTML5 Audio → MediaElementSourceNode → AnalyserNode → destination.
+
+const MUSIC_URL = 'https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3';
 
 let _musicOn       = false;
-let _musicMaster   = null;
 let _musicAnalyser = null;
-let _musicTimer    = null;
 let _beatAnimId    = null;
-let _musicStep     = 0;
-let _musicNext     = 0;
+let _musicAudioEl  = null;   // <audio> element (created once)
+let _musicSrc      = null;   // MediaElementSourceNode (created once per element)
 
-const _MBPM  = 124;
-const _MSTEP = (60 / _MBPM) / 4;   // 16th-note duration in seconds
-
-// 16-step patterns  (1 = hit, 0 = rest)
-const _MPAT = {
-  kick:  [1,0,0,0, 0,0,0,0, 1,0,0,0, 0,0,0,0],
-  snare: [0,0,0,0, 1,0,0,0, 0,0,0,0, 1,0,0,0],
-  hat:   [1,0,1,0, 1,0,1,0, 1,0,1,0, 1,0,1,0],
-  ohat:  [0,0,0,0, 0,0,1,0, 0,0,0,0, 0,0,1,0],
-  bass:  [1,0,0,1, 0,0,1,0, 1,0,0,0, 0,1,0,0],
-};
-const _BHZS = [65.41, 77.78, 87.31, 98.00]; // C2 D#2 F2 G2
-
-function _mnoise(ctx, dur) {
-  const n = Math.ceil(ctx.sampleRate * dur);
-  const b = ctx.createBuffer(1, n, ctx.sampleRate);
-  const d = b.getChannelData(0);
-  for (let i = 0; i < n; i++) d[i] = Math.random() * 2 - 1;
-  return b;
-}
-function _mkick(ctx, dst, t) {
-  const o = ctx.createOscillator(), g = ctx.createGain();
-  o.connect(g); g.connect(dst);
-  o.frequency.setValueAtTime(160, t);
-  o.frequency.exponentialRampToValueAtTime(30, t + 0.45);
-  g.gain.setValueAtTime(1.1, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t + 0.5);
-  o.start(t); o.stop(t + 0.55);
-}
-function _msnare(ctx, dst, t) {
-  const s = ctx.createBufferSource(); s.buffer = _mnoise(ctx, 0.22);
-  const f = ctx.createBiquadFilter(); f.type='bandpass'; f.frequency.value=2400; f.Q.value=0.6;
-  const g = ctx.createGain();
-  s.connect(f); f.connect(g); g.connect(dst);
-  g.gain.setValueAtTime(0.65, t); g.gain.exponentialRampToValueAtTime(0.001, t+0.2);
-  const o = ctx.createOscillator(), og = ctx.createGain();
-  o.frequency.value=190; o.connect(og); og.connect(dst);
-  og.gain.setValueAtTime(0.35, t); og.gain.exponentialRampToValueAtTime(0.001, t+0.06);
-  s.start(t); o.start(t); s.stop(t+0.25); o.stop(t+0.1);
-}
-function _mhat(ctx, dst, t, open) {
-  const dur = open ? 0.32 : 0.048;
-  const s = ctx.createBufferSource(); s.buffer = _mnoise(ctx, dur);
-  const f = ctx.createBiquadFilter(); f.type='highpass'; f.frequency.value=8500;
-  const g = ctx.createGain();
-  s.connect(f); f.connect(g); g.connect(dst);
-  g.gain.setValueAtTime(open ? 0.28 : 0.26, t);
-  g.gain.exponentialRampToValueAtTime(0.001, t+dur);
-  s.start(t); s.stop(t+dur+0.01);
-}
-function _mbass(ctx, dst, t, hz) {
-  const o = ctx.createOscillator(), lp = ctx.createBiquadFilter(), g = ctx.createGain();
-  o.type='sawtooth'; o.frequency.value=hz;
-  lp.type='lowpass'; lp.frequency.value=380; lp.Q.value=2.2;
-  o.connect(lp); lp.connect(g); g.connect(dst);
-  const d = _MSTEP * 0.82;
-  g.gain.setValueAtTime(0.55, t); g.gain.setValueAtTime(0.4, t+d*0.7);
-  g.gain.exponentialRampToValueAtTime(0.001, t+d);
-  o.start(t); o.stop(t+d+0.02);
-}
-function _mpad(ctx, dst, t) {
-  [130.81, 155.56, 196.00, 261.63].forEach(hz => {
-    const o = ctx.createOscillator(), g = ctx.createGain();
-    o.type='sine'; o.frequency.value=hz;
-    o.connect(g); g.connect(dst);
-    const dur = _MSTEP * 16;
-    g.gain.setValueAtTime(0, t);
-    g.gain.linearRampToValueAtTime(0.07, t+0.4);
-    g.gain.setValueAtTime(0.07, t+dur-0.4);
-    g.gain.linearRampToValueAtTime(0, t+dur);
-    o.start(t); o.stop(t+dur+0.02);
-  });
-}
-
-function _musicTick() {
-  const ctx = _ctx(); if (!ctx || !_musicOn) return;
-  while (_musicNext < ctx.currentTime + 0.12) {
-    const s = _musicStep, t = _musicNext;
-    if (_MPAT.kick[s])  _mkick(ctx, _musicMaster, t);
-    if (_MPAT.snare[s]) _msnare(ctx, _musicMaster, t);
-    if (_MPAT.hat[s])   _mhat(ctx, _musicMaster, t, false);
-    if (_MPAT.ohat[s])  _mhat(ctx, _musicMaster, t, true);
-    if (_MPAT.bass[s])  _mbass(ctx, _musicMaster, t, _BHZS[Math.floor(s/4) % _BHZS.length]);
-    if (s === 0)        _mpad(ctx, _musicMaster, t);
-    _musicStep = (s + 1) % 16;
-    _musicNext += _MSTEP;
-  }
-  _musicTimer = setTimeout(_musicTick, 22);
+function _initMusicNodes() {
+  const ctx = _ctx(); if (!ctx) return false;
+  if (_musicSrc) return true;
+  try {
+    _musicAudioEl = new Audio();
+    _musicAudioEl.crossOrigin = 'anonymous';
+    _musicAudioEl.loop = true;
+    _musicAudioEl.src = MUSIC_URL;
+    _musicAnalyser = ctx.createAnalyser();
+    _musicAnalyser.fftSize = 512;
+    _musicAnalyser.smoothingTimeConstant = 0.85;
+    _musicSrc = ctx.createMediaElementSource(_musicAudioEl);
+    _musicSrc.connect(_musicAnalyser);
+    _musicAnalyser.connect(ctx.destination);
+    return true;
+  } catch(e) { return false; }
 }
 
 // Frequency data buffer — reused every animation frame
@@ -888,28 +816,35 @@ function toggleMusic() {
   const btn = document.getElementById('music-btn');
   if (_musicOn) {
     _musicOn = false;
-    if (_musicTimer)  { clearTimeout(_musicTimer);        _musicTimer=null; }
-    if (_beatAnimId)  { cancelAnimationFrame(_beatAnimId); _beatAnimId=null; }
-    _musicMaster=null; _musicAnalyser=null;
+    if (_musicAudioEl) _musicAudioEl.pause();
+    if (_beatAnimId) { cancelAnimationFrame(_beatAnimId); _beatAnimId = null; }
     _beatReset();
-    btn.textContent='🎵'; btn.classList.remove('music-on');
+    btn.textContent = '🎵';
+    btn.classList.remove('music-on');
+    localStorage.setItem('tonni_music', '0');
   } else {
-    const ctx = _ctx(); if (!ctx) return;
-    _musicMaster   = ctx.createGain();
-    _musicMaster.gain.value = 0.5;
-    _musicAnalyser = ctx.createAnalyser();
-    _musicAnalyser.fftSize = 512;
-    _musicAnalyser.smoothingTimeConstant = 0.82;
-    _musicMaster.connect(_musicAnalyser);
-    _musicAnalyser.connect(ctx.destination);
-    _musicOn   = true;
-    _musicStep = 0;
-    _musicNext = ctx.currentTime + 0.08;
-    _musicTick();
+    if (!_initMusicNodes()) return;
+    _musicAudioEl.play().catch(() => {});
+    _musicOn = true;
     _beatAnimId = requestAnimationFrame(_beatLoop);
-    btn.textContent='🔊'; btn.classList.add('music-on');
+    btn.textContent = '🔊';
+    btn.classList.add('music-on');
+    localStorage.setItem('tonni_music', '1');
   }
 }
+
+// Called from _unlockAudio after iOS AudioContext unblocks — auto-starts if pref was on.
+function _restoreMusicPref() {
+  if (localStorage.getItem('tonni_music') === '1' && !_musicOn) toggleMusic();
+}
+
+// Show button in ready state immediately if preference was saved as on
+(function() {
+  if (localStorage.getItem('tonni_music') === '1') {
+    const btn = document.getElementById('music-btn');
+    if (btn) { btn.textContent = '🔊'; btn.classList.add('music-on'); }
+  }
+}());
 
 // ── Animation helpers ─────────────────────────────────────────────────────
 function shakeBoard() {
