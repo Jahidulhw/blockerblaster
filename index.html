@@ -1811,29 +1811,32 @@ function initGame() {
   </div>
 </div>
 <script>
-/* ── Border light dots ──────────────────────────────────────────────────── */
+/* ── Border light dots (static positions, beat-reactive glow only) ───────── */
 (function () {
   var canvas = null, ctx = null;
-  var N = 28;          // number of dots
-  var progress = 0;    // 0-1: leading dot's position around perimeter
-  var last = 0;
+  var N = 28;
 
-  /* Return [x, y] along board perimeter for t in [0,1] (clockwise, top-left origin) */
-  function perimPt(t, W, H) {
-    var p = 2 * (W + H), d = (((t % 1) + 1) % 1) * p;
-    if (d < W)       return [d,       0      ];
-    d -= W;
-    if (d < H)       return [W,       d      ];
-    d -= H;
-    if (d < W)       return [W - d,   H      ];
-    d -= W;
-                     return [0,       H - d  ];
+  /* Fixed dot positions: evenly spaced around perimeter, computed once */
+  var dots = null;
+  function buildDots(W, H) {
+    dots = [];
+    for (var i = 0; i < N; i++) {
+      var t = i / N;
+      var p = 2 * (W + H), d = t * p;
+      var x, y;
+      if      (d < W)       { x = d;       y = 0;     }
+      else if (d < W+H)     { x = W;       y = d-W;   }
+      else if (d < 2*W+H)   { x = W-(d-W-H); y = H;   }
+      else                  { x = 0;       y = H-(d-2*W-H); }
+      dots.push([x, y]);
+    }
   }
+
+  var lastW = 0, lastH = 0;
 
   function frame(ts) {
     requestAnimationFrame(frame);
 
-    /* Lazy-create canvas */
     if (!canvas) {
       canvas = document.createElement('canvas');
       canvas.style.cssText = 'position:fixed;pointer-events:none;z-index:50;';
@@ -1846,7 +1849,6 @@ function initGame() {
     var r = board.getBoundingClientRect();
     if (r.width < 10) return;
 
-    /* Resize/reposition canvas to sit around the board with padding */
     var pad = 14;
     var cw = (r.width  + pad * 2) | 0;
     var ch = (r.height + pad * 2) | 0;
@@ -1858,12 +1860,11 @@ function initGame() {
     canvas.style.width  = cw + 'px';
     canvas.style.height = ch + 'px';
 
-    /* Advance travel — full revolution in ~4 s */
-    var dt = last ? Math.min(ts - last, 50) : 16;
-    last = ts;
-    progress = (progress + dt * 0.00025) % 1;
+    /* Rebuild fixed dot positions only when board size changes */
+    var W = r.width, H = r.height;
+    if (W !== lastW || H !== lastH) { buildDots(W, H); lastW = W; lastH = H; }
 
-    /* Read bass from shared analyser (set by onclick) */
+    /* Read bass */
     var bass = 0;
     if (window._beatAnalyser && window._beatArr) {
       window._beatAnalyser.getByteFrequencyData(window._beatArr);
@@ -1871,40 +1872,25 @@ function initGame() {
       bass = Math.min(((a[0] + a[1] + a[2] + a[3]) / 4) / 255, 1);
     }
 
-    /* Soft idle breath so dots look alive even before music starts */
-    var idle = 0.15 + 0.10 * Math.sin(ts * 0.002);
-    var b    = Math.max(idle, bass);
+    /* Soft idle glow so dots are always visible */
+    var b = Math.max(0.18, bass);
 
     ctx.clearRect(0, 0, cw, ch);
 
-    var W = r.width, H = r.height;
-
     for (var i = 0; i < N; i++) {
-      var t  = (progress + i / N) % 1;
-      var pt = perimPt(t, W, H);
-      var x  = pt[0] + pad;
-      var y  = pt[1] + pad;
+      var x = dots[i][0] + pad;
+      var y = dots[i][1] + pad;
 
-      /* Traveling wave makes each dot ripple individually */
-      var wave   = 0.5 + 0.5 * Math.sin(t * Math.PI * 6 - ts * 0.005);
-      var localB = b * (0.55 + 0.45 * wave);
-
-      var radius = 3   + localB * 5.5;
-      var blur   = 8   + localB * 24;
-
-      /* Purple → pink → white as beat rises */
-      var rr  = Math.round(170 + localB * 85);
-      var gg  = Math.round(20  + localB * 130);
-      var aa  = (0.60 + localB * 0.40).toFixed(2);
+      var radius = 3   + b * 5.5;
+      var blur   = 8   + b * 24;
+      var rr     = Math.round(170 + b * 85);
+      var gg     = Math.round(20  + b * 130);
+      var aa     = (0.60 + b * 0.40).toFixed(2);
 
       ctx.save();
       ctx.shadowBlur  = blur;
-      ctx.shadowColor = localB > 0.55
-        ? 'rgba(255,160,255,0.95)'
-        : 'rgba(150,0,255,0.85)';
-      ctx.fillStyle = localB > 0.72
-        ? '#ffffff'
-        : 'rgba(' + rr + ',' + gg + ',255,' + aa + ')';
+      ctx.shadowColor = b > 0.55 ? 'rgba(255,160,255,0.95)' : 'rgba(150,0,255,0.85)';
+      ctx.fillStyle   = b > 0.72 ? '#ffffff' : 'rgba(' + rr + ',' + gg + ',255,' + aa + ')';
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, 6.2832);
       ctx.fill();
