@@ -38,7 +38,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #game-container{display:flex;flex-direction:column;align-items:center;width:100%;}
 #row-header{display:flex;align-items:center;justify-content:center;width:100%;position:relative;}
 #row-scores{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;}
-#board-wrap{display:flex;align-items:center;justify-content:center;width:100%;}
+#board-wrap{display:flex;align-items:center;justify-content:center;width:100%;position:relative;}
 #row-tray{display:flex;align-items:center;justify-content:center;width:100%;}
 #row-buttons{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;}
 .tray{margin-top:0;display:flex;gap:10px;align-items:center;justify-content:center;}
@@ -327,7 +327,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </head>
 <body>
 <audio id="bgMusic" src="Naal%20Nachna%20%28Lyrics%29%20-%20Dhurandhar%20%20Shashwat%20S%2C%20Afsana%20K%2C%20Rebel%2C%20Irshad%20K%20%20Ranveer%20S%2C%20Akshay%20K.mp3" loop preload="auto"></audio>
-<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();if(!window._beatInited){window._beatInited=true;var ac=new(window.AudioContext||window.webkitAudioContext)();var src=ac.createMediaElementSource(m);var an=ac.createAnalyser();an.fftSize=256;src.connect(an);an.connect(ac.destination);var arr=new Uint8Array(an.frequencyBinCount);window._beatAnalyser=an;window._beatArr=arr;(function loop(){requestAnimationFrame(loop);an.getByteFrequencyData(arr);var bass=(arr[0]+arr[1]+arr[2]+arr[3])/4;var board=document.getElementById('board');if(board)board.style.boxShadow=bass>150?'0 0 40px #ff00ff':'';}());}" style="position:fixed;top:60px;right:15px;z-index:99999;background:#8800ff;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;">🎵</button>
+<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();if(!window._beatInited){window._beatInited=true;var ac=new(window.AudioContext||window.webkitAudioContext)();var src=ac.createMediaElementSource(m);var an=ac.createAnalyser();an.fftSize=256;src.connect(an);an.connect(ac.destination);var arr=new Uint8Array(an.frequencyBinCount);window._beatAnalyser=an;window._beatArr=arr;window._beatAC=ac;(function loop(){requestAnimationFrame(loop);an.getByteFrequencyData(arr);var bass=(arr[0]+arr[1]+arr[2]+arr[3])/4;var board=document.getElementById('board');if(board)board.style.boxShadow=bass>150?'0 0 40px #ff00ff':'';}());}" style="position:fixed;top:60px;right:15px;z-index:99999;background:#8800ff;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;">🎵</button>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
 
@@ -1816,60 +1816,63 @@ function initGame() {
   </div>
 </div>
 <script>
-/* ── Border light dots (static positions, beat-reactive glow only) ───────── */
+/* ── Border light dots ───────────────────────────────────────────────────── */
 (function () {
   var canvas = null, ctx = null;
   var N = 28;
-
-  /* Fixed dot positions: evenly spaced around perimeter, computed once */
   var dots = null;
+  var lastW = 0, lastH = 0;
+
   function buildDots(W, H) {
     dots = [];
     for (var i = 0; i < N; i++) {
-      var t = i / N;
-      var p = 2 * (W + H), d = t * p;
-      var x, y;
-      if      (d < W)       { x = d;       y = 0;     }
-      else if (d < W+H)     { x = W;       y = d-W;   }
-      else if (d < 2*W+H)   { x = W-(d-W-H); y = H;   }
-      else                  { x = 0;       y = H-(d-2*W-H); }
+      var t = i / N, p = 2 * (W + H), d = t * p, x, y;
+      if      (d < W)     { x = d;           y = 0;           }
+      else if (d < W+H)   { x = W;           y = d - W;       }
+      else if (d < 2*W+H) { x = W - (d-W-H); y = H;           }
+      else                { x = 0;           y = H-(d-2*W-H); }
       dots.push([x, y]);
     }
   }
 
-  var lastW = 0, lastH = 0;
-
-  function frame(ts) {
+  function frame() {
     requestAnimationFrame(frame);
 
+    var bw    = document.getElementById('board-wrap');
+    var board = document.getElementById('board');
+    if (!bw || !board) return;
+
+    var W = board.offsetWidth, H = board.offsetHeight;
+    if (W < 10) return;
+
+    /* Lazy-create canvas as a child of board-wrap so it is positioned
+       relative to the board and moves with it on any scroll */
     if (!canvas) {
       canvas = document.createElement('canvas');
-      canvas.style.cssText = 'position:fixed;pointer-events:none;z-index:50;';
-      document.body.appendChild(canvas);
+      canvas.style.cssText = 'position:absolute;pointer-events:none;z-index:5;';
+      bw.appendChild(canvas);
       ctx = canvas.getContext('2d');
     }
 
-    var board = document.getElementById('board');
-    if (!board) return;
-    var r = board.getBoundingClientRect();
-    if (r.width < 10) return;
-
-    var pad = 14;
-    var cw = (r.width  + pad * 2) | 0;
-    var ch = (r.height + pad * 2) | 0;
+    /* Position canvas over the board using its offset within board-wrap */
+    var pad = 10;
+    var cw = (W + pad * 2) | 0;
+    var ch = (H + pad * 2) | 0;
     if (canvas.width !== cw || canvas.height !== ch) {
       canvas.width = cw; canvas.height = ch;
     }
-    canvas.style.left   = (r.left - pad) + 'px';
-    canvas.style.top    = (r.top  - pad) + 'px';
+    canvas.style.left = (board.offsetLeft - pad) + 'px';
+    canvas.style.top  = (board.offsetTop  - pad) + 'px';
     canvas.style.width  = cw + 'px';
     canvas.style.height = ch + 'px';
 
-    /* Rebuild fixed dot positions only when board size changes */
-    var W = r.width, H = r.height;
     if (W !== lastW || H !== lastH) { buildDots(W, H); lastW = W; lastH = H; }
 
-    /* Read bass */
+    /* Keep AudioContext alive — iOS suspends it on tab switch / screen lock */
+    if (window._beatAC && window._beatAC.state === 'suspended') {
+      window._beatAC.resume();
+    }
+
     var bass = 0;
     if (window._beatAnalyser && window._beatArr) {
       window._beatAnalyser.getByteFrequencyData(window._beatArr);
@@ -1877,27 +1880,21 @@ function initGame() {
       bass = Math.min(((a[0] + a[1] + a[2] + a[3]) / 4) / 255, 1);
     }
 
-    /* Soft idle glow so dots are always visible */
     var b = Math.max(0.18, bass);
-
     ctx.clearRect(0, 0, cw, ch);
 
     for (var i = 0; i < N; i++) {
-      var x = dots[i][0] + pad;
-      var y = dots[i][1] + pad;
-
-      var radius = 3;
-      var blur   = 8   + b * 24;
-      var rr     = Math.round(170 + b * 85);
-      var gg     = Math.round(20  + b * 130);
-      var aa     = (0.60 + b * 0.40).toFixed(2);
-
+      var x = dots[i][0] + pad, y = dots[i][1] + pad;
+      var blur = 8 + b * 24;
+      var rr = Math.round(170 + b * 85);
+      var gg = Math.round(20  + b * 130);
+      var aa = (0.60 + b * 0.40).toFixed(2);
       ctx.save();
       ctx.shadowBlur  = blur;
       ctx.shadowColor = b > 0.55 ? 'rgba(255,160,255,0.95)' : 'rgba(150,0,255,0.85)';
       ctx.fillStyle   = b > 0.72 ? '#ffffff' : 'rgba(' + rr + ',' + gg + ',255,' + aa + ')';
       ctx.beginPath();
-      ctx.arc(x, y, radius, 0, 6.2832);
+      ctx.arc(x, y, 3, 0, 6.2832);
       ctx.fill();
       ctx.restore();
     }
