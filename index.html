@@ -41,10 +41,10 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #row-tray{display:flex;align-items:center;justify-content:center;width:100%;}
 #row-buttons{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;}
 .tray{margin-top:0;display:flex;gap:10px;align-items:center;justify-content:center;}
-.piece-slot{width:var(--slot-size,114px);height:var(--slot-size,114px);background:rgba(140,60,220,0.08);border:2px solid rgba(180,80,255,0.18);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:grab;position:relative;touch-action:none;transition:border-color .2s,transform .15s;}
+.piece-slot{width:var(--slot-size,114px);height:var(--slot-size,114px);flex-shrink:0;background:rgba(140,60,220,0.08);border:2px solid rgba(180,80,255,0.18);border-radius:12px;display:flex;align-items:center;justify-content:center;cursor:grab;position:relative;touch-action:none;transition:border-color .2s,transform .15s;}
 .piece-slot:not(.used):hover{border-color:rgba(210,110,255,0.45);transform:scale(1.04);}
 .piece-slot:active{cursor:grabbing;}
-.piece-slot.used{opacity:.14;cursor:default;pointer-events:none;}
+.piece-slot.used{opacity:.35;cursor:default;pointer-events:none;}
 .piece-preview{position:relative;}
 .piece-cell{position:absolute;border-radius:5px;}
 .btn-shop{margin-top:14px;background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:800;padding:11px 36px;border-radius:50px;cursor:pointer;box-shadow:0 0 20px rgba(150,0,200,0.45);letter-spacing:2px;transition:transform .15s,box-shadow .15s;}
@@ -301,32 +301,31 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 /* ── Beat-sync light show ───────────────────────────────────────────────── */
 #beat-overlay{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;}
 #music-btn{
-  position:fixed;
-  top:max(14px,env(safe-area-inset-top,14px));
-  right:14px;
-  z-index:9010;
-  width:38px;height:38px;
+  width:36px;height:36px;
+  flex-shrink:0;
+  margin-left:auto;
   border-radius:50%;
-  background:rgba(100,40,180,.28);
-  border:2px solid rgba(180,80,255,.35);
-  color:#fff;font-size:1.05em;
+  background:rgba(120,40,200,.6);
+  border:2px solid rgba(200,100,255,.75);
+  color:#fff;font-size:1.1em;
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:background .2s,box-shadow .2s,border-color .2s;
   -webkit-tap-highlight-color:transparent;
+  box-shadow:0 0 10px rgba(150,0,255,.4);
+  touch-action:manipulation;
 }
 #music-btn.music-on{
-  background:rgba(150,0,220,.55);
-  border-color:#cc44ff;
-  box-shadow:0 0 18px rgba(180,0,255,.65),0 0 36px rgba(180,0,255,.28);
+  background:rgba(160,0,240,.8);
+  border-color:#dd55ff;
+  box-shadow:0 0 18px rgba(180,0,255,.75),0 0 36px rgba(180,0,255,.3);
 }
 </style>
 </head>
 <body>
-<audio id="bgMusic" src="https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3" loop crossorigin="anonymous"></audio>
+<audio id="bgMusic" src="https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3" loop></audio>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
-<button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
 
 <div id="game-container">
 <div id="row-header">
@@ -336,6 +335,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     <h1>TONNI BLAST</h1>
     <div class="tagline">💜 made just for you 💜</div>
   </div>
+  <button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
 </div>
 </div><!-- /row-header -->
 
@@ -486,8 +486,11 @@ function layoutGame() {
   // Leave 8px breathing room on each side so the board doesn't touch edges.
   const boardSize = Math.max(60, Math.min(R3, IW - 16));
   const newCELL   = Math.max(24, Math.min(54, Math.floor((boardSize - 22) / 8)));
-  const newTC     = Math.floor(newCELL * 0.58);
-  const newSLOT   = 4 * newTC + 16;
+  let   newTC     = Math.floor(newCELL * 0.58);
+  // Cap slot size so 3 slots fit in screen width and in the 120px tray row height
+  let   newSLOT   = 4 * newTC + 16;
+  const maxSlot   = Math.min(R4 - 8, Math.floor((IW - 40) / 3));
+  if (newSLOT > maxSlot) { newSLOT = maxSlot; newTC = Math.floor((newSLOT - 16) / 4); }
 
   CELL = newCELL; GAP = 2; TC = newTC; TG = 2; SLOT_SIZE = newSLOT;
 
