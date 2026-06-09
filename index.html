@@ -273,7 +273,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   .coins-val{font-size:clamp(0.95em,4vw,1.3em);}
   .score-label{font-size:clamp(0.44em,1.3vw,0.52em);}
   /* Row 3 — Board: JS sets height = remaining, board centered */
-  #board-wrap{flex-shrink:0;overflow:hidden;}
+  #board-wrap{flex-shrink:0;overflow:visible;}
   /* Row 4 — Tray 120px: JS sets height */
   #row-tray{flex-shrink:0;overflow:hidden;}
   .tray{gap:clamp(6px,2vw,12px);margin:0;}
@@ -1855,7 +1855,7 @@ function initGame() {
     }
 
     /* Position canvas over the board using its offset within board-wrap */
-    var pad = 10;
+    var pad = 6;
     var cw = (W + pad * 2) | 0;
     var ch = (H + pad * 2) | 0;
     if (canvas.width !== cw || canvas.height !== ch) {
