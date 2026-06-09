@@ -325,7 +325,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </style>
 </head>
 <body>
-<audio id="bgMusic" src="https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3" loop></audio>
+<audio id="bgMusic" src="https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3" loop preload="auto"></audio>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
 
@@ -338,7 +338,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     <div class="tagline">💜 made just for you 💜</div>
   </div>
 </div>
-<button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
+<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();" aria-label="Toggle music">🎵</button>
 </div><!-- /row-header -->
 
 <div id="row-scores">
@@ -673,7 +673,6 @@ function _unlockAudio() {
       src.start(0);
     } catch(_) {}
   }
-  _restoreMusicPref();
 }
 document.addEventListener('touchstart', _unlockAudio, { passive: true });
 document.addEventListener('mousedown',  _unlockAudio, { passive: true });
@@ -727,55 +726,6 @@ function snd_gameover() {
   _tone('sawtooth', 196, 0.18, 0.24, 0.52, 130);
   _tone('sine',     110, 0.28, 0.32, 0.9);
 }
-
-// ── Music ────────────────────────────────────────────────────────────────
-// Plain <audio id="bgMusic"> — play()/pause() called directly from user gesture.
-
-let _musicOn    = false;
-let _beatAnimId = null;
-
-function _beatReset() {
-  const board = document.getElementById('board');
-  if (board) { board.style.borderColor=''; board.style.boxShadow=''; }
-  const ov = document.getElementById('beat-overlay');
-  if (ov) { ov.style.opacity='0'; ov.style.background=''; }
-  const bw = document.getElementById('board-wrap');
-  if (bw) bw.style.filter='';
-}
-
-function toggleMusic() {
-  const btn = document.getElementById('music-btn');
-  const aud = document.getElementById('bgMusic');
-  if (!btn || !aud) return;
-  if (_musicOn) {
-    _musicOn = false;
-    aud.pause();
-    if (_beatAnimId) { cancelAnimationFrame(_beatAnimId); _beatAnimId = null; }
-    _beatReset();
-    btn.textContent = '🎵';
-    btn.classList.remove('music-on');
-    localStorage.setItem('tonni_music', '0');
-  } else {
-    aud.play();
-    _musicOn = true;
-    btn.textContent = '🔊';
-    btn.classList.add('music-on');
-    localStorage.setItem('tonni_music', '1');
-  }
-}
-
-// Called from _unlockAudio on first touchstart — auto-starts if preference was on.
-function _restoreMusicPref() {
-  if (localStorage.getItem('tonni_music') === '1' && !_musicOn) toggleMusic();
-}
-
-// Show button in ready state on load without playing (play requires user gesture)
-(function() {
-  if (localStorage.getItem('tonni_music') === '1') {
-    const btn = document.getElementById('music-btn');
-    if (btn) { btn.textContent = '🔊'; btn.classList.add('music-on'); }
-  }
-}());
 
 // ── Animation helpers ─────────────────────────────────────────────────────
 function shakeBoard() {
