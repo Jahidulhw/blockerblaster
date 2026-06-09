@@ -63,7 +63,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 #rescue-toast .toast-msg{color:#88ffee;}
 #shop{display:none;position:fixed;inset:0;background:rgba(6,0,18,.96);z-index:10000;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain;}
 #shop.show{display:block;}
-.shop-panel{max-width:480px;margin:0 auto;padding:16px 12px 36px;display:flex;flex-direction:column;gap:12px;}
+.shop-panel{max-width:480px;margin:0 auto;padding:max(16px,env(safe-area-inset-top,16px)) 12px 36px;display:flex;flex-direction:column;gap:12px;}
 .shop-hdr{display:flex;align-items:center;gap:10px;}
 .back-btn{background:rgba(200,100,255,.15);border:1.5px solid rgba(200,100,255,.3);color:#cc44ff;font-size:1.4em;width:40px;height:40px;border-radius:50%;cursor:pointer;flex-shrink:0;transition:background .2s;}
 .back-btn:hover{background:rgba(200,100,255,.28);}
@@ -1425,10 +1425,15 @@ function openShop() {
   updateCoinsDisplay();
   switchTab('themes');
   document.getElementById('shop').classList.add('show');
+  document.getElementById('shop').scrollTop = 0;
+  var mb = document.getElementById('music-btn');
+  if (mb) mb.style.display = 'none';
 }
 
 function closeShop() {
   document.getElementById('shop').classList.remove('show');
+  var mb = document.getElementById('music-btn');
+  if (mb) mb.style.display = '';
 }
 
 function switchTab(tab) {
