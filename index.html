@@ -323,6 +323,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </style>
 </head>
 <body>
+<audio id="bgMusic" src="https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3" loop crossorigin="anonymous"></audio>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
 <button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
@@ -722,86 +723,11 @@ function snd_gameover() {
   _tone('sine',     110, 0.28, 0.32, 0.9);
 }
 
-// ── Music & beat-synced light show ────────────────────────────────────────
-// HTML5 Audio → MediaElementSourceNode → AnalyserNode → destination.
+// ── Music ────────────────────────────────────────────────────────────────
+// Plain <audio id="bgMusic"> — play()/pause() called directly from user gesture.
 
-const MUSIC_URL = 'https://res.cloudinary.com/daz8sffrv/video/upload/v1780963201/Naal_Nachna_Lyrics_-_Dhurandhar_Shashwat_S_Afsana_K_Rebel_Irshad_K_Ranveer_S_Akshay_K_clibld.mp3';
-
-let _musicOn       = false;
-let _musicAnalyser = null;
-let _beatAnimId    = null;
-let _musicAudioEl  = null;   // <audio> element (created once)
-let _musicSrc      = null;   // MediaElementSourceNode (created once per element)
-
-function _initMusicNodes() {
-  const ctx = _ctx(); if (!ctx) return false;
-  if (_musicSrc) return true;
-  try {
-    _musicAudioEl = new Audio();
-    _musicAudioEl.crossOrigin = 'anonymous';
-    _musicAudioEl.loop = true;
-    _musicAudioEl.src = MUSIC_URL;
-    _musicAnalyser = ctx.createAnalyser();
-    _musicAnalyser.fftSize = 512;
-    _musicAnalyser.smoothingTimeConstant = 0.85;
-    _musicSrc = ctx.createMediaElementSource(_musicAudioEl);
-    _musicSrc.connect(_musicAnalyser);
-    _musicAnalyser.connect(ctx.destination);
-    return true;
-  } catch(e) { return false; }
-}
-
-// Frequency data buffer — reused every animation frame
-const _beatBuf = new Uint8Array(256);
-let   _beatHue = 280;
-
-function _beatLoop() {
-  if (!_musicOn || !_musicAnalyser) return;
-  _musicAnalyser.getByteFrequencyData(_beatBuf);
-
-  // Bass (bins 0-7 ≈ 0-340 Hz at fftSize=512, SR=44100)
-  let bass = 0;
-  for (let i = 0; i < 8; i++) bass += _beatBuf[i];
-  bass = Math.min(1, (bass / 8) / 170);
-
-  // Mid (bins 8-27)
-  let mid = 0;
-  for (let i = 8; i < 28; i++) mid += _beatBuf[i];
-  mid = Math.min(1, (mid / 20) / 140);
-
-  // Drift hue with bass hits → purple ↔ pink cycle
-  _beatHue = (_beatHue + bass * 1.4) % 360;
-  const h = _beatHue;
-
-  // Board border glow
-  const board = document.getElementById('board');
-  if (board) {
-    const glow = 18 + bass * 72;
-    board.style.borderColor = `hsla(${h},100%,${52+bass*28}%,${0.22+bass*0.78})`;
-    board.style.boxShadow = [
-      `0 0 ${glow}px hsla(${h},100%,62%,${0.3+bass*0.7})`,
-      `0 0 ${glow*1.9}px hsla(${(h+30)%360},100%,60%,${0.12+bass*0.38})`,
-      `inset 0 0 ${8+bass*38}px hsla(${h},100%,42%,${0.06+bass*0.38})`,
-    ].join(',');
-  }
-
-  // Full-screen radial flash behind game
-  const ov = document.getElementById('beat-overlay');
-  if (ov) {
-    ov.style.opacity = (bass * 0.3).toFixed(3);
-    ov.style.background = `radial-gradient(ellipse at 50% 50%,hsla(${h},100%,32%,${(bass*0.6).toFixed(3)}),transparent 68%)`;
-  }
-
-  // Board-wrap: brightness + saturation + hue shimmer
-  const bw = document.getElementById('board-wrap');
-  if (bw) {
-    bw.style.filter = bass > 0.12
-      ? `brightness(${(1+bass*0.55).toFixed(3)}) saturate(${(1+bass*0.9).toFixed(2)}) hue-rotate(${(mid*38).toFixed(1)}deg)`
-      : '';
-  }
-
-  _beatAnimId = requestAnimationFrame(_beatLoop);
-}
+let _musicOn    = false;
+let _beatAnimId = null;
 
 function _beatReset() {
   const board = document.getElementById('board');
@@ -814,31 +740,31 @@ function _beatReset() {
 
 function toggleMusic() {
   const btn = document.getElementById('music-btn');
+  const aud = document.getElementById('bgMusic');
+  if (!btn || !aud) return;
   if (_musicOn) {
     _musicOn = false;
-    if (_musicAudioEl) _musicAudioEl.pause();
+    aud.pause();
     if (_beatAnimId) { cancelAnimationFrame(_beatAnimId); _beatAnimId = null; }
     _beatReset();
     btn.textContent = '🎵';
     btn.classList.remove('music-on');
     localStorage.setItem('tonni_music', '0');
   } else {
-    if (!_initMusicNodes()) return;
-    _musicAudioEl.play().catch(() => {});
+    aud.play();
     _musicOn = true;
-    _beatAnimId = requestAnimationFrame(_beatLoop);
     btn.textContent = '🔊';
     btn.classList.add('music-on');
     localStorage.setItem('tonni_music', '1');
   }
 }
 
-// Called from _unlockAudio after iOS AudioContext unblocks — auto-starts if pref was on.
+// Called from _unlockAudio on first touchstart — auto-starts if preference was on.
 function _restoreMusicPref() {
   if (localStorage.getItem('tonni_music') === '1' && !_musicOn) toggleMusic();
 }
 
-// Show button in ready state immediately if preference was saved as on
+// Show button in ready state on load without playing (play requires user gesture)
 (function() {
   if (localStorage.getItem('tonni_music') === '1') {
     const btn = document.getElementById('music-btn');
