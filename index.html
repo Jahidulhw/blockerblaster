@@ -702,6 +702,9 @@ function _tone(type, freq, vol, tStart, dur, freqEnd) {
   } catch(_) {}
 }
 
+function snd_drag() {
+  _tone('sine', 800, 0.55, 0, 0.15, 200);
+}
 function snd_place() {
   _tone('sine',    170, 0.40, 0,    0.13, 52);
   _tone('sine',    85,  0.20, 0.02, 0.11);
@@ -1616,6 +1619,7 @@ function clearBoardGhost() {
 
 function onStart(idx, cx, cy, isTouch) {
   if (!tray[idx] || document.getElementById('shop').classList.contains('show')) return;
+  snd_drag();
   drag = {idx, piece:tray[idx], grabX:cx, grabY:cy, isTouch:!!isTouch};
   buildDragGhost(drag.piece); moveGhostEl(cx, cy);
   showBoardGhost(...Object.values(cursorToRC(cx, cy)));
