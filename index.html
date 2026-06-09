@@ -35,7 +35,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .cell.rainbow-clear{animation:rainbowClear .42s ease-out forwards;}
 @keyframes flashClear{0%{transform:scale(1);opacity:1;filter:brightness(1);}35%{transform:scale(1.12);opacity:1;filter:brightness(3.2);}100%{transform:scale(.05);opacity:0;filter:brightness(3);}}
 @keyframes rainbowClear{0%{transform:scale(1);opacity:1;filter:hue-rotate(0deg) brightness(1);}25%{transform:scale(1.1);opacity:1;filter:hue-rotate(90deg) brightness(2.5);}60%{transform:scale(1.1);opacity:1;filter:hue-rotate(220deg) brightness(3);}100%{transform:scale(.05);opacity:0;filter:hue-rotate(360deg) brightness(3);}}
-#game-container{display:flex;flex-direction:column;align-items:center;width:100%;}
+#game-container{display:flex;flex-direction:column;align-items:center;width:100%;background:#0a0a0a;}
 #row-header{display:flex;align-items:center;justify-content:center;width:100%;position:relative;}
 #row-scores{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;}
 #board-wrap{display:flex;align-items:center;justify-content:center;width:100%;position:relative;}
@@ -544,7 +544,7 @@ const RESCUE_PIECES = PIECES.filter(p => p.s.length <= 2);
 // ── Shop data ──────────────────────────────────────────────────────────────
 const THEMES = [
   {id:'default',   name:"Tonni's World",    cost:0,   rarity:'common',    desc:"her home base 💜",
-   bodyBg:'radial-gradient(ellipse at top,#1e0040 0%,#0d0020 55%,#08001a 100%)',
+   bodyBg:'#0a0a0a',
    boardBg:'linear-gradient(145deg,#1c0038,#0e001e)', boardBorder:'rgba(180,80,255,0.22)',
    boardGlow:'rgba(130,0,220,0.25)', cellGlow:'rgba(100,0,180,0.12)', cellEmpty:'rgba(160,80,255,0.06)',
    swatches:['#1e0040','#7700cc','#cc44ff']},
