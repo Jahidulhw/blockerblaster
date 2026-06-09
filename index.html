@@ -35,7 +35,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 @keyframes flashClear{0%{transform:scale(1);opacity:1;filter:brightness(1);}35%{transform:scale(1.12);opacity:1;filter:brightness(3.2);}100%{transform:scale(.05);opacity:0;filter:brightness(3);}}
 @keyframes rainbowClear{0%{transform:scale(1);opacity:1;filter:hue-rotate(0deg) brightness(1);}25%{transform:scale(1.1);opacity:1;filter:hue-rotate(90deg) brightness(2.5);}60%{transform:scale(1.1);opacity:1;filter:hue-rotate(220deg) brightness(3);}100%{transform:scale(.05);opacity:0;filter:hue-rotate(360deg) brightness(3);}}
 #game-container{display:flex;flex-direction:column;align-items:center;width:100%;}
-#row-header{display:flex;align-items:center;justify-content:center;width:100%;}
+#row-header{display:flex;align-items:center;justify-content:center;width:100%;position:relative;}
 #row-scores{display:flex;flex-direction:column;align-items:center;justify-content:center;width:100%;}
 #board-wrap{display:flex;align-items:center;justify-content:center;width:100%;}
 #row-tray{display:flex;align-items:center;justify-content:center;width:100%;}
@@ -301,24 +301,26 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 /* ── Beat-sync light show ───────────────────────────────────────────────── */
 #beat-overlay{position:fixed;inset:0;pointer-events:none;z-index:1;opacity:0;}
 #music-btn{
+  position:absolute;
+  right:12px;
+  bottom:12px;
   width:36px;height:36px;
-  flex-shrink:0;
-  margin-left:auto;
   border-radius:50%;
-  background:rgba(120,40,200,.6);
-  border:2px solid rgba(200,100,255,.75);
+  background:rgba(120,40,200,.85);
+  border:2px solid rgba(200,120,255,.9);
   color:#fff;font-size:1.1em;
   cursor:pointer;
   display:flex;align-items:center;justify-content:center;
   transition:background .2s,box-shadow .2s,border-color .2s;
   -webkit-tap-highlight-color:transparent;
-  box-shadow:0 0 10px rgba(150,0,255,.4);
+  box-shadow:0 0 12px rgba(150,0,255,.55);
   touch-action:manipulation;
+  z-index:10;
 }
 #music-btn.music-on{
-  background:rgba(160,0,240,.8);
-  border-color:#dd55ff;
-  box-shadow:0 0 18px rgba(180,0,255,.75),0 0 36px rgba(180,0,255,.3);
+  background:rgba(160,0,240,.95);
+  border-color:#ee66ff;
+  box-shadow:0 0 18px rgba(180,0,255,.8),0 0 36px rgba(180,0,255,.35);
 }
 </style>
 </head>
@@ -335,8 +337,8 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     <h1>TONNI BLAST</h1>
     <div class="tagline">💜 made just for you 💜</div>
   </div>
-  <button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
 </div>
+<button id="music-btn" onclick="toggleMusic()" aria-label="Toggle music">🎵</button>
 </div><!-- /row-header -->
 
 <div id="row-scores">
