@@ -1,6 +1,6 @@
 'use strict';
 
-const CACHE = 'tonni-blast-v1';
+const CACHE = 'tonni-blast-v10';
 const PRECACHE = [
   '/',
   '/manifest.json',
