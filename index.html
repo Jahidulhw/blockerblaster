@@ -327,7 +327,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </head>
 <body>
 <audio id="bgMusic" src="Naal%20Nachna%20%28Lyrics%29%20-%20Dhurandhar%20%20Shashwat%20S%2C%20Afsana%20K%2C%20Rebel%2C%20Irshad%20K%20%20Ranveer%20S%2C%20Akshay%20K.mp3" loop preload="auto"></audio>
-<script>var m=document.getElementById('bgMusic'); alert(m ? 'audio found: ' + m.src : 'audio NOT found');</script>
+<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();" style="position:fixed;top:15px;right:15px;z-index:99999;background:#8800ff;color:white;border:none;border-radius:50%;width:50px;height:50px;font-size:24px;cursor:pointer;">🎵</button>
 <div id="bg-layer" aria-hidden="true"></div>
 <div id="beat-overlay" aria-hidden="true"></div>
 
@@ -340,7 +340,6 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
     <div class="tagline">💜 made just for you 💜</div>
   </div>
 </div>
-<button id="music-btn" onclick="var m=document.getElementById('bgMusic');m.paused?m.play():m.pause();" aria-label="Toggle music">🎵</button>
 </div><!-- /row-header -->
 
 <div id="row-scores">
