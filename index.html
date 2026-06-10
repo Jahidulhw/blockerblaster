@@ -331,6 +331,90 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   opacity:1;
   animation:music-pulse 1.8s ease-in-out infinite;
 }
+/* ── Daily Challenges & Badges screens ──────────────────────────────────── */
+#daily-screen,#badges-screen{
+  display:none;position:fixed;inset:0;background:rgba(4,0,14,.97);
+  z-index:15000;flex-direction:column;align-items:stretch;overflow-y:auto;
+}
+#daily-screen.show,#badges-screen.show{display:flex;}
+.ds-hdr,.bs-hdr{
+  display:flex;align-items:center;padding:16px 16px 10px;
+  border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;
+}
+.ds-back,.bs-back{
+  background:none;border:none;color:#cc88ff;font-size:1.5em;
+  cursor:pointer;padding:0 10px 0 0;line-height:1;
+}
+.ds-title,.bs-title{
+  flex:1;text-align:center;font-size:1.1em;font-weight:900;letter-spacing:2px;
+  background:linear-gradient(135deg,#dd66ff,#ff44cc);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.ds-timer{font-size:.75em;color:#aa66cc;letter-spacing:1px;white-space:nowrap;}
+.ds-body,.bs-body{padding:14px 14px 24px;display:flex;flex-direction:column;gap:12px;}
+.ch-card{
+  background:linear-gradient(135deg,rgba(80,0,140,.35),rgba(50,0,90,.35));
+  border:1.5px solid rgba(160,60,255,.35);border-radius:14px;
+  padding:14px 16px;display:flex;flex-direction:column;gap:8px;
+  transition:border-color .25s;
+}
+.ch-card.done{border-color:rgba(100,255,150,.5);background:linear-gradient(135deg,rgba(0,80,40,.3),rgba(0,50,20,.3));}
+.ch-top{display:flex;align-items:center;justify-content:space-between;gap:8px;}
+.ch-label{font-size:.95em;font-weight:700;color:#eeddff;flex:1;}
+.ch-reward{font-size:.82em;color:#ffdd88;white-space:nowrap;}
+.ch-done-badge{font-size:.8em;background:rgba(80,255,140,.2);color:#80ffaa;
+  border:1px solid rgba(80,255,140,.4);border-radius:20px;padding:2px 8px;white-space:nowrap;}
+.ch-prog-row{display:flex;align-items:center;gap:8px;}
+.ch-bar-bg{flex:1;height:7px;background:rgba(255,255,255,.1);border-radius:99px;overflow:hidden;}
+.ch-bar-fill{height:100%;border-radius:99px;
+  background:linear-gradient(90deg,#9922ff,#ff44cc);transition:width .4s ease;}
+.ch-card.done .ch-bar-fill{background:linear-gradient(90deg,#44cc88,#88ffbb);}
+.ch-prog-text{font-size:.75em;color:#bb88ff;white-space:nowrap;}
+.ch-claim-btn{
+  align-self:flex-end;padding:5px 14px;border-radius:99px;border:none;
+  background:linear-gradient(135deg,#9922ff,#ff44cc);color:#fff;
+  font-size:.82em;font-weight:700;cursor:pointer;letter-spacing:.5px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.bs-section-title{font-size:.8em;color:#9966cc;letter-spacing:2px;text-transform:uppercase;padding:4px 2px 0;}
+.badges-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.badge-card{
+  background:linear-gradient(135deg,rgba(80,0,140,.4),rgba(50,0,90,.3));
+  border:1.5px solid rgba(160,60,255,.4);border-radius:14px;
+  padding:14px 12px;display:flex;flex-direction:column;align-items:center;
+  gap:6px;text-align:center;position:relative;transition:border-color .25s,box-shadow .25s;
+}
+.badge-card.unlocked{border-color:rgba(220,120,255,.7);box-shadow:0 0 16px rgba(180,0,255,.25);}
+.badge-card.locked{filter:grayscale(.7);opacity:.5;}
+.badge-icon{font-size:2.2em;line-height:1;}
+.badge-name{font-size:.82em;font-weight:800;color:#eeddff;line-height:1.2;}
+.badge-desc{font-size:.72em;color:#9977bb;line-height:1.3;}
+.badge-reward{font-size:.75em;color:#ffdd88;margin-top:2px;}
+.badge-prog{font-size:.7em;color:#aa77cc;margin-top:1px;}
+.badge-new{
+  position:absolute;top:6px;right:6px;background:linear-gradient(135deg,#ff44cc,#ff8800);
+  color:#fff;font-size:.62em;font-weight:900;letter-spacing:1px;
+  border-radius:20px;padding:2px 6px;text-transform:uppercase;
+}
+.btn-row2{display:flex;gap:8px;justify-content:center;margin-top:6px;}
+.btn-daily,.btn-badges{
+  flex:1;padding:8px 0;border-radius:10px;border:none;cursor:pointer;
+  font-size:.82em;font-weight:800;letter-spacing:.5px;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
+}
+.btn-daily{background:linear-gradient(135deg,rgba(80,0,160,.85),rgba(140,0,120,.8));
+  border:1.5px solid rgba(180,60,255,.5);color:#eeddff;}
+.btn-badges{background:linear-gradient(135deg,rgba(60,0,120,.85),rgba(120,0,100,.8));
+  border:1.5px solid rgba(160,60,255,.5);color:#eeddff;}
+#badge-toast{
+  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
+  background:linear-gradient(135deg,rgba(100,0,200,.95),rgba(180,0,140,.95));
+  border:1.5px solid rgba(220,100,255,.7);border-radius:14px;
+  padding:10px 20px;color:#fff;font-size:.9em;font-weight:700;
+  z-index:99000;opacity:0;transition:opacity .3s,transform .3s;
+  white-space:nowrap;pointer-events:none;text-align:center;
+}
+#badge-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 </style>
 </head>
 <body>
@@ -379,6 +463,10 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 <button id="spin-avail-btn" onclick="openSpinModal()">🎡 SPIN NOW!</button>
 </div>
 <div id="spin-countdown" class="spin-countdown"></div>
+<div class="btn-row2">
+<button class="btn-daily" onclick="openDailyScreen()">📋 DAILY</button>
+<button class="btn-badges" onclick="openBadgesScreen()">🏅 BADGES</button>
+</div>
 </div><!-- /row-buttons -->
 </div><!-- /game-container -->
 
@@ -912,6 +1000,7 @@ function closeSpinModal() {
 }
 
 function doSpin() {
+  trackStat('spins');
   if (_spinning || !spinReady()) return;
   _spinning = true; snd_shop();
   const btn=document.getElementById('spin-do-btn');
@@ -1009,6 +1098,12 @@ function spawnConfetti() {
 // ── Account system (backend) ──────────────────────────────────────────────
 let best, coins, shopState;
 let currentUser = null;
+
+let dailyChallenges = [];
+let lifetimeStats = { blocks:0, lines:0, coins_earned:0, items_bought:0, spins:0, chests:0, score:0 };
+let unlockedBadges = new Set();
+let badgesRewarded = new Set();
+let _newBadges = new Set();
 let currentAuthTab = 'login';
 let _saveTimer = null;
 
@@ -1040,6 +1135,10 @@ function _doSave() {
     highScore: best,
     ownedItems: [...shopState.owned],
     equippedItems: shopState.equipped,
+    stats: lifetimeStats,
+    badges: [...unlockedBadges],
+    badgesRewarded: [...badgesRewarded],
+    challenges: { date: getTodayStr(), challenges: dailyChallenges },
   }, getToken());
 }
 
@@ -1059,6 +1158,26 @@ function loadUserData(data) {
     equipped: {theme:'default', skin:'default', effect:'none', bg:'none', ...eq},
   };
   shopState.owned.add('default');
+  // Restore stats & badges from backend (prefer backend over localStorage if both exist)
+  if (data.stats) {
+    lifetimeStats = { blocks:0, lines:0, coins_earned:0, items_bought:0, spins:0, chests:0, score:0, ...data.stats };
+    localStorage.setItem('tonni_stats', JSON.stringify(lifetimeStats));
+  } else { loadStats(); }
+  if (data.badges) {
+    unlockedBadges = new Set(data.badges);
+    localStorage.setItem('tonni_badges', JSON.stringify(data.badges));
+  }
+  if (data.badgesRewarded) {
+    badgesRewarded = new Set(data.badgesRewarded);
+    localStorage.setItem('tonni_badges_rewarded', JSON.stringify(data.badgesRewarded));
+  }
+  if (data.challenges) {
+    const saved = data.challenges;
+    if (saved.date === getTodayStr()) {
+      dailyChallenges = saved.challenges;
+      localStorage.setItem('tonni_challenges', JSON.stringify(saved));
+    } else { dailyChallenges = generateChallenges(getTodayStr()); saveChallenges(); }
+  } else { dailyChallenges = loadChallenges(); }
 }
 
 function saveShop()  { saveUser(); }
@@ -1290,6 +1409,7 @@ function doPlace(p, sr, sc) {
   }
   snd_place();
   bump(p.s.length * 10);
+  trackStat('blocks', p.s.length);
 }
 
 let toastTimer = null;
@@ -1300,12 +1420,14 @@ function bump(pts) {
   if (newCoins > 0) {
     const mult = doubleActive() ? 2 : 1;
     coins += newCoins * mult; pendingCoinPts -= newCoins * 500; saveCoins();
+    trackStat('coins_earned', newCoins * mult);
     snd_coin(); popCoins();
   }
   document.getElementById('cur-score').textContent  = score;
   document.getElementById('coins-disp').textContent = coins;
   if (score > best) {
     best = score;
+    trackStat('score', score);
     saveUser();
     document.getElementById('best-score').textContent = best;
     if (!shownBestToast && gameStartBest > 0) {
@@ -1347,6 +1469,7 @@ function clearLines() {
 
   const pts = total * 100 * total;
   bump(pts);
+  trackStat('lines', total);
   const br = boardEl.getBoundingClientRect();
   spawnFloat('+' + pts,
     br.left + (fullCols[0] ?? 0) * (CELL+GAP) + CELL/2,
@@ -1542,6 +1665,7 @@ function buyItem(eqKey, id, cost) {
   saveCoins();
   shopState.owned.add(id);
   saveShop();
+  trackStat('items_bought');
   updateCoinsDisplay();
   equipItem(eqKey, id);
 }
@@ -1674,6 +1798,7 @@ function tryOpenChest() {
     return;
   }
   coins -= 50; saveCoins(); updateCoinsDisplay();
+  trackStat('chests');
   closeShop(); showChestModal();
 }
 
@@ -1943,6 +2068,226 @@ function initGame() {
 
   requestAnimationFrame(frame);
 }());
+
+// ── Daily Challenges ───────────────────────────────────────────────────────
+const CHALLENGE_POOL = [
+  { type:'lines',  labelFn: n=>`Clear ${n} line${n>1?'s':''}`,  goals:[3,5,8],   rewards:[35,50,70] },
+  { type:'blocks', labelFn: n=>`Place ${n} blocks`,              goals:[15,25,40],rewards:[30,45,60] },
+  { type:'score',  labelFn: n=>`Score ${n} points`,              goals:[500,1000,2000],rewards:[40,60,80] },
+  { type:'chests', labelFn: n=>`Open ${n} mystery chest${n>1?'s':''}`, goals:[1,2], rewards:[60,100] },
+  { type:'spins',  labelFn: n=>`Spin the wheel ${n} time${n>1?'s':''}`, goals:[1,2], rewards:[35,55] },
+];
+let _dsTimerInterval = null;
+
+function getTodayStr() { return new Date().toISOString().slice(0,10); }
+
+function _seededRand(seed) {
+  let s = seed;
+  return function() { s = (s * 1664525 + 1013904223) & 0xffffffff; return (s >>> 0) / 4294967296; };
+}
+
+function generateChallenges(dateStr) {
+  const seed = dateStr.split('-').reduce((a,n)=>a*100+parseInt(n),0);
+  const rng = _seededRand(seed);
+  const pool = CHALLENGE_POOL.slice().sort(()=>rng()-.5);
+  return pool.slice(0,3).map(c=>{
+    const gi = Math.floor(rng()*c.goals.length);
+    return { type:c.type, label:c.labelFn(c.goals[gi]), goal:c.goals[gi],
+             reward:c.rewards[gi], progress:0, done:false, claimed:false };
+  });
+}
+
+function loadChallenges() {
+  try {
+    const saved = JSON.parse(localStorage.getItem('tonni_challenges')||'null');
+    if (saved && saved.date === getTodayStr()) return saved.challenges;
+  } catch(e) {}
+  return generateChallenges(getTodayStr());
+}
+
+function saveChallenges() {
+  localStorage.setItem('tonni_challenges', JSON.stringify({ date:getTodayStr(), challenges:dailyChallenges }));
+}
+
+function advanceChallenge(type, amount) {
+  let changed = false;
+  dailyChallenges.forEach(c=>{
+    if (c.type === type && !c.done) {
+      c.progress = Math.min(c.goal, c.progress + amount);
+      if (c.progress >= c.goal) { c.done = true; }
+      changed = true;
+    }
+  });
+  if (changed) { saveChallenges(); renderDailyIfOpen(); }
+}
+
+function claimChallenge(idx) {
+  const c = dailyChallenges[idx];
+  if (!c || !c.done || c.claimed) return;
+  c.claimed = true;
+  coins += c.reward; saveCoins(); updateCoinsDisplay(); popCoins(); snd_coin();
+  saveChallenges();
+  renderDailyBody();
+}
+
+function openDailyScreen() {
+  dailyChallenges = loadChallenges();
+  renderDailyBody();
+  document.getElementById('daily-screen').classList.add('show');
+  _dsTimerInterval = setInterval(updateDailyTimer, 1000);
+  updateDailyTimer();
+}
+function closeDailyScreen() {
+  document.getElementById('daily-screen').classList.remove('show');
+  clearInterval(_dsTimerInterval);
+}
+function renderDailyIfOpen() {
+  if (document.getElementById('daily-screen').classList.contains('show')) renderDailyBody();
+}
+
+function updateDailyTimer() {
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate()+1);
+  const diff = tomorrow - now;
+  const h = String(Math.floor(diff/3600000)).padStart(2,'0');
+  const m = String(Math.floor((diff%3600000)/60000)).padStart(2,'0');
+  const s = String(Math.floor((diff%60000)/1000)).padStart(2,'0');
+  const el = document.getElementById('ds-timer');
+  if (el) el.textContent = `Resets in ${h}:${m}:${s}`;
+}
+
+function renderDailyBody() {
+  const body = document.getElementById('ds-body');
+  if (!body) return;
+  body.innerHTML = dailyChallenges.map((c,i)=>{
+    const pct = Math.min(100, Math.round(c.progress/c.goal*100));
+    const isDone = c.done, isClaimed = c.claimed;
+    return `<div class="ch-card${isDone?' done':''}">
+      <div class="ch-top">
+        <span class="ch-label">${c.label}</span>
+        ${isClaimed?'<span class="ch-done-badge">✓ Claimed</span>':
+          isDone?`<button class="ch-claim-btn" onclick="claimChallenge(${i})">Claim 💜 ${c.reward}</button>`:
+          `<span class="ch-reward">+${c.reward} 💜</span>`}
+      </div>
+      <div class="ch-prog-row">
+        <div class="ch-bar-bg"><div class="ch-bar-fill" style="width:${pct}%"></div></div>
+        <span class="ch-prog-text">${c.progress}/${c.goal}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ── Achievement Badges ─────────────────────────────────────────────────────
+const BADGE_DEFS = [
+  { id:'first_block',  name:'First Block',        desc:'Place your first block',         icon:'🧱', stat:'blocks',       goal:1,     reward:20 },
+  { id:'line_queen',   name:'Line Queen',          desc:'Clear 10 lines',                 icon:'👑', stat:'lines',        goal:10,    reward:50 },
+  { id:'coin_coll',    name:'Coin Collector',      desc:'Earn 500 coins total',           icon:'💰', stat:'coins_earned', goal:500,   reward:75 },
+  { id:'shop_drop',    name:'Shop Till You Drop',  desc:'Buy 3 items from the shop',      icon:'🛍️', stat:'items_bought', goal:3,     reward:60 },
+  { id:'lucky_spin',   name:'Lucky Spin',          desc:'Spin the wheel 5 times',         icon:'🎡', stat:'spins',        goal:5,     reward:40 },
+  { id:'high_roller',  name:'High Roller',         desc:'Score 5000 points in one game',  icon:'🎯', stat:'score',        goal:5000,  reward:100 },
+  { id:'chest_hunter', name:'Chest Hunter',        desc:'Open 5 mystery chests',          icon:'📦', stat:'chests',       goal:5,     reward:80 },
+  { id:'champion',     name:"Fatema's Champion",   desc:'Score 10000 points in one game', icon:'🏆', stat:'score',        goal:10000, reward:200 },
+];
+
+function loadStats() {
+  try { lifetimeStats = { blocks:0, lines:0, coins_earned:0, items_bought:0, spins:0, chests:0, score:0,
+        ...JSON.parse(localStorage.getItem('tonni_stats')||'{}') }; } catch(e){}
+  try { unlockedBadges = new Set(JSON.parse(localStorage.getItem('tonni_badges')||'[]')); } catch(e){}
+  try { badgesRewarded = new Set(JSON.parse(localStorage.getItem('tonni_badges_rewarded')||'[]')); } catch(e){}
+}
+function saveStats() {
+  localStorage.setItem('tonni_stats', JSON.stringify(lifetimeStats));
+  localStorage.setItem('tonni_badges', JSON.stringify([...unlockedBadges]));
+  localStorage.setItem('tonni_badges_rewarded', JSON.stringify([...badgesRewarded]));
+  saveUser();
+}
+
+function trackStat(type, amount) {
+  if (amount === undefined) amount = 1;
+  if (type === 'score') { lifetimeStats.score = Math.max(lifetimeStats.score, amount); }
+  else { lifetimeStats[type] = (lifetimeStats[type]||0) + amount; }
+  advanceChallenge(type, amount);
+  checkBadges();
+  saveStats();
+}
+
+let _badgeToastTimer = null;
+function checkBadges() {
+  BADGE_DEFS.forEach(b=>{
+    if (unlockedBadges.has(b.id)) return;
+    const val = b.stat === 'score' ? lifetimeStats.score : (lifetimeStats[b.stat]||0);
+    if (val >= b.goal) {
+      unlockedBadges.add(b.id);
+      _newBadges.add(b.id);
+      if (!badgesRewarded.has(b.id)) {
+        badgesRewarded.add(b.id);
+        coins += b.reward; saveCoins(); updateCoinsDisplay(); popCoins(); snd_coin();
+      }
+      showBadgeToast(b);
+    }
+  });
+}
+
+function showBadgeToast(b) {
+  const el = document.getElementById('badge-toast');
+  if (!el) return;
+  el.textContent = `${b.icon} Badge Unlocked: ${b.name} (+${b.reward} 💜)`;
+  el.classList.add('show');
+  clearTimeout(_badgeToastTimer);
+  _badgeToastTimer = setTimeout(()=>el.classList.remove('show'), 3200);
+}
+
+function openBadgesScreen() {
+  renderBadgesBody();
+  document.getElementById('badges-screen').classList.add('show');
+}
+function closeBadgesScreen() {
+  document.getElementById('badges-screen').classList.remove('show');
+  _newBadges.clear();
+}
+
+function renderBadgesBody() {
+  const body = document.getElementById('bs-body');
+  if (!body) return;
+  const cards = BADGE_DEFS.map(b=>{
+    const unlocked = unlockedBadges.has(b.id);
+    const val = b.stat === 'score' ? lifetimeStats.score : (lifetimeStats[b.stat]||0);
+    const pct = Math.min(100, Math.round(val/b.goal*100));
+    const isNew = _newBadges.has(b.id);
+    return `<div class="badge-card${unlocked?' unlocked':' locked'}">
+      ${isNew?'<span class="badge-new">NEW</span>':''}
+      <div class="badge-icon">${b.icon}</div>
+      <div class="badge-name">${b.name}</div>
+      <div class="badge-desc">${b.desc}</div>
+      <div class="badge-reward">+${b.reward} 💜 on unlock</div>
+      <div class="badge-prog">${unlocked?'✓ Unlocked':`${Math.min(val,b.goal)}/${b.goal}`}</div>
+    </div>`;
+  }).join('');
+  body.innerHTML = `<div class="badges-grid">${cards}</div>`;
+}
 </script>
+
+<!-- Daily Challenges Screen -->
+<div id="daily-screen">
+  <div class="ds-hdr">
+    <button class="ds-back" onclick="closeDailyScreen()">‹</button>
+    <div class="ds-title">📋 DAILY CHALLENGES</div>
+    <div class="ds-timer" id="ds-timer"></div>
+  </div>
+  <div class="ds-body" id="ds-body"></div>
+</div>
+
+<!-- Badges Screen -->
+<div id="badges-screen">
+  <div class="bs-hdr">
+    <button class="bs-back" onclick="closeBadgesScreen()">‹</button>
+    <div class="bs-title">🏅 BADGES</div>
+  </div>
+  <div class="bs-body" id="bs-body"></div>
+</div>
+
+<!-- Badge unlock toast -->
+<div id="badge-toast"></div>
+
 </body>
 </html>

@@ -34,6 +34,22 @@ const userSchema = new mongoose.Schema({
     },
     default: () => ({ theme: 'default', skin: 'default', effect: 'none', bg: 'none' }),
   },
+  stats: {
+    _id: false,
+    type: {
+      blocks:       { type: Number, default: 0 },
+      lines:        { type: Number, default: 0 },
+      coins_earned: { type: Number, default: 0 },
+      items_bought: { type: Number, default: 0 },
+      spins:        { type: Number, default: 0 },
+      chests:       { type: Number, default: 0 },
+      score:        { type: Number, default: 0 },
+    },
+    default: () => ({ blocks:0, lines:0, coins_earned:0, items_bought:0, spins:0, chests:0, score:0 }),
+  },
+  badges:         { type: [String], default: [] },
+  badgesRewarded: { type: [String], default: [] },
+  challenges:     { type: mongoose.Schema.Types.Mixed, default: null },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -58,11 +74,15 @@ function makeToken(user) {
 
 function userPayload(user) {
   return {
-    username:      user.username,
-    coins:         user.coins,
-    highScore:     user.highScore,
-    ownedItems:    user.ownedItems,
-    equippedItems: user.equipped,
+    username:       user.username,
+    coins:          user.coins,
+    highScore:      user.highScore,
+    ownedItems:     user.ownedItems,
+    equippedItems:  user.equipped,
+    stats:          user.stats,
+    badges:         user.badges,
+    badgesRewarded: user.badgesRewarded,
+    challenges:     user.challenges,
   };
 }
 
@@ -113,13 +133,7 @@ app.get('/api/load', requireAuth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).lean();
     if (!user) return res.status(404).json({ error: 'Account not found' });
-    res.json({
-      username:      user.username,
-      coins:         user.coins,
-      highScore:     user.highScore,
-      ownedItems:    user.ownedItems,
-      equippedItems: user.equipped,
-    });
+    res.json(userPayload(user));
   } catch (err) {
     console.error('load error:', err);
     res.status(500).json({ error: 'Server error — try again' });
@@ -127,7 +141,7 @@ app.get('/api/load', requireAuth, async (req, res) => {
 });
 
 app.post('/api/save', requireAuth, async (req, res) => {
-  const { coins, highScore, ownedItems, equippedItems } = req.body || {};
+  const { coins, highScore, ownedItems, equippedItems, stats, badges, badgesRewarded, challenges } = req.body || {};
   const $set = {};
   if (typeof coins     === 'number') $set.coins     = Math.max(0, Math.floor(coins));
   if (typeof highScore === 'number') $set.highScore = Math.max(0, Math.floor(highScore));
@@ -138,6 +152,13 @@ app.post('/api/save', requireAuth, async (req, res) => {
     if (equippedItems.effect !== undefined) $set['equipped.effect'] = equippedItems.effect;
     if (equippedItems.bg     !== undefined) $set['equipped.bg']     = equippedItems.bg;
   }
+  if (stats && typeof stats === 'object') {
+    const allowed = ['blocks','lines','coins_earned','items_bought','spins','chests','score'];
+    for (const k of allowed) if (typeof stats[k] === 'number') $set[`stats.${k}`] = Math.max(0, stats[k]);
+  }
+  if (Array.isArray(badges))         $set.badges         = badges;
+  if (Array.isArray(badgesRewarded)) $set.badgesRewarded = badgesRewarded;
+  if (challenges && typeof challenges === 'object') $set.challenges = challenges;
   try {
     await User.findByIdAndUpdate(req.user.id, { $set });
     res.json({ ok: true });
