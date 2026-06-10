@@ -50,6 +50,7 @@ const userSchema = new mongoose.Schema({
   badges:         { type: [String], default: [] },
   badgesRewarded: { type: [String], default: [] },
   challenges:     { type: mongoose.Schema.Types.Mixed, default: null },
+  home:           { type: mongoose.Schema.Types.Mixed, default: null },
 }, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
@@ -83,6 +84,7 @@ function userPayload(user) {
     badges:         user.badges,
     badgesRewarded: user.badgesRewarded,
     challenges:     user.challenges,
+    home:           user.home,
   };
 }
 
@@ -141,7 +143,7 @@ app.get('/api/load', requireAuth, async (req, res) => {
 });
 
 app.post('/api/save', requireAuth, async (req, res) => {
-  const { coins, highScore, ownedItems, equippedItems, stats, badges, badgesRewarded, challenges } = req.body || {};
+  const { coins, highScore, ownedItems, equippedItems, stats, badges, badgesRewarded, challenges, home } = req.body || {};
   const $set = {};
   if (typeof coins     === 'number') $set.coins     = Math.max(0, Math.floor(coins));
   if (typeof highScore === 'number') $set.highScore = Math.max(0, Math.floor(highScore));
@@ -159,6 +161,7 @@ app.post('/api/save', requireAuth, async (req, res) => {
   if (Array.isArray(badges))         $set.badges         = badges;
   if (Array.isArray(badgesRewarded)) $set.badgesRewarded = badgesRewarded;
   if (challenges && typeof challenges === 'object') $set.challenges = challenges;
+  if (home && typeof home === 'object') $set.home = home;
   try {
     await User.findByIdAndUpdate(req.user.id, { $set });
     res.json({ ok: true });
