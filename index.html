@@ -1032,10 +1032,12 @@ function openSpinModal() {
   const btn=document.getElementById('spin-do-btn');
   btn.disabled=false; btn.textContent='SPIN 💜';
   document.getElementById('spin-modal').classList.add('show');
+  const _smb=document.getElementById('music-btn'); if(_smb)_smb.style.display='none';
 }
 
 function closeSpinModal() {
   document.getElementById('spin-modal').classList.remove('show');
+  const _smb=document.getElementById('music-btn'); if(_smb)_smb.style.display='';
 }
 
 function doSpin() {
@@ -2194,12 +2196,14 @@ function openDailyScreen() {
   dailyChallenges = loadChallenges();
   renderDailyBody();
   document.getElementById('daily-screen').classList.add('show');
+  const _dmb=document.getElementById('music-btn'); if(_dmb)_dmb.style.display='none';
   _dsTimerInterval = setInterval(updateDailyTimer, 1000);
   updateDailyTimer();
 }
 function closeDailyScreen() {
   document.getElementById('daily-screen').classList.remove('show');
   clearInterval(_dsTimerInterval);
+  const _dmb=document.getElementById('music-btn'); if(_dmb)_dmb.style.display='';
 }
 function renderDailyIfOpen() {
   if (document.getElementById('daily-screen').classList.contains('show')) renderDailyBody();
@@ -2300,10 +2304,12 @@ function showBadgeToast(b) {
 function openBadgesScreen() {
   renderBadgesBody();
   document.getElementById('badges-screen').classList.add('show');
+  const _bmb=document.getElementById('music-btn'); if(_bmb)_bmb.style.display='none';
 }
 function closeBadgesScreen() {
   document.getElementById('badges-screen').classList.remove('show');
   _newBadges.clear();
+  const _bmb=document.getElementById('music-btn'); if(_bmb)_bmb.style.display='';
 }
 
 function renderBadgesBody() {
