@@ -2495,7 +2495,7 @@ const HOME_ITEMS={
 const H_ITEM_ROOMS={sofa:'lr',tv:'lr',ctable:'lr',rug:'lr',plant:'lr',lamp:'lr',bed:'br',wardrobe:'br',vanity:'br',bookshelf:'br',lights:'br',bathtub:'ba',bsink:'ba',towel:'ba',fridge:'kt',stove:'kt',ktable:'kt',fruit:'kt'};
 let hChar={tx:4,ty:5,facing:'down',anim:0,path:[]};
 let hData={owned:new Set(),placed:[]};
-let hAnimFrame=null,hLastStep=0,hMoveDir=null,hPlacing=null;
+let hAnimFrame=null,hLastStep=0,hMoveDir=null,hPlacing=null,hCharImg=null;
 
 function hItemById(id){for(const r of Object.values(HOME_ITEMS)){const i=r.find(x=>x.id===id);if(i)return i;}return null;}
 function hTileRoom(tx,ty){const t=H_MAP[ty]?.[tx];return t===1?'lr':t===2?'br':t===3?'kt':t===4?'ba':null;}
@@ -2574,43 +2574,27 @@ function hDrawFurniture(ctx,id,px,py){
 }
 
 function hDrawChar(ctx,px,py,anim,facing){
-  const f=anim%2,T=H_TS,s=Math.max(1,Math.round(T*0.11));
-  // Sprite is ~12s wide × 15s tall, centered on tile
-  const ox=px-(s*6-T)/2-s,oy=py-s*8;
+  const T=H_TS,r=Math.max(8,Math.round(T*0.67));
+  const cx=(px+T/2)|0,cy=(py+T/2)|0;
   ctx.save();
   // ground shadow
-  ctx.fillStyle='rgba(0,0,0,0.3)';ctx.fillRect(ox+s*2,oy+s*14,s*8,s*2);
-  // legs
-  ctx.fillStyle='#f4c2a1';
-  if(facing==='left'||facing==='right'){
-    ctx.fillRect(ox+s*3,oy+s*9,s*3,f?s*3:s*4);
-    ctx.fillRect(ox+s*7,oy+s*9+(f?s:0),s*3,f?s*4:s*3);
-  } else {
-    ctx.fillRect(ox+s*2,oy+s*9,s*3,f?s*4:s*3);
-    ctx.fillRect(ox+s*7,oy+s*9+(f?s:0),s*3,f?s*3:s*4);
+  ctx.fillStyle='rgba(0,0,0,0.22)';
+  ctx.beginPath();ctx.ellipse(cx,cy+r+1,r*0.55,r*0.16,0,0,Math.PI*2);ctx.fill();
+  // circular clip then photo
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
+  if(hCharImg&&hCharImg.complete&&hCharImg.naturalWidth>0){
+    ctx.drawImage(hCharImg,cx-r,cy-r,r*2,r*2);
+  }else{
+    ctx.fillStyle='#f0a8d0';ctx.fillRect(cx-r,cy-r,r*2,r*2);
+    ctx.fillStyle='rgba(200,80,160,0.6)';ctx.fillRect(cx-r,cy,r*2,r);
   }
-  // shoes
-  ctx.fillStyle='#3a1a77';ctx.fillRect(ox+s*2,oy+s*12,s*3,s*2);ctx.fillRect(ox+s*7,oy+s*12,s*3,s*2);
-  // body/dress
-  ctx.fillStyle='#cc55aa';ctx.fillRect(ox+s*2,oy+s*5,s*8,s*5);ctx.fillRect(ox+s,oy+s*7,s*10,s*2);
-  // arms
-  ctx.fillStyle='#f4c2a1';
-  ctx.fillRect(ox,oy+s*5+(f?s:0),s*2,s*4);
-  ctx.fillRect(ox+s*10,oy+s*5+(f?0:s),s*2,s*4);
-  // neck
-  ctx.fillStyle='#f4c2a1';ctx.fillRect(ox+s*4,oy+s*3,s*4,s*3);
-  // head
-  ctx.fillStyle='#f4c2a1';ctx.fillRect(ox+s*2,oy,s*8,s*4);
-  // hair — long dark
-  ctx.fillStyle='#2d1a0e';
-  ctx.fillRect(ox+s*2,oy-s,s*8,s*3);// top
-  ctx.fillRect(ox,oy+s,s*2,s*6);// left curtain
-  ctx.fillRect(ox+s*10,oy+s,s*2,s*6);// right curtain
-  // eyes
-  ctx.fillStyle='#1a0a00';ctx.fillRect(ox+s*3,oy+s,s*2,s*2);ctx.fillRect(ox+s*7,oy+s,s*2,s*2);
-  // blush
-  ctx.fillStyle='rgba(255,100,100,0.5)';ctx.fillRect(ox+s*3,oy+s*3,s*2,s);ctx.fillRect(ox+s*7,oy+s*3,s*2,s);
   ctx.restore();
+  // purple glowing ring
+  ctx.strokeStyle='#cc44ff';
+  ctx.lineWidth=Math.max(1.5,T*0.07);
+  ctx.shadowColor='#aa22ff';ctx.shadowBlur=Math.max(3,T*0.18);
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.shadowBlur=0;
 }
 
 function hGetDN(){
@@ -2701,6 +2685,11 @@ function openHomeScreen(){
   H_TS=Math.max(8,Math.floor(window.innerWidth/H_COLS));
   cv.width=H_COLS*H_TS;cv.height=H_ROWS*H_TS;
   document.getElementById('home-coins-disp').textContent=coins;
+  // Preload Fatema's photo as the character avatar
+  if(!hCharImg||!hCharImg.complete){
+    const av=document.querySelector('.avatar');
+    if(av&&av.src){hCharImg=new Image();hCharImg.src=av.src;}
+  }
   cv.addEventListener('click',hCanvasTap);
   cv.addEventListener('touchstart',hCanvasTap,{passive:false});
   cv.addEventListener('touchmove',hCanvasMove,{passive:false});
