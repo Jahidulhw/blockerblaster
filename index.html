@@ -458,7 +458,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 }
 #badge-banner.in{animation:notifSlideDown .42s cubic-bezier(.22,.61,.36,1) forwards;}
 /* ── Home Screen ─────────────────────────────────────────────────────────── */
-#home-screen{display:none;position:fixed;inset:0;background:#0a0018;z-index:15000;flex-direction:column;}
+#home-screen{display:none;position:fixed;inset:0;background:#0a0018;z-index:15000;flex-direction:column;overflow-y:auto;}
 #home-screen.show{display:flex;}
 .home-hdr{display:flex;align-items:center;padding:12px 14px 8px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;background:rgba(8,0,20,.95);}
 .home-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 10px 0 0;line-height:1;}
@@ -2747,6 +2747,7 @@ function hStartPlace(id){
 
 <!-- Home Screen -->
 <div id="home-screen">
+  <div class="screen-top-spacer"></div>
   <div class="home-hdr">
     <button class="home-back" onclick="closeHomeScreen()">‹</button>
     <div class="home-title">🏠 Fatema's Home</div>
