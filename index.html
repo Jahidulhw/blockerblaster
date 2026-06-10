@@ -48,8 +48,36 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .piece-slot.used{opacity:.35;cursor:default;pointer-events:none;}
 .piece-preview{position:relative;}
 .piece-cell{position:absolute;border-radius:5px;}
-.btn-shop{margin-top:14px;background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:800;padding:11px 36px;border-radius:50px;cursor:pointer;box-shadow:0 0 20px rgba(150,0,200,0.45);letter-spacing:2px;transition:transform .15s,box-shadow .15s;}
-.btn-shop:hover{transform:scale(1.05);box-shadow:0 0 30px rgba(180,0,255,0.6);}
+.btn-menu{background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:1em;font-weight:900;padding:11px 44px;border-radius:50px;cursor:pointer;box-shadow:0 0 22px rgba(150,0,200,0.5);letter-spacing:2px;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.btn-menu:hover{transform:scale(1.05);box-shadow:0 0 32px rgba(180,0,255,0.65);}
+/* Menu popup */
+#menu-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:14000;backdrop-filter:blur(3px);}
+#menu-overlay.show{display:block;}
+#menu-popup{
+  position:fixed;bottom:0;left:0;right:0;z-index:14001;
+  background:linear-gradient(180deg,rgba(18,0,40,.98),rgba(10,0,28,.99));
+  border-top:1.5px solid rgba(180,60,255,.35);
+  border-radius:22px 22px 0 0;
+  padding:18px 18px 32px;
+  transform:translateY(100%);
+  transition:transform .32s cubic-bezier(.22,.61,.36,1);
+}
+#menu-popup.show{transform:translateY(0);}
+.menu-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:4px;}
+.menu-item{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:6px;padding:18px 8px;border-radius:16px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,rgba(80,0,140,.55),rgba(50,0,90,.45));
+  border:1.5px solid rgba(160,60,255,.3);
+  color:#eeddff;font-weight:800;letter-spacing:.5px;font-size:.88em;
+  transition:background .2s,border-color .2s,transform .12s;
+  -webkit-tap-highlight-color:transparent;touch-action:manipulation;position:relative;
+}
+.menu-item:hover{background:linear-gradient(135deg,rgba(110,0,200,.65),rgba(80,0,140,.6));border-color:rgba(200,100,255,.55);transform:scale(1.03);}
+.menu-item-icon{font-size:2em;line-height:1;}
+.menu-item-label{font-size:.78em;letter-spacing:1px;}
+.menu-spin-ready{position:absolute;top:8px;right:8px;width:9px;height:9px;border-radius:50%;background:#ff44cc;box-shadow:0 0 8px #ff44cc;animation:spinBtnPulse 1.5s ease-in-out infinite;}
+.menu-handle{width:36px;height:4px;background:rgba(180,100,255,.3);border-radius:99px;margin:0 auto 14px;}
 #drag-ghost{position:fixed;pointer-events:none;z-index:9999;display:none;left:0;top:0;will-change:transform;}
 .dg-cell{position:absolute;border-radius:5px;}
 .toast{display:none;position:fixed;top:18px;left:50%;transform:translateX(-50%);border-radius:50px;padding:9px 20px 9px 10px;align-items:center;gap:10px;z-index:9990;animation:toastIn .35s ease-out;white-space:nowrap;}
@@ -206,7 +234,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .coin-float{position:fixed;pointer-events:none;z-index:9997;font-size:1.25em;animation:coinFloatUp .72s ease-out forwards;}
 @keyframes coinFloatUp{0%{transform:translateY(0) scale(1.1);opacity:1;}100%{transform:translateY(-72px) scale(.5);opacity:0;}}
 /* ── Spin button (main screen) ───────────────────────────── */
-#spin-avail-btn{display:none;margin-top:10px;background:linear-gradient(135deg,#cc00ff,#ff0088);border:2.5px solid #ff99ff;color:#fff;font-size:.95em;font-weight:900;padding:10px 30px;border-radius:50px;cursor:pointer;letter-spacing:2px;box-shadow:0 0 28px rgba(220,0,255,.7);animation:spinBtnPulse 1.5s ease-in-out infinite;}
+#spin-avail-btn{display:none;}
 @keyframes spinBtnPulse{0%,100%{box-shadow:0 0 28px rgba(220,0,255,.7);transform:scale(1);}50%{box-shadow:0 0 52px rgba(255,0,200,1);transform:scale(1.08);}}
 .spin-countdown{font-size:.68em;color:rgba(200,140,255,.6);letter-spacing:.8px;margin-top:6px;min-height:1.1em;text-align:center;}
 .spin-countdown.dbl{color:#ffdd88;}
@@ -282,8 +310,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   /* Row 5 — Buttons 80px (+saiB): JS sets height+paddingBottom */
   #row-buttons{flex-shrink:0;overflow:hidden;}
   .btn-row{display:flex;gap:clamp(8px,2vw,14px);margin:0;align-items:center;justify-content:center;}
-  .btn-shop{margin:0;padding:9px clamp(16px,4vw,26px);font-size:clamp(0.8em,3.2vw,0.95em);letter-spacing:1px;}
-  #spin-avail-btn{margin:0;padding:8px clamp(12px,3.5vw,20px);font-size:clamp(0.76em,3vw,0.9em);letter-spacing:1px;}
+  .btn-menu{padding:9px clamp(20px,5vw,36px);font-size:clamp(0.82em,3.2vw,0.95em);}
   .spin-countdown{font-size:clamp(0.5em,1.5vw,0.62em);margin-top:3px;}
   /* Modals */
   .shop-panel{padding:10px 10px max(28px,env(safe-area-inset-bottom,0px));}
@@ -396,16 +423,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   color:#fff;font-size:.62em;font-weight:900;letter-spacing:1px;
   border-radius:20px;padding:2px 6px;text-transform:uppercase;
 }
-.btn-row2{display:flex;gap:8px;justify-content:center;margin-top:6px;}
-.btn-daily,.btn-badges{
-  flex:1;padding:8px 0;border-radius:10px;border:none;cursor:pointer;
-  font-size:.82em;font-weight:800;letter-spacing:.5px;
-  -webkit-tap-highlight-color:transparent;touch-action:manipulation;
-}
-.btn-daily{background:linear-gradient(135deg,rgba(80,0,160,.85),rgba(140,0,120,.8));
-  border:1.5px solid rgba(180,60,255,.5);color:#eeddff;}
-.btn-badges{background:linear-gradient(135deg,rgba(60,0,120,.85),rgba(120,0,100,.8));
-  border:1.5px solid rgba(160,60,255,.5);color:#eeddff;}
+.btn-daily,.btn-badges{display:none;}
 #badge-toast{
   position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
   background:linear-gradient(135deg,rgba(100,0,200,.95),rgba(180,0,140,.95));
@@ -458,16 +476,36 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 </div><!-- /row-tray -->
 
 <div id="row-buttons">
-<div class="btn-row">
-<button class="btn-shop" onclick="openShop()">💜 SHOP</button>
-<button id="spin-avail-btn" onclick="openSpinModal()">🎡 SPIN NOW!</button>
-</div>
+<button class="btn-menu" onclick="openMenu()">⠿ MENU</button>
 <div id="spin-countdown" class="spin-countdown"></div>
-<div class="btn-row2">
-<button class="btn-daily" onclick="openDailyScreen()">📋 DAILY</button>
-<button class="btn-badges" onclick="openBadgesScreen()">🏅 BADGES</button>
-</div>
 </div><!-- /row-buttons -->
+
+<!-- hidden spin-avail-btn kept for JS compatibility -->
+<button id="spin-avail-btn" style="display:none" onclick="openSpinModal()"></button>
+
+<!-- Menu overlay + popup -->
+<div id="menu-overlay" onclick="closeMenu()"></div>
+<div id="menu-popup">
+  <div class="menu-handle"></div>
+  <div class="menu-grid">
+    <button class="menu-item" onclick="closeMenu();openShop()">
+      <span class="menu-item-icon">🛍️</span>
+      <span class="menu-item-label">SHOP</span>
+    </button>
+    <button class="menu-item" id="menu-spin-item" onclick="closeMenu();openSpinModal()">
+      <span class="menu-item-icon">🎡</span>
+      <span class="menu-item-label">SPIN</span>
+    </button>
+    <button class="menu-item" onclick="closeMenu();openDailyScreen()">
+      <span class="menu-item-icon">📋</span>
+      <span class="menu-item-label">DAILY</span>
+    </button>
+    <button class="menu-item" onclick="closeMenu();openBadgesScreen()">
+      <span class="menu-item-icon">🏅</span>
+      <span class="menu-item-label">BADGES</span>
+    </button>
+  </div>
+</div>
 </div><!-- /game-container -->
 
 <div id="drag-ghost"></div>
@@ -929,6 +967,7 @@ function refreshSpinUI() {
     }
     cd.textContent = txt;
   }
+  updateMenuSpinDot();
   // Double-coins badge
   let badge = document.getElementById('dbl-badge');
   if (doubleActive()) {
@@ -2068,6 +2107,27 @@ function initGame() {
 
   requestAnimationFrame(frame);
 }());
+
+// ── Menu popup ─────────────────────────────────────────────────────────────
+function openMenu() {
+  document.getElementById('menu-overlay').classList.add('show');
+  document.getElementById('menu-popup').classList.add('show');
+  updateMenuSpinDot();
+}
+function closeMenu() {
+  document.getElementById('menu-overlay').classList.remove('show');
+  document.getElementById('menu-popup').classList.remove('show');
+}
+function updateMenuSpinDot() {
+  const item = document.getElementById('menu-spin-item');
+  if (!item) return;
+  let dot = item.querySelector('.menu-spin-ready');
+  if (spinReady() && currentUser) {
+    if (!dot) { dot = document.createElement('span'); dot.className='menu-spin-ready'; item.appendChild(dot); }
+  } else {
+    if (dot) dot.remove();
+  }
+}
 
 // ── Daily Challenges ───────────────────────────────────────────────────────
 const CHALLENGE_POOL = [
