@@ -424,15 +424,46 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
   border-radius:20px;padding:2px 6px;text-transform:uppercase;
 }
 .btn-daily,.btn-badges{display:none;}
-#badge-toast{
-  position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(20px);
-  background:linear-gradient(135deg,rgba(100,0,200,.95),rgba(180,0,140,.95));
-  border:1.5px solid rgba(220,100,255,.7);border-radius:14px;
-  padding:10px 20px;color:#fff;font-size:.9em;font-weight:700;
-  z-index:99000;opacity:0;transition:opacity .3s,transform .3s;
-  white-space:nowrap;pointer-events:none;text-align:center;
+/* ── Challenge complete banner ───────────────────────────────────────────── */
+@keyframes notifSlideDown{from{transform:translateY(-110%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+@keyframes notifSlideUp{from{transform:translateY(0);opacity:1;}to{transform:translateY(-110%);opacity:0;}}
+@keyframes goldPop{0%{transform:scale(.7);opacity:0;}60%{transform:scale(1.15);}100%{transform:scale(1);opacity:1;}}
+@keyframes sparkleFloat{0%{transform:translate(0,0) scale(1);opacity:1;}100%{transform:translate(var(--sx),var(--sy)) scale(0);opacity:0;}}
+#challenge-banner{
+  position:fixed;top:0;left:0;right:0;z-index:98000;pointer-events:none;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 20px;
+  background:linear-gradient(135deg,rgba(120,0,220,.97),rgba(210,0,140,.97));
+  border-bottom:1.5px solid rgba(255,120,255,.5);
+  box-shadow:0 4px 30px rgba(180,0,255,.5),0 2px 8px rgba(0,0,0,.4);
+  opacity:0;transform:translateY(-110%);
 }
-#badge-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#challenge-banner.in{animation:notifSlideDown .38s cubic-bezier(.22,.61,.36,1) forwards;}
+#challenge-banner.out{animation:notifSlideUp .32s ease-in forwards;}
+.cb-check{font-size:1.3em;line-height:1;}
+.cb-text{display:flex;flex-direction:column;gap:1px;}
+.cb-title{font-size:.9em;font-weight:900;color:#fff;letter-spacing:.5px;}
+.cb-sub{font-size:.78em;color:#ffddff;font-weight:600;}
+.cb-coins{font-size:1em;font-weight:900;color:#ffee88;text-shadow:0 0 10px #ffcc00;white-space:nowrap;}
+/* ── Badge unlock banner ─────────────────────────────────────────────────── */
+#badge-banner{
+  position:fixed;top:0;left:0;right:0;z-index:98001;pointer-events:none;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;
+  padding:18px 20px 16px;
+  background:linear-gradient(135deg,rgba(80,40,0,.98),rgba(140,80,0,.97),rgba(80,20,0,.98));
+  border-bottom:2px solid rgba(255,200,60,.6);
+  box-shadow:0 4px 40px rgba(255,160,0,.45),0 2px 12px rgba(0,0,0,.5);
+  opacity:0;transform:translateY(-110%);
+}
+#badge-banner.in{animation:notifSlideDown .42s cubic-bezier(.22,.61,.36,1) forwards;}
+#badge-banner.out{animation:notifSlideUp .32s ease-in forwards;}
+.bb-unlocked{font-size:.7em;font-weight:900;letter-spacing:3px;text-transform:uppercase;
+  color:#ffcc44;text-shadow:0 0 12px #ffaa00;}
+.bb-icon{font-size:2.6em;line-height:1;animation:goldPop .4s .1s ease-out both;}
+.bb-name{font-size:1em;font-weight:900;color:#fff;letter-spacing:.5px;text-align:center;}
+.bb-reward{font-size:.82em;color:#ffee88;font-weight:700;}
+.bb-sparkle{position:fixed;pointer-events:none;z-index:98002;font-size:1em;
+  animation:sparkleFloat .9s ease-out forwards;}
 </style>
 </head>
 <body>
@@ -2190,6 +2221,7 @@ function claimChallenge(idx) {
   coins += c.reward; saveCoins(); updateCoinsDisplay(); popCoins(); snd_coin();
   saveChallenges();
   renderDailyBody();
+  showChallengeBanner(c.label, c.reward);
 }
 
 function openDailyScreen() {
@@ -2287,18 +2319,66 @@ function checkBadges() {
         badgesRewarded.add(b.id);
         coins += b.reward; saveCoins(); updateCoinsDisplay(); popCoins(); snd_coin();
       }
-      showBadgeToast(b);
+      showBadgeBanner(b);
     }
   });
 }
 
-function showBadgeToast(b) {
-  const el = document.getElementById('badge-toast');
-  if (!el) return;
-  el.textContent = `${b.icon} Badge Unlocked: ${b.name} (+${b.reward} 💜)`;
-  el.classList.add('show');
+let _challengeBannerTimer = null;
+function showChallengeBanner(label, reward) {
+  const banner = document.getElementById('challenge-banner');
+  if (!banner) return;
+  document.getElementById('cb-title').textContent = label;
+  document.getElementById('cb-coins').textContent = '+' + reward + ' 💜';
+  banner.classList.remove('out');
+  // Force reflow so re-triggering works
+  void banner.offsetWidth;
+  banner.classList.add('in');
+  clearTimeout(_challengeBannerTimer);
+  _challengeBannerTimer = setTimeout(() => {
+    banner.classList.remove('in');
+    banner.classList.add('out');
+    setTimeout(() => banner.classList.remove('out'), 340);
+  }, 3000);
+}
+
+function showBadgeBanner(b) {
+  const banner = document.getElementById('badge-banner');
+  if (!banner) return;
+  document.getElementById('bb-icon').textContent = b.icon;
+  document.getElementById('bb-name').textContent = b.name;
+  document.getElementById('bb-reward').textContent = '+' + b.reward + ' 💜 earned!';
+  banner.classList.remove('out');
+  void banner.offsetWidth;
+  banner.classList.add('in');
   clearTimeout(_badgeToastTimer);
-  _badgeToastTimer = setTimeout(()=>el.classList.remove('show'), 3200);
+  _badgeToastTimer = setTimeout(() => {
+    banner.classList.remove('in');
+    banner.classList.add('out');
+    setTimeout(() => banner.classList.remove('out'), 340);
+  }, 4000);
+  spawnBadgeSparkles();
+}
+
+function spawnBadgeSparkles() {
+  const glyphs = ['✨','⭐','💛','🌟','💫','✦','★'];
+  for (let i = 0; i < 18; i++) {
+    setTimeout(() => {
+      const el = document.createElement('span');
+      el.className = 'bb-sparkle';
+      el.textContent = glyphs[Math.floor(Math.random() * glyphs.length)];
+      const x = 10 + Math.random() * 80; // % across viewport
+      el.style.left = x + 'vw';
+      el.style.top  = (Math.random() * 80) + 'px';
+      const dx = (Math.random() - 0.5) * 120;
+      const dy = -(40 + Math.random() * 80);
+      el.style.setProperty('--sx', dx + 'px');
+      el.style.setProperty('--sy', dy + 'px');
+      el.style.animationDuration = (0.7 + Math.random() * 0.5) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1300);
+    }, i * 60);
+  }
 }
 
 function openBadgesScreen() {
@@ -2353,7 +2433,20 @@ function renderBadgesBody() {
 </div>
 
 <!-- Badge unlock toast -->
-<div id="badge-toast"></div>
+<div id="challenge-banner">
+  <span class="cb-check">✅</span>
+  <div class="cb-text">
+    <span class="cb-title" id="cb-title"></span>
+    <span class="cb-sub">Challenge Complete!</span>
+  </div>
+  <span class="cb-coins" id="cb-coins"></span>
+</div>
+<div id="badge-banner">
+  <div class="bb-unlocked">✨ Achievement Unlocked ✨</div>
+  <div class="bb-icon" id="bb-icon"></div>
+  <div class="bb-name" id="bb-name"></div>
+  <div class="bb-reward" id="bb-reward"></div>
+</div>
 
 </body>
 </html>
