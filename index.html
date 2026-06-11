@@ -2526,19 +2526,19 @@ function hDrawTile(ctx,type,px,py,tx,ty){
     else ft=3;                    // col-10, bottom: KT<->BA
   } else { ft=type; }
   // Floor tiles
-  if(ft===1){// LR — warm light brown hardwood
-    ctx.fillStyle=(ty+tx)%2===0?'#f0c070':'#e0b060';ctx.fillRect(px,py,T,T);
+  if(ft===1){// LR — warm brown hardwood
+    ctx.fillStyle=(ty+tx)%2===0?'#C4956A':'#B48560';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(0,0,0,0.07)';if(ty%3===0)ctx.fillRect(px,py+T-1,T,1);if(tx%4===0)ctx.fillRect(px+T-1,py,1,T);
     ctx.fillStyle='rgba(255,240,180,0.18)';ctx.fillRect(px,py,T,b);
-  } else if(ft===2){// BR — bright bubblegum pink carpet
-    ctx.fillStyle=(tx+ty)%2===0?'#ffd6ee':'#ffc2e4';ctx.fillRect(px,py,T,T);
+  } else if(ft===2){// BR — bright pink carpet
+    ctx.fillStyle=(tx+ty)%2===0?'#E8A0C0':'#D890B0';ctx.fillRect(px,py,T,T);
     if((tx+ty)%4===0){ctx.fillStyle='rgba(255,255,255,0.45)';ctx.fillRect(px+T/4,py+T/4,T/4,T/4);}
-  } else if(ft===3){// KT — bright black & white checker
-    ctx.fillStyle=(tx+ty)%2===0?'#ffffff':'#444444';ctx.fillRect(px,py,T,T);
+  } else if(ft===3){// KT — white & dark checker
+    ctx.fillStyle=(tx+ty)%2===0?'#F0F0F0':'#444444';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(px,py,T,1);ctx.fillRect(px,py,1,T);
-  } else if(ft===4){// BA — light blue-white tile
-    ctx.fillStyle=(tx%2===ty%2)?'#eaf8ff':'#f8fdff';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(100,170,220,0.22)';ctx.fillRect(px,py,T,1);ctx.fillRect(px,py,1,T);
+  } else if(ft===4){// BA — bright light blue tile
+    ctx.fillStyle=(tx%2===ty%2)?'#A8D4E8':'#BEE0F0';ctx.fillRect(px,py,T,T);
+    ctx.fillStyle='rgba(80,150,190,0.22)';ctx.fillRect(px,py,T,1);ctx.fillRect(px,py,1,T);
   } else {// FD — terracotta entrance mat
     ctx.fillStyle=(tx+ty)%2===0?'#a06830':'#906020';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(255,160,60,0.15)';ctx.fillRect(px,py,T,T);
