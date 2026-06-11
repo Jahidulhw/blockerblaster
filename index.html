@@ -2877,7 +2877,7 @@ function hDrawFurniture(ctx,id,px,py){
 }
 
 function hDrawChar(ctx,px,py,anim,facing){
-  const T=H_TS,r=Math.max(8,Math.round(T*0.67));
+  const T=H_TS,r=Math.max(24,Math.round(T*0.67));
   const cx=(px+T/2)|0,cy=(py+T/2)|0;
   ctx.save();
   // ground shadow
@@ -2886,6 +2886,7 @@ function hDrawChar(ctx,px,py,anim,facing){
   // circular clip then photo
   ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
   if(hCharImg&&hCharImg.complete&&hCharImg.naturalWidth>0){
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
     ctx.drawImage(hCharImg,cx-r,cy-r,r*2,r*2);
   }else{
     ctx.fillStyle='#f0a8d0';ctx.fillRect(cx-r,cy-r,r*2,r*2);
