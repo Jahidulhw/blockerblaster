@@ -465,7 +465,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .home-title{flex:1;text-align:center;font-size:.95em;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .home-shop-btn{background:linear-gradient(135deg,rgba(80,0,140,.8),rgba(140,0,100,.8));border:1.5px solid rgba(180,60,255,.4);border-radius:20px;color:#ffdd88;font-size:.78em;font-weight:800;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .home-cv-wrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
-#home-canvas{display:block;width:100%;aspect-ratio:4/5;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer;filter:brightness(1.5);}
+#home-canvas{display:block;width:100%;aspect-ratio:4/5;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer;}
 .home-ctrl{display:flex;align-items:center;justify-content:center;padding:8px 0 12px;flex-shrink:0;background:rgba(6,0,16,.97);border-top:1px solid rgba(120,0,200,.2);}
 .dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:3px;}
 .dpad-btn{background:rgba(80,0,140,.65);border:1.5px solid rgba(160,60,255,.35);border-radius:8px;color:#cc88ff;font-size:.9em;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;}
@@ -2527,22 +2527,18 @@ function hDrawTile(ctx,type,px,py,tx,ty){
   } else { ft=type; }
   // Floor tiles
   if(ft===1){// LR — warm brown hardwood
-    ctx.fillStyle=(ty+tx)%2===0?'#D4A574':'#D4A574';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(0,0,0,0.07)';if(ty%3===0)ctx.fillRect(px,py+T-1,T,1);if(tx%4===0)ctx.fillRect(px+T-1,py,1,T);
+    ctx.fillStyle='#E8C49A';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(255,240,180,0.18)';ctx.fillRect(px,py,T,b);
-  } else if(ft===2){// BR — bright pink carpet
-    ctx.fillStyle=(tx+ty)%2===0?'#F0B8D0':'#F0B8D0';ctx.fillRect(px,py,T,T);
+  } else if(ft===2){// BR — pink carpet
+    ctx.fillStyle='#F5C8DC';ctx.fillRect(px,py,T,T);
     if((tx+ty)%4===0){ctx.fillStyle='rgba(255,255,255,0.45)';ctx.fillRect(px+T/4,py+T/4,T/4,T/4);}
   } else if(ft===3){// KT — white & dark checker
-    ctx.fillStyle=(tx+ty)%2===0?'#F5F5F5':'#404040';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(0,0,0,0.08)';ctx.fillRect(px,py,T,1);ctx.fillRect(px,py,1,T);
-  } else if(ft===4){// BA — bright light blue tile
-    ctx.fillStyle=(tx%2===ty%2)?'#B8DCF0':'#B8DCF0';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(80,150,190,0.22)';ctx.fillRect(px,py,T,1);ctx.fillRect(px,py,1,T);
+    ctx.fillStyle=(tx+ty)%2===0?'#FFFFFF':'#555555';ctx.fillRect(px,py,T,T);
+  } else if(ft===4){// BA — light blue tile
+    ctx.fillStyle='#C8E8F5';ctx.fillRect(px,py,T,T);
   } else {// FD — terracotta entrance mat
     ctx.fillStyle=(tx+ty)%2===0?'#a06830':'#906020';ctx.fillRect(px,py,T,T);
     ctx.fillStyle='rgba(255,160,60,0.15)';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(0,0,0,0.12)';if(ty%2===0)ctx.fillRect(px,py+T-1,T,1);
   }
   // Doorway — golden frame on open edges
   if(type===6){
@@ -2554,11 +2550,7 @@ function hDrawTile(ctx,type,px,py,tx,ty){
 
 function hDrawFurniture(ctx,id,px,py){
   const T=H_TS;
-  function shadow(x,y,w,h){
-    ctx.save();ctx.globalAlpha=0.28;ctx.fillStyle='#000';
-    ctx.beginPath();ctx.ellipse(x+w/2,y+h,w*0.44,Math.max(3,h*0.1),0,0,Math.PI*2);ctx.fill();
-    ctx.restore();
-  }
+  function shadow(x,y,w,h){}
   ctx.save();
   const r=Math.round;
   switch(id){
@@ -2938,11 +2930,6 @@ function hDraw(){
   if(hPlacing){ctx.globalAlpha=0.55;hDrawFurniture(ctx,hPlacing.id,hPlacing.gx*T,hPlacing.gy*T);ctx.globalAlpha=1;}
   // Cheerful brightness boost
   ctx.save();ctx.globalAlpha=0.13;ctx.fillStyle='#fffdf0';ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();
-  const dn=hGetDN();
-  if(dn){
-    ctx.fillStyle=`rgba(${dn.r},${dn.g},${dn.b},${dn.a})`;ctx.fillRect(0,0,cv.width,cv.height);
-    const grd=ctx.createRadialGradient(5*T,5*T,0,5*T,5*T,7*T);grd.addColorStop(0,'rgba(255,180,80,0.12)');grd.addColorStop(1,'rgba(255,180,80,0)');ctx.fillStyle=grd;ctx.fillRect(0,0,cv.width,cv.height);
-  }
 }
 
 function hBFS(sx,sy,ex,ey){
