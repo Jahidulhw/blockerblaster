@@ -1815,7 +1815,7 @@ function buildDragGhost(p) {
     d.style.borderRadius = '5px';
     ghostEl.appendChild(d);
   }
-  ghostEl.style.display = 'block'; ghostEl.style.opacity = '0.95';
+  ghostEl.style.display = 'block'; ghostEl.style.opacity = '1';
 }
 
 function moveGhostEl(cx, cy) {
@@ -1844,7 +1844,7 @@ function effectivePos(rawX, rawY) {
 function showBoardGhost(row, col) {
   clearBoardGhost();
   const p = drag.piece, valid = canPlace(p, row, col);
-  ghostEl.style.opacity = valid ? '1' : '0.38';
+  ghostEl.style.opacity = '1';
   if (!valid) return;
   for (const [dr, dc] of p.s) {
     const r = row+dr, c = col+dc;
