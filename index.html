@@ -1811,8 +1811,9 @@ function buildDragGhost(p) {
     d.style.width  = CELL+'px'; d.style.height = CELL+'px';
     d.style.left   = (dc*(CELL+GAP))+'px'; d.style.top = (dr*(CELL+GAP))+'px';
     d.style.background = p.c;
-    d.style.boxShadow  = `0 0 16px ${p.c},0 0 6px ${p.c}`;
+    d.style.boxShadow  = `0 0 32px 8px ${p.c}, 0 0 12px 2px #fff, 0 4px 16px rgba(0,0,0,0.7)`;
     d.style.borderRadius = '5px';
+    d.style.filter = 'brightness(1.35)';
     ghostEl.appendChild(d);
   }
   ghostEl.style.display = 'block'; ghostEl.style.opacity = '1';
