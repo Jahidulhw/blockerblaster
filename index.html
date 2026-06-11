@@ -458,7 +458,7 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 }
 #badge-banner.in{animation:notifSlideDown .42s cubic-bezier(.22,.61,.36,1) forwards;}
 /* ── Home Screen ─────────────────────────────────────────────────────────── */
-#home-screen{display:none;position:fixed;inset:0;background:#0a0018;z-index:15000;flex-direction:column;overflow-y:auto;}
+#home-screen{display:none;position:fixed;inset:0;background:#f5eeff;z-index:15000;flex-direction:column;overflow-y:auto;}
 #home-screen.show{display:flex;}
 .home-hdr{display:flex;align-items:center;padding:12px 14px 8px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;background:rgba(8,0,20,.95);}
 .home-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 10px 0 0;line-height:1;}
@@ -2921,6 +2921,7 @@ function hDraw(){
   const cv=document.getElementById('home-canvas');if(!cv)return;
   const ctx=cv.getContext('2d'),T=H_TS;
   ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#f5eeff';ctx.fillRect(0,0,cv.width,cv.height);
   for(let ty=0;ty<H_ROWS;ty++)for(let tx=0;tx<H_COLS;tx++)hDrawTile(ctx,H_MAP[ty][tx],tx*T,ty*T,tx,ty);
   // Room labels — drawn once, centered in each room
   const lsz=Math.max(7,Math.round(T*0.56));
