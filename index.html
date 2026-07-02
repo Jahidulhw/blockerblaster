@@ -3096,11 +3096,11 @@ function hStartPlace(id){
 }
 
 function checkAnniversaryModal(){
-  if(localStorage.getItem('fatemaBlast_relationshipAnniversarySeen'))return;
+  if(localStorage.getItem('fatemaBlast_relationshipAnniversarySeen_v2'))return;
   document.getElementById('anniv-modal').classList.add('show');
 }
 function closeAnniversaryModal(){
-  localStorage.setItem('fatemaBlast_relationshipAnniversarySeen','1');
+  localStorage.setItem('fatemaBlast_relationshipAnniversarySeen_v2','1');
   document.getElementById('anniv-modal').classList.remove('show');
 }
 
