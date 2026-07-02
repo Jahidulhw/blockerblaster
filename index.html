@@ -498,6 +498,58 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .bb-reward{font-size:.82em;color:#ffee88;font-weight:700;}
 .bb-sparkle{position:fixed;pointer-events:none;z-index:98002;font-size:1em;
   animation:sparkleFloat .9s ease-out forwards;}
+
+/* ── Anniversary Modal ───────────────────────────────────────────────────── */
+#anniv-modal{display:none;position:fixed;inset:0;z-index:15500;align-items:center;justify-content:center;padding:20px;}
+#anniv-modal.show{display:flex;}
+.anniv-bg{position:absolute;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(4px);}
+.anniv-card{position:relative;z-index:1;background:linear-gradient(145deg,#130020,#0a0018);border:2px solid #8b5cf6;border-radius:22px;box-shadow:0 0 0 1px rgba(139,92,246,.15),0 0 42px rgba(139,92,246,.45),0 0 80px rgba(139,92,246,.18);padding:28px 22px 24px;max-width:340px;width:100%;text-align:center;overflow:hidden;}
+.anniv-flowers-row{display:flex;justify-content:center;align-items:flex-end;gap:6px;height:76px;margin-bottom:14px;position:relative;}
+.anniv-flower{position:relative;flex-shrink:0;}
+.anniv-flower:nth-child(1){width:46px;height:46px;animation:aFlowerSway 3.1s ease-in-out .82s infinite;}
+.anniv-flower:nth-child(2){width:58px;height:58px;animation:aFlowerSway 2.8s ease-in-out .97s infinite;}
+.anniv-flower:nth-child(3){width:66px;height:66px;animation:aFlowerSway 3.4s ease-in-out .72s infinite;}
+.anniv-flower:nth-child(4){width:54px;height:54px;animation:aFlowerSway 2.9s ease-in-out 1.07s infinite;}
+.anniv-flower:nth-child(5){width:48px;height:48px;animation:aFlowerSway 3.2s ease-in-out .88s infinite;}
+.flower-inner{position:absolute;inset:0;animation:aFlowerBloom .72s cubic-bezier(.34,1.56,.64,1) both;}
+.anniv-flower:nth-child(1) .flower-inner{animation-delay:.10s;}
+.anniv-flower:nth-child(2) .flower-inner{animation-delay:.25s;}
+.anniv-flower:nth-child(3) .flower-inner{animation-delay:.40s;}
+.anniv-flower:nth-child(4) .flower-inner{animation-delay:.55s;}
+.anniv-flower:nth-child(5) .flower-inner{animation-delay:.70s;}
+.fl-petals{position:absolute;inset:0;}
+.fl-petal{position:absolute;width:35%;height:55%;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;top:50%;left:50%;margin-left:-17.5%;margin-top:-55%;transform-origin:50% 100%;animation:aPetalOpen .48s ease-out both;animation-delay:var(--pd,.06s);}
+.anniv-flower[data-c="pink"]   .fl-petal{background:radial-gradient(ellipse at 50% 35%,#ffc0de,#ff3d99);}
+.anniv-flower[data-c="purple"] .fl-petal{background:radial-gradient(ellipse at 50% 35%,#d8b4fe,#8b2ff6);}
+.anniv-flower[data-c="rose"]   .fl-petal{background:radial-gradient(ellipse at 50% 35%,#ffb3c8,#e0115f);}
+.anniv-flower[data-c="lilac"]  .fl-petal{background:radial-gradient(ellipse at 50% 35%,#ead5ff,#c026d3);}
+.anniv-flower[data-c="coral"]  .fl-petal{background:radial-gradient(ellipse at 50% 35%,#fecdd3,#ff4488);}
+.fl-center{position:absolute;border-radius:50%;background:radial-gradient(circle,#fffde7,#ffd600,#ff9100);box-shadow:0 0 8px #ffd60066;top:50%;left:50%;width:28%;height:28%;margin:-14% 0 0 -14%;z-index:2;}
+.anniv-sp{position:absolute;border-radius:50%;background:radial-gradient(circle,#fff,#e0aaff 60%);animation:aSpRise var(--sd,2.2s) ease-out var(--ss,0s) infinite;opacity:0;pointer-events:none;}
+@keyframes aFlowerBloom{
+  0%{transform:scale(0) rotate(-20deg);}
+  70%{transform:scale(1.18) rotate(6deg);}
+  100%{transform:scale(1) rotate(0deg);}
+}
+@keyframes aPetalOpen{
+  0%{transform:rotate(var(--pr,0deg)) scaleY(0);}
+  65%{transform:rotate(var(--pr,0deg)) scaleY(1.08);}
+  100%{transform:rotate(var(--pr,0deg)) scaleY(1);}
+}
+@keyframes aFlowerSway{
+  0%,100%{transform:translateY(0) rotate(0deg);}
+  30%{transform:translateY(-6px) rotate(2deg);}
+  70%{transform:translateY(-3px) rotate(-1.5deg);}
+}
+@keyframes aSpRise{
+  0%{transform:translate(var(--sx,0px),0px) scale(0);opacity:0;}
+  20%{opacity:.85;}
+  100%{transform:translate(var(--sx,0px),-55px) scale(0);opacity:0;}
+}
+.anniv-heading{font-size:1.32em;font-weight:900;background:linear-gradient(135deg,#e0aaff,#ff77cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:2px;margin:4px 0 10px;}
+.anniv-sub{font-size:.88em;color:#d4aaff;line-height:1.65;margin-bottom:20px;letter-spacing:.3px;}
+.anniv-close-btn{background:linear-gradient(135deg,#6600cc,#cc0077);border:none;color:#fff;font-size:.92em;font-weight:900;padding:10px 36px;border-radius:50px;cursor:pointer;box-shadow:0 0 18px rgba(150,0,200,.45);letter-spacing:1.5px;transition:transform .15s,box-shadow .15s;-webkit-tap-highlight-color:transparent;touch-action:manipulation;}
+.anniv-close-btn:hover{transform:scale(1.05);box-shadow:0 0 28px rgba(180,0,255,.6);}
 </style>
 </head>
 <body>
@@ -2981,6 +3033,7 @@ function hCanvasMove(e){if(!hPlacing)return;e.preventDefault();const{tx,ty}=hGet
 function openHomeScreen(){
   loadHomeData();
   document.getElementById('home-screen').classList.add('show');
+  checkAnniversaryModal();
   const mb=document.getElementById('music-btn');if(mb)mb.style.display='none';
   // Compute tile size so all rooms fit on screen
   const cv=document.getElementById('home-canvas');
@@ -3042,6 +3095,15 @@ function hStartPlace(id){
   closeHomeShop();document.getElementById('h-place-tip').classList.add('show');
 }
 
+function checkAnniversaryModal(){
+  if(localStorage.getItem('fatemaBlast_relationshipAnniversarySeen'))return;
+  document.getElementById('anniv-modal').classList.add('show');
+}
+function closeAnniversaryModal(){
+  localStorage.setItem('fatemaBlast_relationshipAnniversarySeen','1');
+  document.getElementById('anniv-modal').classList.remove('show');
+}
+
 </script>
 
 <!-- Home Screen -->
@@ -3067,6 +3129,92 @@ function hStartPlace(id){
       <button class="dpad-btn" onpointerdown="hMoveStart('down')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()">▼</button>
       <div class="dpad-blank"></div>
     </div>
+  </div>
+</div>
+
+<!-- Anniversary Modal -->
+<div id="anniv-modal">
+  <div class="anniv-bg"></div>
+  <div class="anniv-card">
+    <!-- Sparkle particles -->
+    <span class="anniv-sp" style="width:4px;height:4px;left:16%;bottom:34%;--sd:2.2s;--ss:.2s;--sx:-7px"></span>
+    <span class="anniv-sp" style="width:3px;height:3px;left:36%;bottom:18%;--sd:2.6s;--ss:.8s;--sx:5px"></span>
+    <span class="anniv-sp" style="width:5px;height:5px;left:60%;bottom:38%;--sd:1.9s;--ss:.4s;--sx:-4px"></span>
+    <span class="anniv-sp" style="width:3px;height:3px;left:82%;bottom:22%;--sd:2.4s;--ss:1.2s;--sx:8px"></span>
+    <span class="anniv-sp" style="width:4px;height:4px;left:7%;bottom:48%;--sd:2.8s;--ss:.6s;--sx:3px"></span>
+    <span class="anniv-sp" style="width:3px;height:3px;left:52%;bottom:14%;--sd:2.1s;--ss:1.0s;--sx:-6px"></span>
+    <span class="anniv-sp" style="width:5px;height:5px;left:26%;bottom:56%;--sd:2.5s;--ss:1.6s;--sx:4px"></span>
+    <!-- Flowers -->
+    <div class="anniv-flowers-row">
+      <div class="anniv-flower" data-c="lilac">
+        <div class="flower-inner">
+          <div class="fl-petals">
+            <div class="fl-petal" style="--pr:0deg;--pd:.12s"></div>
+            <div class="fl-petal" style="--pr:60deg;--pd:.15s"></div>
+            <div class="fl-petal" style="--pr:120deg;--pd:.18s"></div>
+            <div class="fl-petal" style="--pr:180deg;--pd:.21s"></div>
+            <div class="fl-petal" style="--pr:240deg;--pd:.24s"></div>
+            <div class="fl-petal" style="--pr:300deg;--pd:.27s"></div>
+          </div>
+          <div class="fl-center"></div>
+        </div>
+      </div>
+      <div class="anniv-flower" data-c="pink">
+        <div class="flower-inner">
+          <div class="fl-petals">
+            <div class="fl-petal" style="--pr:0deg;--pd:.27s"></div>
+            <div class="fl-petal" style="--pr:60deg;--pd:.30s"></div>
+            <div class="fl-petal" style="--pr:120deg;--pd:.33s"></div>
+            <div class="fl-petal" style="--pr:180deg;--pd:.36s"></div>
+            <div class="fl-petal" style="--pr:240deg;--pd:.39s"></div>
+            <div class="fl-petal" style="--pr:300deg;--pd:.42s"></div>
+          </div>
+          <div class="fl-center"></div>
+        </div>
+      </div>
+      <div class="anniv-flower" data-c="rose">
+        <div class="flower-inner">
+          <div class="fl-petals">
+            <div class="fl-petal" style="--pr:0deg;--pd:.42s"></div>
+            <div class="fl-petal" style="--pr:60deg;--pd:.45s"></div>
+            <div class="fl-petal" style="--pr:120deg;--pd:.48s"></div>
+            <div class="fl-petal" style="--pr:180deg;--pd:.51s"></div>
+            <div class="fl-petal" style="--pr:240deg;--pd:.54s"></div>
+            <div class="fl-petal" style="--pr:300deg;--pd:.57s"></div>
+          </div>
+          <div class="fl-center"></div>
+        </div>
+      </div>
+      <div class="anniv-flower" data-c="purple">
+        <div class="flower-inner">
+          <div class="fl-petals">
+            <div class="fl-petal" style="--pr:0deg;--pd:.57s"></div>
+            <div class="fl-petal" style="--pr:60deg;--pd:.60s"></div>
+            <div class="fl-petal" style="--pr:120deg;--pd:.63s"></div>
+            <div class="fl-petal" style="--pr:180deg;--pd:.66s"></div>
+            <div class="fl-petal" style="--pr:240deg;--pd:.69s"></div>
+            <div class="fl-petal" style="--pr:300deg;--pd:.72s"></div>
+          </div>
+          <div class="fl-center"></div>
+        </div>
+      </div>
+      <div class="anniv-flower" data-c="coral">
+        <div class="flower-inner">
+          <div class="fl-petals">
+            <div class="fl-petal" style="--pr:0deg;--pd:.72s"></div>
+            <div class="fl-petal" style="--pr:60deg;--pd:.75s"></div>
+            <div class="fl-petal" style="--pr:120deg;--pd:.78s"></div>
+            <div class="fl-petal" style="--pr:180deg;--pd:.81s"></div>
+            <div class="fl-petal" style="--pr:240deg;--pd:.84s"></div>
+            <div class="fl-petal" style="--pr:300deg;--pd:.87s"></div>
+          </div>
+          <div class="fl-center"></div>
+        </div>
+      </div>
+    </div>
+    <h2 class="anniv-heading">Happy Anniversary 💜</h2>
+    <p class="anniv-sub">[X years] of us 💜<br>every moment with you is my favourite one</p>
+    <button class="anniv-close-btn" onclick="closeAnniversaryModal()">Close 💜</button>
   </div>
 </div>
 
