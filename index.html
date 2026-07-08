@@ -458,15 +458,15 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 }
 #badge-banner.in{animation:notifSlideDown .42s cubic-bezier(.22,.61,.36,1) forwards;}
 /* ── Home Screen ─────────────────────────────────────────────────────────── */
-#home-screen{display:none;position:fixed;inset:0;background:#000000;z-index:15000;flex-direction:column;overflow-y:auto;}
+#home-screen{display:none;position:fixed;inset:0;background:#140826;z-index:15000;flex-direction:column;overflow:hidden;}
 #home-screen.show{display:flex;}
-.home-hdr{display:flex;align-items:center;padding:12px 14px 8px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;background:rgba(8,0,20,.95);}
+.home-hdr{display:flex;align-items:center;padding:max(12px,env(safe-area-inset-top)) 14px 8px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;background:rgba(16,6,32,.97);}
 .home-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 10px 0 0;line-height:1;}
 .home-title{flex:1;text-align:center;font-size:.95em;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .home-shop-btn{background:linear-gradient(135deg,rgba(80,0,140,.8),rgba(140,0,100,.8));border:1.5px solid rgba(180,60,255,.4);border-radius:20px;color:#ffdd88;font-size:.78em;font-weight:800;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 .home-cv-wrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
 #home-canvas{display:block;margin:0 auto;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer;}
-.home-ctrl{display:flex;align-items:center;justify-content:center;padding:8px 0 12px;flex-shrink:0;background:rgba(6,0,16,.97);border-top:1px solid rgba(120,0,200,.2);}
+.home-ctrl{display:flex;align-items:center;justify-content:center;padding:8px 0 max(12px,env(safe-area-inset-bottom));flex:1 1 auto;min-height:0;background:rgba(16,6,32,.97);border-top:1px solid rgba(120,0,200,.2);}
 .dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:3px;}
 .dpad-btn{background:rgba(80,0,140,.65);border:1.5px solid rgba(160,60,255,.35);border-radius:8px;color:#cc88ff;font-size:.9em;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;}
 .dpad-btn:active,.dpad-btn.held{background:rgba(160,0,255,.8);}
@@ -3077,14 +3077,17 @@ function openHomeScreen(){
   document.getElementById('home-screen').classList.add('show');
   checkAnniversaryModal();
   const mb=document.getElementById('music-btn');if(mb)mb.style.display='none';
-  // Compute tile size so all rooms fit on screen
+  // Canvas fills the full screen width edge to edge; height follows the 16:20
+  // house ratio, capped so header + arrow controls still fit on short screens
   const cv=document.getElementById('home-canvas');
-  const hCssTS=Math.max(8,Math.floor(window.innerWidth*0.6/H_COLS));// tile size reduced 40% so all rooms fit on screen
-  // Render at device-pixel resolution (same on-screen size) so the furniture art stays crisp
   const hDpr=Math.min(3,window.devicePixelRatio||1);
-  H_TS=hCssTS*hDpr;
+  const availH=Math.max(240,window.innerHeight-190);
+  let cssW=window.innerWidth,cssH=Math.round(cssW*H_ROWS/H_COLS);
+  if(cssH>availH){cssH=availH;cssW=Math.round(cssH*H_COLS/H_ROWS);}
+  // Backing store at device-pixel resolution so the furniture art stays crisp
+  H_TS=Math.max(8,Math.round(cssW*hDpr/H_COLS));
   cv.width=H_COLS*H_TS;cv.height=H_ROWS*H_TS;
-  cv.style.width=(H_COLS*hCssTS)+'px';cv.style.height=(H_ROWS*hCssTS)+'px';
+  cv.style.width=cssW+'px';cv.style.height=cssH+'px';
   document.getElementById('home-coins-disp').textContent=coins;
   // Preload Fatema's photo as the character avatar
   if(!hCharImg||!hCharImg.complete){
@@ -3152,7 +3155,6 @@ function closeAnniversaryModal(){
 
 <!-- Home Screen -->
 <div id="home-screen">
-  <div class="screen-top-spacer"></div>
   <div class="home-hdr">
     <button class="home-back" onclick="closeHomeScreen()">‹</button>
     <div class="home-title">🏠 Fatema's Home</div>
