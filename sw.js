@@ -1,4 +1,4 @@
-const CACHE = 'tonni-blast-v6';
+const CACHE = 'tonni-blast-v7';
 
 const ASSETS = [
   '/',

@@ -458,48 +458,37 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 }
 #badge-banner.in{animation:notifSlideDown .42s cubic-bezier(.22,.61,.36,1) forwards;}
 /* ── Home Screen ─────────────────────────────────────────────────────────── */
-#home-screen{display:none;position:fixed;inset:0;background:#140826;z-index:15000;flex-direction:column;}
+#home-screen{display:none;position:fixed;inset:0;background:#000000;z-index:15000;flex-direction:column;overflow-y:auto;}
 #home-screen.show{display:flex;}
-.home-hdr{display:flex;align-items:center;gap:8px;padding:max(12px,env(safe-area-inset-top)) 12px 10px;border-bottom:1px solid rgba(180,0,255,.25);flex-shrink:0;background:rgba(16,6,32,.97);}
-.home-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 8px 0 0;line-height:1;}
-.home-title{flex:1;text-align:center;font-size:.85em;font-weight:900;letter-spacing:1px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.home-time-chip{font-size:.68em;font-weight:800;color:#ffdd99;background:rgba(255,200,80,.12);border:1px solid rgba(255,200,80,.3);border-radius:20px;padding:4px 9px;white-space:nowrap;}
+.home-hdr{display:flex;align-items:center;padding:12px 14px 8px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;background:rgba(8,0,20,.95);}
+.home-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 10px 0 0;line-height:1;}
+.home-title{flex:1;text-align:center;font-size:.95em;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .home-shop-btn{background:linear-gradient(135deg,rgba(80,0,140,.8),rgba(140,0,100,.8));border:1.5px solid rgba(180,60,255,.4);border-radius:20px;color:#ffdd88;font-size:.78em;font-weight:800;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.home-cv-wrap{flex:0 0 auto;position:relative;line-height:0;}
-#home-canvas{display:block;margin:0 auto;cursor:pointer;touch-action:none;}
-.home-ctrl{display:flex;align-items:center;justify-content:center;padding:6px 0 max(8px,env(safe-area-inset-bottom));flex:1 1 auto;min-height:0;overflow:hidden;background:rgba(10,2,22,.97);border-top:1px solid rgba(120,0,200,.25);}
-.dpad{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,38px);gap:4px;}
-.dpad-btn{background:rgba(80,0,140,.65);border:1.5px solid rgba(160,60,255,.35);border-radius:10px;color:#cc88ff;font-size:1em;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;}
+.home-cv-wrap{flex:0 0 auto;display:flex;align-items:center;justify-content:center;}
+#home-canvas{display:block;margin:0 auto;image-rendering:pixelated;image-rendering:crisp-edges;cursor:pointer;}
+.home-ctrl{display:flex;align-items:center;justify-content:center;padding:8px 0 12px;flex-shrink:0;background:rgba(6,0,16,.97);border-top:1px solid rgba(120,0,200,.2);}
+.dpad{display:grid;grid-template-columns:repeat(3,40px);grid-template-rows:repeat(3,40px);gap:3px;}
+.dpad-btn{background:rgba(80,0,140,.65);border:1.5px solid rgba(160,60,255,.35);border-radius:8px;color:#cc88ff;font-size:.9em;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;}
 .dpad-btn:active,.dpad-btn.held{background:rgba(160,0,255,.8);}
-.dpad-blank{background:rgba(20,0,40,.2);border-radius:10px;}
-/* ── Home furniture shop ── */
-#home-shop-modal{display:none;position:fixed;inset:0;background:rgba(8,2,20,.98);z-index:16000;flex-direction:column;}
+.dpad-blank{background:rgba(20,0,40,.2);border-radius:8px;}
+#home-shop-modal{display:none;position:fixed;inset:0;background:rgba(4,0,14,.97);z-index:16000;flex-direction:column;overflow-y:auto;}
 #home-shop-modal.show{display:flex;}
-.hs-hdr{display:flex;align-items:center;padding:max(12px,env(safe-area-inset-top)) 14px 10px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;}
+.hs-hdr{display:flex;align-items:center;padding:14px 14px 10px;border-bottom:1px solid rgba(180,0,255,.2);flex-shrink:0;}
 .hs-back{background:none;border:none;color:#cc88ff;font-size:1.5em;cursor:pointer;padding:0 10px 0 0;}
 .hs-title{flex:1;text-align:center;font-size:1.05em;font-weight:900;letter-spacing:2px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
 .hs-coins{font-size:.82em;color:#ffdd88;font-weight:800;}
-.hs-tabs{display:flex;gap:6px;padding:10px 12px 2px;flex-shrink:0;}
-.hs-tab{flex:1;padding:8px 2px;background:rgba(150,60,220,.1);border:1.5px solid rgba(150,60,220,.22);border-radius:10px;color:rgba(200,140,255,.6);font-size:.68em;font-weight:800;cursor:pointer;letter-spacing:.4px;transition:all .18s;-webkit-tap-highlight-color:transparent;}
-.hs-tab.active{background:rgba(180,80,255,.25);border-color:rgba(210,110,255,.55);color:#ee99ff;box-shadow:0 0 10px rgba(180,80,255,.3);}
-#hs-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch;padding:10px 12px max(20px,env(safe-area-inset-bottom));}
-.hs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
-.hs-item{background:linear-gradient(145deg,rgba(60,10,105,.55),rgba(38,5,70,.5));border:1.5px solid rgba(150,50,255,.3);border-radius:14px;padding:12px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:4px;transition:transform .15s,border-color .2s,box-shadow .2s;}
-.hs-item.owned{border-color:rgba(80,255,140,.4);}
-.hs-prev{border-radius:10px;border:1.5px solid rgba(255,255,255,.14);box-shadow:0 3px 8px rgba(0,0,0,.35);}
-.hs-item-name{font-size:.76em;font-weight:800;color:#eeddff;text-align:center;margin-top:2px;}
-.hs-item-size{font-size:.6em;color:rgba(200,150,255,.5);letter-spacing:.5px;}
-.hs-item-cost{font-size:.72em;color:#ffdd88;font-weight:700;}
-.hs-owned-badge{font-size:.66em;color:#80ffaa;font-weight:700;}
-.hs-buy-btn{margin-top:4px;padding:6px 16px;border-radius:20px;border:none;background:linear-gradient(135deg,#8800cc,#cc0088);color:#fff;font-size:.72em;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;box-shadow:0 0 10px rgba(180,0,255,.35);transition:transform .12s;}
-.hs-buy-btn:active{transform:scale(.94);}
-.hs-buy-btn.cant{background:rgba(100,50,150,.3);color:rgba(220,180,255,.4);box-shadow:none;cursor:not-allowed;}
-.hs-buy-btn.place{background:linear-gradient(135deg,#0a8a4a,#0aa06a);box-shadow:0 0 10px rgba(20,200,110,.3);}
-@keyframes hsBought{0%{transform:scale(1);}30%{transform:scale(1.07);border-color:#66ffaa;box-shadow:0 0 24px rgba(80,255,150,.5);}100%{transform:scale(1);}}
-.hs-item.hs-bought{animation:hsBought .5s ease-out;}
-#h-place-tip{position:fixed;top:max(70px,calc(env(safe-area-inset-top) + 58px));left:50%;transform:translateX(-50%);background:rgba(120,0,200,.95);border:1.5px solid rgba(220,100,255,.6);border-radius:12px;color:#fff;font-size:.78em;font-weight:700;padding:7px 10px 7px 14px;z-index:16500;white-space:nowrap;display:none;align-items:center;gap:8px;}
-#h-place-tip.show{display:flex;}
-#h-place-tip button{background:rgba(255,255,255,.18);border:none;color:#fff;border-radius:50%;width:22px;height:22px;font-size:.85em;cursor:pointer;line-height:1;flex-shrink:0;}
+.hs-section{padding:10px 12px 0;}
+.hs-room-title{font-size:.72em;color:#9966cc;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;}
+.hs-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:12px;}
+.hs-item{background:linear-gradient(135deg,rgba(60,0,100,.5),rgba(40,0,70,.4));border:1.5px solid rgba(150,50,255,.3);border-radius:12px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:3px;}
+.hs-item.owned{border-color:rgba(80,255,140,.4);background:linear-gradient(135deg,rgba(0,60,30,.4),rgba(0,40,20,.3));}
+.hs-item-icon{font-size:1.7em;}
+.hs-item-name{font-size:.73em;font-weight:700;color:#eeddff;text-align:center;}
+.hs-item-cost{font-size:.7em;color:#ffdd88;}
+.hs-buy-btn{margin-top:3px;padding:4px 10px;border-radius:20px;border:none;background:linear-gradient(135deg,#8800cc,#cc0088);color:#fff;font-size:.7em;font-weight:800;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+.hs-owned-badge{font-size:.68em;color:#80ffaa;font-weight:700;}
+#h-place-tip{position:fixed;top:60px;left:50%;transform:translateX(-50%);background:rgba(120,0,200,.95);border:1.5px solid rgba(220,100,255,.6);border-radius:10px;color:#fff;font-size:.78em;font-weight:700;padding:6px 14px;z-index:16500;pointer-events:none;white-space:nowrap;display:none;}
+#h-place-tip.show{display:block;}
 
 #badge-banner.out{animation:notifSlideUp .32s ease-in forwards;}
 .bb-unlocked{font-size:.7em;font-weight:900;letter-spacing:3px;text-transform:uppercase;
@@ -2524,8 +2513,7 @@ function renderBadgesBody() {
 }
 
 // ── Home ──────────────────────────────────────────────────────────────────
-const H_COLS=16,H_ROWS=20;
-let H_TS=24,H_DPR=1,H_OX=0,H_OY=0,H_CW=0,H_CH=0;
+const H_COLS=16,H_ROWS=20; let H_TS=16;
 const H_MAP=[
   // LR(0-9) big top-left  | wall(10) | BR(11-15) medium top-right
   [1,1,1,1,1,1,1,1,1,1,0,2,2,2,2,2],
@@ -2556,53 +2544,29 @@ const H_MAP=[
 const H_WALKABLE=new Set([1,2,3,4,5,6]);
 const H_ROOM_LABELS={lr:'Living Room',br:'Bedroom',ba:'Bathroom',kt:'Kitchen'};
 const HOME_ITEMS={
-  lr:[{id:'sofa',name:'Sofa',cost:80,w:3,h:2,emoji:'🛋️'},{id:'tv',name:'TV',cost:120,w:2,h:1,emoji:'📺'},{id:'ctable',name:'Coffee Table',cost:50,w:2,h:1,emoji:'☕'},{id:'rug',name:'Rug',cost:60,w:3,h:2,emoji:'🔳',flat:true},{id:'plant',name:'Plant',cost:30,w:1,h:1,emoji:'🪴'},{id:'lamp',name:'Lamp',cost:50,w:1,h:1,emoji:'🪔'}],
-  br:[{id:'bed',name:'Bed',cost:100,w:3,h:2,emoji:'🛏️'},{id:'wardrobe',name:'Wardrobe',cost:90,w:2,h:2,emoji:'🚪'},{id:'vanity',name:'Vanity',cost:70,w:2,h:1,emoji:'🪞'},{id:'bookshelf',name:'Bookshelf',cost:110,w:2,h:2,emoji:'📚'},{id:'lights',name:'Fairy Lights',cost:40,w:3,h:1,emoji:'✨',flat:true}],
+  lr:[{id:'sofa',name:'Sofa',cost:80,w:3,h:2,emoji:'🛋️'},{id:'tv',name:'TV',cost:120,w:2,h:1,emoji:'📺'},{id:'ctable',name:'Coffee Table',cost:50,w:2,h:1,emoji:'☕'},{id:'rug',name:'Rug',cost:60,w:3,h:2,emoji:'🔳'},{id:'plant',name:'Plant',cost:30,w:1,h:1,emoji:'🪴'},{id:'lamp',name:'Lamp',cost:50,w:1,h:1,emoji:'🪔'}],
+  br:[{id:'bed',name:'Bed',cost:100,w:3,h:2,emoji:'🛏️'},{id:'wardrobe',name:'Wardrobe',cost:90,w:2,h:2,emoji:'🚪'},{id:'vanity',name:'Vanity',cost:70,w:2,h:1,emoji:'🪞'},{id:'bookshelf',name:'Bookshelf',cost:110,w:2,h:2,emoji:'📚'},{id:'lights',name:'Fairy Lights',cost:40,w:3,h:1,emoji:'✨'}],
   ba:[{id:'bathtub',name:'Bathtub',cost:100,w:3,h:2,emoji:'🛁'},{id:'bsink',name:'Sink',cost:50,w:1,h:1,emoji:'🪣'},{id:'towel',name:'Towel Rack',cost:30,w:1,h:1,emoji:'🧺'}],
   kt:[{id:'fridge',name:'Fridge',cost:110,w:1,h:2,emoji:'🧊'},{id:'stove',name:'Stove',cost:100,w:2,h:1,emoji:'🍳'},{id:'ktable',name:'Kitchen Table',cost:70,w:2,h:2,emoji:'🪑'},{id:'fruit',name:'Fruit Bowl',cost:25,w:1,h:1,emoji:'🍎'}],
 };
-const H_ITEM_ROOMS={};Object.entries(HOME_ITEMS).forEach(([r,list])=>list.forEach(i=>{H_ITEM_ROOMS[i.id]=r;}));
-const H_DIRS={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]};
-const H_FLOOR_COLORS={lr:'#e7c795',br:'#f9c6dc',ba:'#cbe7f6',kt:'#f4f5f7'};
-let hChar={tx:4,ty:5,fx:4,fy:5,moving:null,prog:0,facing:'down',path:[]};
+const H_ITEM_ROOMS={sofa:'lr',tv:'lr',ctable:'lr',rug:'lr',plant:'lr',lamp:'lr',bed:'br',wardrobe:'br',vanity:'br',bookshelf:'br',lights:'br',bathtub:'ba',bsink:'ba',towel:'ba',fridge:'kt',stove:'kt',ktable:'kt',fruit:'kt'};
+let hChar={tx:4,ty:5,facing:'down',anim:0,path:[]};
 let hData={owned:new Set(),placed:[]};
-let hAnimFrame=null,hMoveDir=null,hPlacing=null,hCharImg=null,hAvatarCv=null,hLastTs=0,hChipTs=0,hBound=false,hShopTab='lr';
+let hAnimFrame=null,hLastStep=0,hMoveDir=null,hPlacing=null,hCharImg=null;
 
 function hItemById(id){for(const r of Object.values(HOME_ITEMS)){const i=r.find(x=>x.id===id);if(i)return i;}return null;}
 function hTileRoom(tx,ty){const t=H_MAP[ty]?.[tx];return t===1?'lr':t===2?'br':t===3?'kt':t===4?'ba':null;}
 function hIsWalkable(tx,ty){return tx>=0&&ty>=0&&tx<H_COLS&&ty<H_ROWS&&H_WALKABLE.has(H_MAP[ty][tx]);}
-function hBlockedSet(){const s=new Set();hData.placed.forEach(p=>{const i=hItemById(p.id);if(!i||i.flat)return;for(let y=0;y<i.h;y++)for(let x=0;x<i.w;x++)s.add((p.ty+y)*H_COLS+p.tx+x);});return s;}
-function hIsFree(tx,ty,blocked){return hIsWalkable(tx,ty)&&!(blocked||hBlockedSet()).has(ty*H_COLS+tx);}
-function hPlaceValid(id,gx,gy){
-  const i=hItemById(id);if(!i)return false;
-  const room=H_ITEM_ROOMS[id];
-  for(let y=0;y<i.h;y++)for(let x=0;x<i.w;x++){
-    const tx=gx+x,ty=gy+y;
-    if(tx<0||ty<0||tx>=H_COLS||ty>=H_ROWS)return false;
-    if(hTileRoom(tx,ty)!==room)return false;
-    if(!i.flat){
-      if(tx===hChar.tx&&ty===hChar.ty)return false;
-      if(hChar.moving&&tx===hChar.moving[0]&&ty===hChar.moving[1])return false;
-    }
-    for(const p of hData.placed){
-      if(p.id===id)continue;
-      const pi=hItemById(p.id);if(!pi||i.flat||pi.flat)continue;
-      if(tx>=p.tx&&tx<p.tx+pi.w&&ty>=p.ty&&ty<p.ty+pi.h)return false;
-    }
-  }
-  return true;
-}
-function hFindSpot(id){for(let ty=0;ty<H_ROWS;ty++)for(let tx=0;tx<H_COLS;tx++)if(hPlaceValid(id,tx,ty))return[tx,ty];return null;}
 function loadHomeData(){try{const d=JSON.parse(localStorage.getItem('tonni_home')||'{}');hData.owned=new Set(d.owned||[]);hData.placed=d.placed||[];}catch(e){}}
 function saveHomeData(){localStorage.setItem('tonni_home',JSON.stringify({owned:[...hData.owned],placed:hData.placed}));saveUser();}
 
 function hDrawTile(ctx,type,px,py,tx,ty){
   const T=H_TS,b=Math.max(2,T>>3);
-  // Solid wall — warm cream block with beveled edges
+  // Solid wall — cream block with beveled edges
   if(type===0){
-    ctx.fillStyle='#efe3c4';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(255,255,255,0.5)';ctx.fillRect(px,py,T,b);ctx.fillRect(px,py,b,T);
-    ctx.fillStyle='rgba(120,85,50,0.3)';ctx.fillRect(px,py+T-b,T,b);ctx.fillRect(px+T-b,py,b,T);
+    ctx.fillStyle='#e8dcc0';ctx.fillRect(px,py,T,T);
+    ctx.fillStyle='rgba(255,255,255,0.55)';ctx.fillRect(px,py,T,b);ctx.fillRect(px,py,b,T);
+    ctx.fillStyle='rgba(0,0,0,0.22)';ctx.fillRect(px,py+T-b,T,b);ctx.fillRect(px+T-b,py,b,T);
     return;
   }
   // Determine floor type for doorway tiles
@@ -2614,43 +2578,32 @@ function hDrawTile(ctx,type,px,py,tx,ty){
     else if(ty===12) ft=1;        // row-12 right: LR<->KT
     else ft=3;                    // col-10, bottom: KT<->BA
   } else { ft=type; }
-  // Floor tiles — bright, clearly readable palettes
-  if(ft===1){// LR — warm tan hardwood planks
-    ctx.fillStyle=(ty%2===0)?'#eac893':'#e2bd85';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(140,95,45,0.28)';ctx.fillRect(px,py+T-1,T,1);
-    if((tx*7+ty*13)%3===0)ctx.fillRect(px+((tx*31+ty*17)%(T-2))+1,py,1,T-1);
-    ctx.fillStyle='rgba(255,235,190,0.25)';ctx.fillRect(px,py,T,1);
-  } else if(ft===2){// BR — bright pink carpet
-    ctx.fillStyle='#f9c6dc';ctx.fillRect(px,py,T,T);
-    if((tx+ty)%3===0){ctx.fillStyle='rgba(255,255,255,0.4)';ctx.fillRect(px+((tx*13+ty*7)%(T-4))+2,py+((tx*5+ty*11)%(T-4))+2,2,2);}
-    if((tx*3+ty)%4===0){ctx.fillStyle='rgba(230,140,180,0.22)';ctx.fillRect(px+(T>>1),py+(T>>1),2,2);}
-  } else if(ft===3){// KT — white & light grey checker
-    ctx.fillStyle=(tx+ty)%2===0?'#fbfbfd':'#d3d6dc';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(255,255,255,0.35)';ctx.fillRect(px,py,T,1);
-    ctx.fillStyle='rgba(90,95,110,0.16)';ctx.fillRect(px,py+T-1,T,1);ctx.fillRect(px+T-1,py,1,T);
-  } else if(ft===4){// BA — light blue tile with white grout
-    ctx.fillStyle=((tx*11+ty*7)%5===0)?'#bfe0f2':'#cfe9f7';ctx.fillRect(px,py,T,T);
-    ctx.fillStyle='rgba(255,255,255,0.6)';ctx.fillRect(px,py+T-1,T,1);ctx.fillRect(px+T-1,py,1,T);
-    ctx.fillStyle='rgba(140,190,220,0.3)';ctx.fillRect(px,py,T,1);
-  } else {// FD — warm terracotta entrance mat
-    ctx.fillStyle=(tx+ty)%2===0?'#d9a45e':'#cf974f';ctx.fillRect(px,py,T,T);
-    if(ty===13){ctx.fillStyle='rgba(120,70,20,0.22)';ctx.fillRect(px,py,T,2);}
+  // Floor tiles
+  if(ft===1){// LR — warm brown hardwood
+    ctx.fillStyle='#E8C49A';ctx.fillRect(px,py,T,T);
+    ctx.fillStyle='rgba(255,240,180,0.18)';ctx.fillRect(px,py,T,b);
+  } else if(ft===2){// BR — pink carpet
+    ctx.fillStyle='#F5C8DC';ctx.fillRect(px,py,T,T);
+    if((tx+ty)%4===0){ctx.fillStyle='rgba(255,255,255,0.45)';ctx.fillRect(px+T/4,py+T/4,T/4,T/4);}
+  } else if(ft===3){// KT — white & dark checker
+    ctx.fillStyle=(tx+ty)%2===0?'#FFFFFF':'#555555';ctx.fillRect(px,py,T,T);
+  } else if(ft===4){// BA — light blue tile
+    ctx.fillStyle='#C8E8F5';ctx.fillRect(px,py,T,T);
+  } else {// FD — terracotta entrance mat
+    ctx.fillStyle=(tx+ty)%2===0?'#a06830':'#906020';ctx.fillRect(px,py,T,T);
+    ctx.fillStyle='rgba(255,160,60,0.15)';ctx.fillRect(px,py,T,T);
   }
-  // Soft ambient shadow where floors meet walls
-  const up=(H_MAP[ty-1]?H_MAP[ty-1][tx]:0),lf=(H_MAP[ty][tx-1]!==undefined?H_MAP[ty][tx-1]:0);
-  if(up===0){ctx.fillStyle='rgba(70,40,20,0.14)';ctx.fillRect(px,py,T,Math.max(2,T>>3));}
-  if(lf===0){ctx.fillStyle='rgba(70,40,20,0.1)';ctx.fillRect(px,py,Math.max(2,T>>3),T);}
-  // Doorway — golden threshold on open edges
+  // Doorway — golden frame on open edges
   if(type===6){
-    ctx.fillStyle='rgba(212,160,60,0.85)';
+    ctx.fillStyle='rgba(200,140,40,0.75)';
     if(ty===10||ty===12){ctx.fillRect(px,py,T,b);ctx.fillRect(px,py+T-b,T,b);}// horizontal walls
     else{ctx.fillRect(px,py,b,T);ctx.fillRect(px+T-b,py,b,T);}// vertical wall
   }
 }
 
-function hDrawFurniture(ctx,id,px,py,ts){
-  const T=ts||H_TS;
-  function shadow(x,y,w,h){ctx.fillStyle='rgba(15,8,25,0.26)';ctx.fillRect(x+Math.max(2,T*.1),y+Math.max(3,T*.14),w,h);}
+function hDrawFurniture(ctx,id,px,py){
+  const T=H_TS;
+  function shadow(x,y,w,h){}
   ctx.save();
   const r=Math.round;
   switch(id){
@@ -2976,362 +2929,157 @@ function hDrawFurniture(ctx,id,px,py,ts){
   ctx.restore();
 }
 
-// Pre-render the photo avatar once at 32×32 (device-pixel scaled) with high-quality
-// smoothing so the character stays crisp at any canvas scale.
-function hBuildAvatar(){
-  if(!hCharImg||!hCharImg.complete||!hCharImg.naturalWidth)return;
-  const S=Math.round(32*H_DPR);
-  hAvatarCv=document.createElement('canvas');hAvatarCv.width=S;hAvatarCv.height=S;
-  const c=hAvatarCv.getContext('2d');
-  c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
-  const sw=hCharImg.naturalWidth,sh=hCharImg.naturalHeight,side=Math.min(sw,sh),sx=(sw-side)/2,sy=(sh-side)/2;
-  const ring=Math.max(2,Math.round(1.5*H_DPR));
-  c.save();c.beginPath();c.arc(S/2,S/2,S/2-ring,0,Math.PI*2);c.clip();
-  c.drawImage(hCharImg,sx,sy,side,side,0,0,S,S);c.restore();
-  c.lineWidth=ring*1.6;c.strokeStyle='#cc44ff';
-  c.beginPath();c.arc(S/2,S/2,S/2-ring,0,Math.PI*2);c.stroke();
-}
-
-function hDrawChar(ctx,ts){
-  const T=H_TS,d=Math.min(32,Math.max(18,T*1.2));
-  const cx=H_OX+(hChar.fx+.5)*T,cy=H_OY+(hChar.fy+.5)*T;
-  const bob=hChar.moving?Math.sin(ts*.02)*2:Math.sin(ts*.0025);
-  ctx.fillStyle='rgba(0,0,0,0.28)';
-  ctx.beginPath();ctx.ellipse(cx,cy+d*.42,d*.32,d*.1,0,0,Math.PI*2);ctx.fill();
+function hDrawChar(ctx,px,py,anim,facing){
+  const T=H_TS,r=Math.max(24,Math.round(T*0.67));
+  const cx=(px+T/2)|0,cy=(py+T/2)|0;
   ctx.save();
-  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
-  ctx.translate(cx,cy-d*.08+bob);
-  if(hChar.moving)ctx.rotate(Math.sin(ts*.02)*.05);
-  if(hAvatarCv){ctx.drawImage(hAvatarCv,-d/2,-d/2,d,d);}
-  else{
-    ctx.fillStyle='#f0a8d0';ctx.beginPath();ctx.arc(0,0,d/2,0,Math.PI*2);ctx.fill();
-    ctx.strokeStyle='#cc44ff';ctx.lineWidth=2;ctx.beginPath();ctx.arc(0,0,d/2-1,0,Math.PI*2);ctx.stroke();
+  // ground shadow
+  ctx.fillStyle='rgba(0,0,0,0.22)';
+  ctx.beginPath();ctx.ellipse(cx,cy+r+1,r*0.55,r*0.16,0,0,Math.PI*2);ctx.fill();
+  // circular clip then photo
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.clip();
+  if(hCharImg&&hCharImg.complete&&hCharImg.naturalWidth>0){
+    ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';
+    ctx.drawImage(hCharImg,cx-r,cy-r,r*2,r*2);
+  }else{
+    ctx.fillStyle='#f0a8d0';ctx.fillRect(cx-r,cy-r,r*2,r*2);
+    ctx.fillStyle='rgba(200,80,160,0.6)';ctx.fillRect(cx-r,cy,r*2,r);
   }
   ctx.restore();
+  // purple glowing ring
+  ctx.strokeStyle='#cc44ff';
+  ctx.lineWidth=Math.max(1.5,T*0.07);
+  ctx.shadowColor='#aa22ff';ctx.shadowBlur=Math.max(3,T*0.18);
+  ctx.beginPath();ctx.arc(cx,cy,r,0,Math.PI*2);ctx.stroke();
+  ctx.shadowBlur=0;
 }
 
-// Real-time day/night cycle — tint + phase label driven by the actual clock
 function hGetDN(){
   const h=new Date().getHours()+new Date().getMinutes()/60;
-  if(h>=7.5&&h<17)  return{r:0,g:0,b:0,a:0,icon:'☀️',label:'Day'};
-  if(h>=17&&h<19.5){const t=(h-17)/2.5;return{r:225,g:110,b:30,a:.08+.16*t,icon:'🌅',label:'Sunset'};}
-  if(h>=19.5&&h<21){const t=(h-19.5)/1.5;return{r:18,g:22,b:70,a:.24+.18*t,icon:'🌙',label:'Night'};}
-  if(h>=21||h<5.5)  return{r:12,g:18,b:64,a:.42,icon:'🌙',label:'Night'};
-  const t=(h-5.5)/2; return{r:235,g:140,b:110,a:.26*(1-t)+.04,icon:'🌄',label:'Dawn'};
+  if(h>=7&&h<18)return null;
+  if(h>=18&&h<20){const t=(h-18)/2;return{r:200,g:80,b:10,a:t*0.38};}
+  if(h>=20&&h<22){const t=(h-20)/2;return{r:20,g:0,b:Math.floor(40+50*t),a:0.38+t*0.17};}
+  if(h>=22||h<5)return{r:0,g:8,b:50,a:0.55};
+  const t=(h-5)/2;return{r:Math.floor(180*t),g:Math.floor(50*t),b:0,a:0.28*(1-t)};
 }
 
-// Warm light pools from lamps/fairy lights/TV once it gets dark
-function hNightGlows(ctx,dn){
-  if(dn.a<.15)return;
-  const cfgs={lamp:{c:'255,200,90',r:2.6},lights:{c:'255,180,220',r:2.2},tv:{c:'120,170,255',r:2}};
-  ctx.save();ctx.globalCompositeOperation='screen';
-  hData.placed.forEach(p=>{
-    const cfg=cfgs[p.id];if(!cfg)return;
-    const i=hItemById(p.id);if(!i)return;
-    const cx=H_OX+(p.tx+i.w/2)*H_TS,cy=H_OY+(p.ty+i.h/2)*H_TS,R=cfg.r*H_TS;
-    const g=ctx.createRadialGradient(cx,cy,0,cx,cy,R);
-    g.addColorStop(0,`rgba(${cfg.c},${(.55*dn.a).toFixed(3)})`);g.addColorStop(1,'rgba(0,0,0,0)');
-    ctx.fillStyle=g;ctx.beginPath();ctx.arc(cx,cy,R,0,Math.PI*2);ctx.fill();
-  });
-  ctx.restore();
-}
-
-// Grass, flowers, stone path and the exterior walls around the house
-function hDrawOutdoor(ctx){
-  ctx.fillStyle='#79b25c';ctx.fillRect(0,0,H_CW,H_CH);
-  ctx.fillStyle='rgba(255,255,230,0.06)';ctx.fillRect(0,0,H_CW,H_CH/2);
-  const hx=H_OX,hy=H_OY,hw=H_COLS*H_TS,hh=H_ROWS*H_TS,m=Math.max(6,H_TS*.35);
-  for(let i=0;i<34;i++){
-    const px=(i*173+37)%H_CW,py=(i*97+83)%H_CH;
-    if(px>hx-m&&px<hx+hw+m&&py>hy-m&&py<hy+hh+m)continue;
-    if(i%4===0){
-      const cols=['#ff7fb0','#ffd257','#c084fc','#ff9a62'];
-      ctx.fillStyle=cols[i%cols.length];ctx.beginPath();ctx.arc(px,py,2.6,0,Math.PI*2);ctx.fill();
-      ctx.fillStyle='#fff6d8';ctx.beginPath();ctx.arc(px,py,1.1,0,Math.PI*2);ctx.fill();
-    }else{
-      ctx.strokeStyle='rgba(46,105,40,0.75)';ctx.lineWidth=1.4;
-      ctx.beginPath();ctx.moveTo(px,py+4);ctx.lineTo(px-2,py-3);ctx.moveTo(px,py+4);ctx.lineTo(px+1,py-4);ctx.moveTo(px,py+4);ctx.lineTo(px+3,py-2);ctx.stroke();
-    }
-  }
-  // stone path leading from the front door to the screen edge
-  const doorX=hx+1.1*H_TS,doorW=1.8*H_TS;
-  if(hy+hh<H_CH-2){
-    ctx.fillStyle='#c8b089';ctx.fillRect(doorX,hy+hh,doorW,H_CH-(hy+hh));
-    ctx.fillStyle='rgba(110,90,60,0.35)';
-    for(let y=hy+hh+3;y<H_CH;y+=9)ctx.fillRect(doorX+2,y,doorW-4,1);
-  }
-  // exterior walls
-  const b=Math.max(3,Math.round(H_TS*.28));
-  ctx.fillStyle='#7c5a3c';
-  ctx.fillRect(hx-b,hy-b,hw+2*b,b);ctx.fillRect(hx-b,hy+hh,hw+2*b,b);
-  ctx.fillRect(hx-b,hy-b,b,hh+2*b);ctx.fillRect(hx+hw,hy-b,b,hh+2*b);
-  ctx.fillStyle='rgba(255,220,170,0.28)';ctx.fillRect(hx-b,hy-b,hw+2*b,Math.max(1,b>>1));
-  // front door on the bottom wall
-  ctx.fillStyle='#9c6b3f';ctx.fillRect(doorX,hy+hh-2,doorW,b+4);
-  ctx.fillStyle='#7a4e26';ctx.fillRect(doorX,hy+hh-2,doorW,2);
-  ctx.fillStyle='#ffd257';ctx.beginPath();ctx.arc(doorX+doorW-5,hy+hh+b/2,2,0,Math.PI*2);ctx.fill();
-}
-
-function hDrawLabels(ctx){
-  const T=H_TS,f=Math.max(8,Math.round(T*.42));
-  ctx.save();ctx.font=`800 ${f}px -apple-system,BlinkMacSystemFont,sans-serif`;
-  ctx.textAlign='center';ctx.textBaseline='middle';
-  ctx.fillStyle='rgba(90,50,20,0.34)';
-  ctx.fillText('LIVING ROOM',H_OX+5*T,H_OY+.55*T);
-  ctx.fillText('BEDROOM',H_OX+13.5*T,H_OY+.55*T);
-  ctx.fillText('BATHROOM',H_OX+13.5*T,H_OY+11.55*T);
-  ctx.fillText('KITCHEN',H_OX+7.5*T,H_OY+13.55*T);
-  ctx.fillText('ENTRY',H_OX+2*T,H_OY+13.55*T);
-  ctx.restore();
-}
-
-function hDraw(ts){
+function hDraw(){
   const cv=document.getElementById('home-canvas');if(!cv)return;
-  const ctx=cv.getContext('2d');
-  ctx.setTransform(H_DPR,0,0,H_DPR,0,0);
-  ctx.clearRect(0,0,H_CW,H_CH);
-  hDrawOutdoor(ctx);
-  const T=H_TS;
-  for(let ty=0;ty<H_ROWS;ty++)for(let tx=0;tx<H_COLS;tx++)hDrawTile(ctx,H_MAP[ty][tx],H_OX+tx*T,H_OY+ty*T,tx,ty);
-  hDrawLabels(ctx);
-  // flat items (rug, fairy lights) sit directly on the floor
-  hData.placed.forEach(p=>{const i=hItemById(p.id);if(i&&i.flat)hDrawFurniture(ctx,p.id,H_OX+p.tx*T,H_OY+p.ty*T);});
-  // depth-sort solid furniture and the character so overlaps read correctly
-  const ents=hData.placed
-    .filter(p=>{const i=hItemById(p.id);return i&&!i.flat;})
-    .map(p=>({b:p.ty+hItemById(p.id).h,draw:()=>hDrawFurniture(ctx,p.id,H_OX+p.tx*T,H_OY+p.ty*T)}));
-  ents.push({b:hChar.fy+1.01,draw:()=>hDrawChar(ctx,ts)});
-  ents.sort((a,b)=>a.b-b.b).forEach(e=>e.draw());
-  // placement ghost with valid/invalid highlight
-  if(hPlacing){
-    const i=hItemById(hPlacing.id);
-    if(i){
-      const ok=hPlaceValid(hPlacing.id,hPlacing.gx,hPlacing.gy);
-      const gx=H_OX+hPlacing.gx*T,gy=H_OY+hPlacing.gy*T,gw=i.w*T,gh=i.h*T;
-      ctx.fillStyle=ok?'rgba(70,255,130,0.22)':'rgba(255,60,90,0.28)';ctx.fillRect(gx,gy,gw,gh);
-      ctx.globalAlpha=.78;hDrawFurniture(ctx,hPlacing.id,gx,gy);ctx.globalAlpha=1;
-      ctx.strokeStyle=ok?'#4dff8e':'#ff4d6e';ctx.lineWidth=2;ctx.strokeRect(gx+1,gy+1,gw-2,gh-2);
-    }
-  }
-  // day/night lighting pass
-  const dn=hGetDN();
-  if(dn.a>0){
-    ctx.fillStyle=`rgba(${dn.r},${dn.g},${dn.b},${dn.a})`;ctx.fillRect(0,0,H_CW,H_CH);
-    hNightGlows(ctx,dn);
-  }
-  if(!hChipTs||ts-hChipTs>1000){
-    hChipTs=ts;
-    const chip=document.getElementById('home-time-chip');
-    if(chip)chip.textContent=`${dn.icon} ${dn.label}`;
-  }
+  const ctx=cv.getContext('2d'),T=H_TS;
+  ctx.clearRect(0,0,cv.width,cv.height);
+  ctx.fillStyle='#000000';ctx.fillRect(0,0,cv.width,cv.height);
+  for(let ty=0;ty<H_ROWS;ty++)for(let tx=0;tx<H_COLS;tx++)hDrawTile(ctx,H_MAP[ty][tx],tx*T,ty*T,tx,ty);
+  // Room labels — drawn once, centered in each room
+  const lsz=Math.max(7,Math.round(T*0.56));
+  ctx.save();ctx.font=`bold ${lsz}px monospace`;ctx.textAlign='center';ctx.textBaseline='middle';
+  ctx.fillStyle='rgba(255,255,255,0.3)';
+  ctx.fillText('LIVING ROOM',5*T,T*1.5);   // LR rows 0-11, cols 0-9
+  ctx.fillText('BEDROOM',13.5*T,T*1.5);  // BR rows 0-9, cols 11-15
+  ctx.fillText('BATHROOM',13.5*T,T*12);  // BA rows 11-19, cols 11-15
+  ctx.fillText('KITCHEN',7*T,T*14);      // KT rows 13-19, cols 5-9
+  ctx.fillText('DOOR',2*T,T*14);         // FD rows 13-19, cols 0-3
+  ctx.restore();
+  hData.placed.forEach(p=>hDrawFurniture(ctx,p.id,p.tx*T,p.ty*T));
+  hDrawChar(ctx,hChar.tx*T,hChar.ty*T,hChar.anim,hChar.facing);
+  if(hPlacing){ctx.globalAlpha=0.55;hDrawFurniture(ctx,hPlacing.id,hPlacing.gx*T,hPlacing.gy*T);ctx.globalAlpha=1;}
+  // Cheerful brightness boost
+  ctx.save();ctx.globalAlpha=0.13;ctx.fillStyle='#fffdf0';ctx.fillRect(0,0,cv.width,cv.height);ctx.restore();
 }
 
 function hBFS(sx,sy,ex,ey){
-  const blocked=hBlockedSet();
-  if(!hIsFree(ex,ey,blocked))return[];
-  const vis=new Set([sy*H_COLS+sx]),q=[[sx,sy,[]]];
-  while(q.length){
-    const[cx,cy,path]=q.shift();
-    if(cx===ex&&cy===ey)return path;
-    for(const[dx,dy]of[[0,1],[0,-1],[1,0],[-1,0]]){
-      const nx=cx+dx,ny=cy+dy,k=ny*H_COLS+nx;
-      if(!vis.has(k)&&hIsFree(nx,ny,blocked)){vis.add(k);q.push([nx,ny,[...path,[nx,ny]]]);}
-    }
-  }
+  if(!hIsWalkable(ex,ey))return[];
+  const vis=new Set([`${sx},${sy}`]),q=[[sx,sy,[]]];
+  while(q.length){const[cx,cy,path]=q.shift();if(cx===ex&&cy===ey)return path;for(const[dx,dy]of[[0,1],[0,-1],[1,0],[-1,0]]){const nx=cx+dx,ny=cy+dy,k=`${nx},${ny}`;if(!vis.has(k)&&hIsWalkable(nx,ny)){vis.add(k);q.push([nx,ny,[...path,[nx,ny]]]);}}}
   return[];
 }
 
 function hStartLoop(){
   if(hAnimFrame)return;
-  hLastTs=0;
-  const step=ts=>{
-    const dt=hLastTs?Math.min(60,ts-hLastTs):16;hLastTs=ts;
-    // smooth tile-to-tile movement (~5 tiles/sec)
-    if(hChar.moving){
-      hChar.prog+=dt*.0052;
-      if(hChar.prog>=1){hChar.tx=hChar.moving[0];hChar.ty=hChar.moving[1];hChar.moving=null;hChar.prog=0;}
-    }
-    if(!hChar.moving){
-      let next=null;
-      const blocked=hBlockedSet();
-      if(hChar.path.length){
-        next=hChar.path.shift();
-        if(!hIsFree(next[0],next[1],blocked)){hChar.path=[];next=null;}
-      }else if(hMoveDir){
-        const[dx,dy]=H_DIRS[hMoveDir];hChar.facing=hMoveDir;
-        const nx=hChar.tx+dx,ny=hChar.ty+dy;
-        if(hIsFree(nx,ny,blocked))next=[nx,ny];
-      }
-      if(next){
-        hChar.facing=next[0]>hChar.tx?'right':next[0]<hChar.tx?'left':next[1]>hChar.ty?'down':'up';
-        hChar.moving=next;hChar.prog=0;
-      }
-    }
-    hChar.fx=hChar.moving?hChar.tx+(hChar.moving[0]-hChar.tx)*hChar.prog:hChar.tx;
-    hChar.fy=hChar.moving?hChar.ty+(hChar.moving[1]-hChar.ty)*hChar.prog:hChar.ty;
-    hDraw(ts);
-    hAnimFrame=requestAnimationFrame(step);
-  };
-  hAnimFrame=requestAnimationFrame(step);
+  function loop(ts){
+    if(hChar.path.length>0&&ts-hLastStep>160){const[nx,ny]=hChar.path.shift();const dx=nx-hChar.tx,dy=ny-hChar.ty;hChar.facing=dx>0?'right':dx<0?'left':dy>0?'down':'up';hChar.tx=nx;hChar.ty=ny;hChar.anim=(hChar.anim+1)%2;hLastStep=ts;}
+    if(hMoveDir&&ts-hLastStep>170){const[dx,dy]={up:[0,-1],down:[0,1],left:[-1,0],right:[1,0]}[hMoveDir];const nx=hChar.tx+dx,ny=hChar.ty+dy;if(hIsWalkable(nx,ny)){hChar.tx=nx;hChar.ty=ny;hChar.facing=hMoveDir;hChar.anim=(hChar.anim+1)%2;}hLastStep=ts;}
+    hDraw();hAnimFrame=requestAnimationFrame(loop);
+  }
+  hAnimFrame=requestAnimationFrame(loop);
 }
 function hStopLoop(){if(hAnimFrame){cancelAnimationFrame(hAnimFrame);hAnimFrame=null;}}
 function hMoveStart(dir){hMoveDir=dir;hChar.path=[];}
 function hMoveStop(){hMoveDir=null;}
-function hKeyHandler(e){
-  const hs=document.getElementById('home-screen');
-  if(!hs||!hs.classList.contains('show'))return;
-  if(document.getElementById('home-shop-modal').classList.contains('show'))return;
-  const dir={ArrowUp:'up',ArrowDown:'down',ArrowLeft:'left',ArrowRight:'right'}[e.key];
-  if(!dir)return;
-  e.preventDefault();
-  if(e.type==='keydown')hMoveStart(dir);
-  else if(hMoveDir===dir)hMoveStop();
-}
 
 function hGetTile(e){
   const cv=document.getElementById('home-canvas'),rect=cv.getBoundingClientRect();
-  const cx=(e.touches?e.touches[0].clientX:e.clientX)-rect.left-H_OX;
-  const cy=(e.touches?e.touches[0].clientY:e.clientY)-rect.top-H_OY;
-  const tx=Math.floor(cx/H_TS),ty=Math.floor(cy/H_TS);
-  if(tx<0||ty<0||tx>=H_COLS||ty>=H_ROWS)return null;
-  return{tx,ty};
+  const cx=((e.touches?e.touches[0].clientX:e.clientX)-rect.left)/rect.width*cv.width;
+  const cy=((e.touches?e.touches[0].clientY:e.clientY)-rect.top)/rect.height*cv.height;
+  return{tx:Math.max(0,Math.min(H_COLS-1,Math.floor(cx/H_TS))),ty:Math.max(0,Math.min(H_ROWS-1,Math.floor(cy/H_TS)))};
 }
 
 function hCanvasTap(e){
-  if(e.type==='touchstart')e.preventDefault();
-  const t=hGetTile(e);if(!t)return;
-  const{tx,ty}=t;
+  e.preventDefault();
+  const{tx,ty}=hGetTile(e);
   if(hPlacing){
-    const i=hItemById(hPlacing.id);if(!i)return;
-    const nx=Math.max(0,Math.min(H_COLS-i.w,tx)),ny=Math.max(0,Math.min(H_ROWS-i.h,ty));
-    if(nx===hPlacing.gx&&ny===hPlacing.gy&&hPlaceValid(hPlacing.id,nx,ny)){
-      hData.placed.push({id:hPlacing.id,tx:nx,ty:ny});
-      hPlacing=null;
-      document.getElementById('h-place-tip').classList.remove('show');
-      saveHomeData();snd_coin();
-    }else{hPlacing.gx=nx;hPlacing.gy=ny;}
-    return;
+    const room=hTileRoom(tx,ty),iRoom=H_ITEM_ROOMS[hPlacing.id];
+    if(room&&(room===iRoom||(iRoom==='lr'&&room==='ent'))){
+      hData.placed=hData.placed.filter(p=>p.id!==hPlacing.id);
+      hData.placed.push({id:hPlacing.id,tx,ty});
+      saveHomeData();
+    }
+    hPlacing=null;document.getElementById('h-place-tip').classList.remove('show');return;
   }
-  // tap a placed item to pick it up and move it
   const hit=hData.placed.find(p=>{const i=hItemById(p.id);return i&&tx>=p.tx&&tx<p.tx+i.w&&ty>=p.ty&&ty<p.ty+i.h;});
-  if(hit){
-    hData.placed=hData.placed.filter(p=>p!==hit);
-    hPlacing={id:hit.id,gx:hit.tx,gy:hit.ty,orig:{tx:hit.tx,ty:hit.ty}};
-    document.getElementById('h-place-tip').classList.add('show');
-    return;
-  }
-  hMoveDir=null;
+  if(hit){hPlacing={id:hit.id,gx:hit.tx,gy:hit.ty};document.getElementById('h-place-tip').classList.add('show');return;}
   hChar.path=hBFS(hChar.tx,hChar.ty,tx,ty);
 }
-function hCanvasMove(e){
-  if(!hPlacing)return;
-  if(e.type==='touchmove')e.preventDefault();
-  const t=hGetTile(e);if(!t)return;
-  const i=hItemById(hPlacing.id);if(!i)return;
-  hPlacing.gx=Math.max(0,Math.min(H_COLS-i.w,t.tx));
-  hPlacing.gy=Math.max(0,Math.min(H_ROWS-i.h,t.ty));
-}
-function hCancelPlace(){
-  if(hPlacing&&hPlacing.orig)hData.placed.push({id:hPlacing.id,tx:hPlacing.orig.tx,ty:hPlacing.orig.ty});
-  hPlacing=null;
-  document.getElementById('h-place-tip').classList.remove('show');
-}
-
-// Size the canvas to the full wrap area at device-pixel resolution;
-// the house is scaled to fit fully on screen and centered.
-function hLayout(){
-  const cv=document.getElementById('home-canvas');if(!cv)return;
-  H_DPR=Math.min(3,window.devicePixelRatio||1);
-  // Canvas: full window width, window height minus 200px for header + arrow controls
-  H_CW=Math.max(120,window.innerWidth);
-  H_CH=Math.max(240,window.innerHeight-200);
-  cv.width=Math.round(H_CW*H_DPR);cv.height=Math.round(H_CH*H_DPR);
-  cv.style.width=H_CW+'px';cv.style.height=H_CH+'px';
-  // Tile size = canvas width / horizontal tile count, so the full 16-tile-wide
-  // house spans the screen; capped by height so all 20 rows fit too
-  H_TS=Math.max(8,Math.min(Math.floor(H_CW/H_COLS),Math.floor(H_CH/H_ROWS)));
-  H_OX=Math.floor((H_CW-H_COLS*H_TS)/2);
-  H_OY=Math.floor((H_CH-H_ROWS*H_TS)/2);
-  hBuildAvatar();
-}
-window.addEventListener('load',hLayout);
-window.addEventListener('resize',hLayout);
+function hCanvasMove(e){if(!hPlacing)return;e.preventDefault();const{tx,ty}=hGetTile(e);hPlacing.gx=tx;hPlacing.gy=ty;}
 
 function openHomeScreen(){
   loadHomeData();
   document.getElementById('home-screen').classList.add('show');
   checkAnniversaryModal();
   const mb=document.getElementById('music-btn');if(mb)mb.style.display='none';
+  // Compute tile size so all rooms fit on screen
+  const cv=document.getElementById('home-canvas');
+  H_TS=Math.max(8,Math.floor(window.innerWidth*0.6/H_COLS));// tile size reduced 40% so all rooms fit on screen
+  cv.width=H_COLS*H_TS;cv.height=H_ROWS*H_TS;
   document.getElementById('home-coins-disp').textContent=coins;
-  // Fatema's photo as the character avatar
-  if(!hCharImg){
+  // Preload Fatema's photo as the character avatar
+  if(!hCharImg||!hCharImg.complete){
     const av=document.querySelector('.avatar');
-    if(av&&av.src){hCharImg=new Image();hCharImg.onload=hBuildAvatar;hCharImg.src=av.src;}
+    if(av&&av.src){hCharImg=new Image();hCharImg.src=av.src;}
   }
-  hLayout();
-  if(!hBound){
-    hBound=true;
-    const cv=document.getElementById('home-canvas');
-    cv.addEventListener('click',hCanvasTap);
-    cv.addEventListener('touchstart',hCanvasTap,{passive:false});
-    cv.addEventListener('touchmove',hCanvasMove,{passive:false});
-    cv.addEventListener('mousemove',hCanvasMove);
-    window.addEventListener('keydown',hKeyHandler);
-    window.addEventListener('keyup',hKeyHandler);
-  }
+  cv.addEventListener('click',hCanvasTap);
+  cv.addEventListener('touchstart',hCanvasTap,{passive:false});
+  cv.addEventListener('touchmove',hCanvasMove,{passive:false});
+  hDraw();
   hStartLoop();
 }
 function closeHomeScreen(){
   document.getElementById('home-screen').classList.remove('show');
   const mb=document.getElementById('music-btn');if(mb)mb.style.display='';
-  hStopLoop();hMoveDir=null;
-  hCancelPlace();
+  const cv=document.getElementById('home-canvas');
+  cv.removeEventListener('click',hCanvasTap);
+  cv.removeEventListener('touchstart',hCanvasTap);
+  cv.removeEventListener('touchmove',hCanvasMove);
+  hStopLoop();hMoveDir=null;hPlacing=null;
+  document.getElementById('h-place-tip').classList.remove('show');
 }
 
 function openHomeShop(){
   document.getElementById('hs-coins-disp').textContent='💜 '+coins;
-  document.getElementById('home-shop-modal').classList.add('show');
-  renderHomeShop();
+  renderHomeShop();document.getElementById('home-shop-modal').classList.add('show');
 }
 function closeHomeShop(){document.getElementById('home-shop-modal').classList.remove('show');}
-function hShopSetTab(room){hShopTab=room;renderHomeShop();}
 
 function renderHomeShop(){
-  document.querySelectorAll('.hs-tab').forEach(b=>b.classList.toggle('active',b.dataset.room===hShopTab));
-  const items=HOME_ITEMS[hShopTab]||[];
-  document.getElementById('hs-body').innerHTML='<div class="hs-grid">'+items.map(item=>{
-    const owned=hData.owned.has(item.id);
-    const placed=hData.placed.some(p=>p.id===item.id);
-    return `<div class="hs-item${owned?' owned':''}" id="hsi-${item.id}">`+
-      `<canvas class="hs-prev" data-item="${item.id}"></canvas>`+
-      `<span class="hs-item-name">${item.name}</span>`+
-      `<span class="hs-item-size">${item.w}×${item.h} tiles</span>`+
-      (owned
-        ?`<span class="hs-owned-badge">✓ Owned${placed?' · placed':''}</span><button class="hs-buy-btn place" onclick="hStartPlace('${item.id}')">${placed?'Move':'Place'} 🏠</button>`
-        :`<span class="hs-item-cost">💜 ${item.cost}</span><button class="hs-buy-btn${coins<item.cost?' cant':''}" onclick="hBuyItem('${item.id}')">Buy</button>`)+
-      `</div>`;
-  }).join('')+'</div>';
-  hDrawShopPreviews();
-}
-
-// Render each item's actual sprite into its preview card, on its room's floor color
-function hDrawShopPreviews(){
-  const dpr=Math.min(3,window.devicePixelRatio||1);
-  document.querySelectorAll('.hs-prev').forEach(cv=>{
-    const item=hItemById(cv.dataset.item);if(!item)return;
-    const W=104,H=68;
-    cv.width=Math.round(W*dpr);cv.height=Math.round(H*dpr);
-    cv.style.width=W+'px';cv.style.height=H+'px';
-    const c=cv.getContext('2d');
-    c.setTransform(dpr,0,0,dpr,0,0);
-    c.imageSmoothingEnabled=true;c.imageSmoothingQuality='high';
-    c.fillStyle=H_FLOOR_COLORS[H_ITEM_ROOMS[item.id]]||'#e7c795';
-    c.fillRect(0,0,W,H);
-    c.fillStyle='rgba(120,80,40,0.08)';
-    for(let y=0;y<H;y+=12)c.fillRect(0,y,W,1);
-    const t=Math.max(8,Math.floor(Math.min((W-16)/item.w,(H-12)/item.h)));
-    hDrawFurniture(c,item.id,Math.round((W-item.w*t)/2),Math.round((H-item.h*t)/2),t);
-  });
+  document.getElementById('hs-body').innerHTML=Object.entries(HOME_ITEMS).map(([room,items])=>
+    `<div class="hs-section"><div class="hs-room-title">── ${H_ROOM_LABELS[room]} ──</div><div class="hs-grid">${
+      items.map(item=>{const owned=hData.owned.has(item.id);return(
+        `<div class="hs-item${owned?' owned':''}"><span class="hs-item-icon">${item.emoji}</span>`+
+        `<span class="hs-item-name">${item.name}</span>`+
+        (owned?`<span class="hs-owned-badge">✓ Owned</span><button class="hs-buy-btn" onclick="hStartPlace('${item.id}')">Place 🏠</button>`
+              :`<span class="hs-item-cost">💜 ${item.cost}</span><button class="hs-buy-btn" onclick="hBuyItem('${item.id}')" ${coins<item.cost?'disabled style="opacity:.5"':''}>Buy</button>`)+
+        `</div>`);}).join('')
+    }</div></div>`
+  ).join('');
 }
 
 function hBuyItem(id){
@@ -3340,31 +3088,12 @@ function hBuyItem(id){
   hData.owned.add(id);saveHomeData();trackStat('items_bought');
   document.getElementById('hs-coins-disp').textContent='💜 '+coins;
   document.getElementById('home-coins-disp').textContent=coins;
-  snd_coin();
-  const card=document.getElementById('hsi-'+id);
-  if(card){
-    card.classList.add('hs-bought');
-    const r=card.getBoundingClientRect();
-    const f=document.createElement('div');
-    f.className='coin-float';f.textContent=`-${item.cost} 💜`;
-    f.style.left=(r.left+r.width/2-24)+'px';f.style.top=r.top+'px';
-    document.body.appendChild(f);setTimeout(()=>f.remove(),750);
-    setTimeout(renderHomeShop,480);
-  }else renderHomeShop();
+  snd_coin();renderHomeShop();
 }
 function hStartPlace(id){
-  const existing=hData.placed.find(p=>p.id===id);
-  let gx=0,gy=0,orig=null;
-  if(existing){
-    hData.placed=hData.placed.filter(p=>p!==existing);
-    gx=existing.tx;gy=existing.ty;orig={tx:existing.tx,ty:existing.ty};
-  }else{
-    const spot=hFindSpot(id);
-    if(spot){gx=spot[0];gy=spot[1];}
-  }
-  hPlacing={id,gx,gy,orig};
-  closeHomeShop();
-  document.getElementById('h-place-tip').classList.add('show');
+  const placed=hData.placed.find(p=>p.id===id);
+  hPlacing={id,gx:placed?placed.tx:hChar.tx,gy:placed?placed.ty:hChar.ty};
+  closeHomeShop();document.getElementById('h-place-tip').classList.add('show');
 }
 
 function checkAnniversaryModal(){
@@ -3378,25 +3107,25 @@ function closeAnniversaryModal(){
 
 <!-- Home Screen -->
 <div id="home-screen">
+  <div class="screen-top-spacer"></div>
   <div class="home-hdr">
     <button class="home-back" onclick="closeHomeScreen()">‹</button>
     <div class="home-title">🏠 Fatema's Home</div>
-    <span class="home-time-chip" id="home-time-chip">☀️ Day</span>
     <button class="home-shop-btn" onclick="openHomeShop()">🛍️ <span id="home-coins-disp">0</span> 💜</button>
   </div>
   <div class="home-cv-wrap">
-    <canvas id="home-canvas"></canvas>
+    <canvas id="home-canvas" width="256" height="320"></canvas>
   </div>
   <div class="home-ctrl">
     <div class="dpad">
       <div class="dpad-blank"></div>
-      <button class="dpad-btn" onpointerdown="hMoveStart('up')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()" onpointerleave="hMoveStop()">▲</button>
+      <button class="dpad-btn" onpointerdown="hMoveStart('up')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()">▲</button>
       <div class="dpad-blank"></div>
-      <button class="dpad-btn" onpointerdown="hMoveStart('left')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()" onpointerleave="hMoveStop()">◀</button>
+      <button class="dpad-btn" onpointerdown="hMoveStart('left')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()">◀</button>
       <div class="dpad-blank"></div>
-      <button class="dpad-btn" onpointerdown="hMoveStart('right')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()" onpointerleave="hMoveStop()">▶</button>
+      <button class="dpad-btn" onpointerdown="hMoveStart('right')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()">▶</button>
       <div class="dpad-blank"></div>
-      <button class="dpad-btn" onpointerdown="hMoveStart('down')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()" onpointerleave="hMoveStop()">▼</button>
+      <button class="dpad-btn" onpointerdown="hMoveStart('down')" onpointerup="hMoveStop()" onpointercancel="hMoveStop()">▼</button>
       <div class="dpad-blank"></div>
     </div>
   </div>
@@ -3490,21 +3219,16 @@ function closeAnniversaryModal(){
 
 <!-- Home Furniture Shop -->
 <div id="home-shop-modal">
+  <div class="screen-top-spacer"></div>
   <div class="hs-hdr">
     <button class="hs-back" onclick="closeHomeShop()">‹</button>
     <div class="hs-title">🛋️ Furniture Shop</div>
     <span class="hs-coins" id="hs-coins-disp">💜 0</span>
   </div>
-  <div class="hs-tabs">
-    <button class="hs-tab active" data-room="lr" onclick="hShopSetTab('lr')">🛋️ Living</button>
-    <button class="hs-tab" data-room="br" onclick="hShopSetTab('br')">🛏️ Bedroom</button>
-    <button class="hs-tab" data-room="ba" onclick="hShopSetTab('ba')">🛁 Bathroom</button>
-    <button class="hs-tab" data-room="kt" onclick="hShopSetTab('kt')">🍳 Kitchen</button>
-  </div>
   <div id="hs-body"></div>
 </div>
 
-<div id="h-place-tip"><span>Tap to position · tap again to confirm</span><button onclick="hCancelPlace()">✕</button></div>
+<div id="h-place-tip">Tap a room tile to place • Tap again to cancel</div>
 
 <!-- Daily Challenges Screen -->
 <div id="daily-screen">
