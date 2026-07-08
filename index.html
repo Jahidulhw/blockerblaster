@@ -465,10 +465,10 @@ h1{font-size:clamp(1.4em,5vw,2em);font-weight:900;background:linear-gradient(135
 .home-title{flex:1;text-align:center;font-size:.85em;font-weight:900;letter-spacing:1px;background:linear-gradient(135deg,#dd66ff,#ff44cc);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .home-time-chip{font-size:.68em;font-weight:800;color:#ffdd99;background:rgba(255,200,80,.12);border:1px solid rgba(255,200,80,.3);border-radius:20px;padding:4px 9px;white-space:nowrap;}
 .home-shop-btn{background:linear-gradient(135deg,rgba(80,0,140,.8),rgba(140,0,100,.8));border:1.5px solid rgba(180,60,255,.4);border-radius:20px;color:#ffdd88;font-size:.78em;font-weight:800;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;}
-.home-cv-wrap{flex:0 0 auto;height:55vh;height:55dvh;min-height:0;position:relative;overflow:hidden;}
-#home-canvas{position:absolute;inset:0;display:block;cursor:pointer;touch-action:none;}
-.home-ctrl{display:flex;align-items:center;justify-content:center;padding:8px 0 max(10px,env(safe-area-inset-bottom));flex:1 1 auto;min-height:0;background:rgba(10,2,22,.97);border-top:1px solid rgba(120,0,200,.25);}
-.dpad{display:grid;grid-template-columns:repeat(3,46px);grid-template-rows:repeat(3,46px);gap:4px;}
+.home-cv-wrap{flex:0 0 auto;position:relative;line-height:0;}
+#home-canvas{display:block;margin:0 auto;cursor:pointer;touch-action:none;}
+.home-ctrl{display:flex;align-items:center;justify-content:center;padding:6px 0 max(8px,env(safe-area-inset-bottom));flex:1 1 auto;min-height:0;overflow:hidden;background:rgba(10,2,22,.97);border-top:1px solid rgba(120,0,200,.25);}
+.dpad{display:grid;grid-template-columns:repeat(3,38px);grid-template-rows:repeat(3,38px);gap:4px;}
 .dpad-btn{background:rgba(80,0,140,.65);border:1.5px solid rgba(160,60,255,.35);border-radius:10px;color:#cc88ff;font-size:1em;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:none;display:flex;align-items:center;justify-content:center;user-select:none;}
 .dpad-btn:active,.dpad-btn.held{background:rgba(160,0,255,.8);}
 .dpad-blank{background:rgba(20,0,40,.2);border-radius:10px;}
@@ -3241,21 +3241,21 @@ function hCancelPlace(){
 // the house is scaled to fit fully on screen and centered.
 function hLayout(){
   const cv=document.getElementById('home-canvas');if(!cv)return;
-  const rect=cv.parentElement.getBoundingClientRect();
   H_DPR=Math.min(3,window.devicePixelRatio||1);
-  H_CW=Math.max(120,Math.round(rect.width));
-  H_CH=Math.max(160,Math.round(rect.height));
+  // Canvas: full window width, window height minus 200px for header + arrow controls
+  H_CW=Math.max(120,window.innerWidth);
+  H_CH=Math.max(240,window.innerHeight-200);
   cv.width=Math.round(H_CW*H_DPR);cv.height=Math.round(H_CH*H_DPR);
-  // Tile size so the entire 16×20 house always fits: full width, ≤55% of screen height
-  H_TS=Math.max(8,Math.min(
-    Math.floor(H_CW/H_COLS),
-    Math.floor(H_CH/H_ROWS),
-    Math.floor(window.innerHeight*.55/H_ROWS)
-  ));
+  cv.style.width=H_CW+'px';cv.style.height=H_CH+'px';
+  // Tile size = canvas width / horizontal tile count, so the full 16-tile-wide
+  // house spans the screen; capped by height so all 20 rows fit too
+  H_TS=Math.max(8,Math.min(Math.floor(H_CW/H_COLS),Math.floor(H_CH/H_ROWS)));
   H_OX=Math.floor((H_CW-H_COLS*H_TS)/2);
   H_OY=Math.floor((H_CH-H_ROWS*H_TS)/2);
   hBuildAvatar();
 }
+window.addEventListener('load',hLayout);
+window.addEventListener('resize',hLayout);
 
 function openHomeScreen(){
   loadHomeData();
@@ -3276,7 +3276,6 @@ function openHomeScreen(){
     cv.addEventListener('touchstart',hCanvasTap,{passive:false});
     cv.addEventListener('touchmove',hCanvasMove,{passive:false});
     cv.addEventListener('mousemove',hCanvasMove);
-    window.addEventListener('resize',()=>{if(document.getElementById('home-screen').classList.contains('show'))hLayout();});
     window.addEventListener('keydown',hKeyHandler);
     window.addEventListener('keyup',hKeyHandler);
   }
